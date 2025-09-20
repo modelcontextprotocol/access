@@ -1,0 +1,9 @@
+name: mcp-access
+runtime: nodejs
+description: Infrastructure as Code for MCP access management
+packages:
+  googleworkspace:
+    source: terraform-provider
+    version: 0.14.0
+    parameters:
+      - hashicorp/googleworkspace

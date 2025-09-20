@@ -1,0 +1,19 @@
+{
+  "name": "@mcp/access",
+  "version": "1.0.0",
+  "description": "Infrastructure as Code for MCP access management",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@pulumi/github": "^6.7.3",
+    "@pulumi/googleworkspace": "file:sdks/googleworkspace",
+    "@pulumi/pulumi": "^3.197.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.18.6",
+    "typescript": "^5.9.2"
+  }
+}

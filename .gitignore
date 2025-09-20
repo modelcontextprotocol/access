@@ -1,0 +1,12 @@
+node_modules/
+bin/
+*.log
+
+# Pulumi
+.pulumi/
+Pulumi.*.yaml.bak
+sdks
+
+# Secrets
+passphrase.prod.txt
+sa-key.json
