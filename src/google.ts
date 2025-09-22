@@ -14,13 +14,21 @@ GROUPS.forEach((group: Group) => {
 
   new gworkspace.GroupSettings(group.name, {
     email: groups[group.name].email,
-    whoCanContactOwner: 'ALL_OWNERS_CAN_CONTACT',
-    whoCanJoin: 'INVITED_CAN_JOIN',
-    whoCanLeaveGroup: 'NONE_CAN_LEAVE',
-    whoCanModerateMembers: 'OWNERS_ONLY',
-    whoCanPostMessage: 'ALL_OWNERS_CAN_POST',
-    whoCanViewGroup: 'ALL_MEMBERS_CAN_VIEW',
+
+    // Maximise visibility of group. It's visible in GitHub anyway
     whoCanViewMembership: 'ALL_IN_DOMAIN_CAN_VIEW',
+    
+    // This specifies who can add/remove members. We want this to only be via this IaC.
+    whoCanModerateMembers: 'NONE',
+    whoCanLeaveGroup: 'NONE_CAN_LEAVE',
+    whoCanJoin: 'INVITED_CAN_JOIN',
+    
+    // We don't intend these groups to be used as mailing lists, so we set posting and viewing messages to the most restrictive settings currently available.
+    whoCanPostMessage: 'ALL_OWNERS_CAN_POST',
+    whoCanContactOwner: 'ALL_OWNERS_CAN_CONTACT',
+    // This is badly named, but actually means 'Permissions to view group messages'. See https://developers.google.com/workspace/admin/groups-settings/v1/reference/groups
+    whoCanViewGroup: 'ALL_OWNERS_CAN_VIEW',
+    
   });
 
   group.memberOf?.forEach((parentGroupKey) => {
