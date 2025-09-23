@@ -10,7 +10,7 @@ login: ## Login to Pulumi backend (GCS)
 	pulumi login gs://mcp-access-prod-pulumi-state
 
 preview: login ## Preview infrastructure changes
-	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi preview --stack prod
+	pulumi preview --stack prod
 
 up: login ## Deploy infrastructure
-	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi up --yes --stack prod
+	pulumi up --yes --stack prod

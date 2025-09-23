@@ -49,6 +49,6 @@ jobs:
           credentials_json: ${{ secrets.GCP_PROD_SERVICE_ACCOUNT_KEY }}
 
       - name: Deploy to Production
-        run: |
-          echo "${{ secrets.PULUMI_PROD_PASSPHRASE }}" > passphrase.prod.txt
-          make up
+        run: make up
+        env:
+          PULUMI_CONFIG_PASSPHRASE: ${{ secrets.PULUMI_PROD_PASSPHRASE }}
