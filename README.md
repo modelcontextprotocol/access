@@ -10,6 +10,7 @@ Infrastructure as Code for managing access to MCP community resources using Pulu
 
 - **GitHub Teams**: Automatically syncs team memberships in the MCP GitHub organization
 - **Google Workspace Groups**: Automatically syncs group memberships for @modelcontextprotocol.io email accounts
+  - **Email Groups**: Groups with `isEmailGroup: true` accept emails from anyone (including external users) and notify all members. External posts are moderated for security.
 
 ## Deployment
 
