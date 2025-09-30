@@ -5,6 +5,9 @@ import { defineGroups } from './utils';
 //
 // Email groups (isEmailGroup: true) accept emails from anyone (including external users)
 // and notify group members for each email.
+//
+// Groups are created on all platforms (GitHub and Google) by default.
+// To limit a group to specific platforms, set the onlyOnPlatforms array (e.g., onlyOnPlatforms: ['google']).
 export const GROUPS = defineGroups([
   {
     name: 'test-parent',
@@ -24,5 +27,12 @@ export const GROUPS = defineGroups([
     name: 'antitrust',
     description: 'Antitrust compliance contacts',
     isEmailGroup: true,
+    onlyOnPlatforms: ['google'],
+  },
+  {
+    name: 'catch-all',
+    description: 'Catch-all email group',
+    isEmailGroup: true,
+    onlyOnPlatforms: ['google'],
   },
 ] as const);

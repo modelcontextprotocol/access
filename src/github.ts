@@ -6,6 +6,9 @@ import { MEMBERS } from './config/users';
 const teams: Record<string, github.Team> = {};
 
 GROUPS.forEach((group: Group) => {
+  // Skip groups that don't include github in their platforms
+  if (group.onlyOnPlatforms && !group.onlyOnPlatforms.includes('github')) return;
+
   teams[group.name] = new github.Team(group.name, {
     name: group.name,
     description: group.description + ' \n(Managed by github.com/modelcontextprotocol/access)',
