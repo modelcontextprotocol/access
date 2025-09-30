@@ -9,6 +9,7 @@ export function defineGroups<
     name: Lowercase<string>;
     description: string;
     memberOf?: readonly (T[number]['name'])[];
+    isEmailGroup?: boolean;
   }[]
 >(groups: T) {
   for (const group of groups) {
@@ -28,10 +29,11 @@ export interface Group {
   name: GroupKey;
   description: string;
   memberOf?: readonly GroupKey[];
+  isEmailGroup?: boolean;
 }
 
 export interface Member {
   github?: string;
-  email?: `${string}@modelcontextprotocol.io`;
+  email?: string;
   memberOf: readonly GroupKey[];
 }
