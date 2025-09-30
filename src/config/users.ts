@@ -7,6 +7,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: ['test-child'],
   },
   {
+    email: 'adamj@anthropic.com',
+    memberOf: ['catch-all'],
+  },
+  {
     email: 'davidsp@anthropic.com',
     memberOf: ['antitrust'],
   },

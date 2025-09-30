@@ -6,6 +6,9 @@ import { MEMBERS } from './config/users';
 const groups: Record<string, gworkspace.Group> = {};
 
 GROUPS.forEach((group: Group) => {
+  // Skip groups that don't include google in their platforms
+  if (group.onlyOnPlatforms && !group.onlyOnPlatforms.includes('google')) return;
+
   groups[group.name] = new gworkspace.Group(group.name, {
     email: `${group.name}@modelcontextprotocol.io`,
     name: group.name,

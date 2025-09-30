@@ -4,12 +4,15 @@ function isValidGroupName(name: string): boolean {
   return /^[a-z][a-z0-9-]*[a-z]$/.test(name);
 }
 
+export type Platform = 'github' | 'google';
+
 export function defineGroups<
   const T extends readonly {
     name: Lowercase<string>;
     description: string;
     memberOf?: readonly (T[number]['name'])[];
     isEmailGroup?: boolean;
+    onlyOnPlatforms?: readonly Platform[];
   }[]
 >(groups: T) {
   for (const group of groups) {
@@ -30,6 +33,7 @@ export interface Group {
   description: string;
   memberOf?: readonly GroupKey[];
   isEmailGroup?: boolean;
+  onlyOnPlatforms?: readonly Platform[];
 }
 
 export interface Member {
