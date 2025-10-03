@@ -1,5 +1,6 @@
 import * as github from '@pulumi/github';
 import { GROUPS } from './config/groups';
+import { REPOSITORY_ACCESS } from './config/repoAccess';
 import type { Group } from './config/utils';
 import { MEMBERS } from './config/users';
 
@@ -26,5 +27,15 @@ MEMBERS.forEach((member) => {
       username: member.github!,
       role: 'member',
     });
+  });
+});
+
+REPOSITORY_ACCESS.forEach((repo) => {
+  new github.RepositoryCollaborators(`repo-${repo.repository}`, {
+    repository: repo.repository,
+    teams: repo.teams.map((t) => ({
+      teamId: teams[t.team].id,
+      permission: t.permission,
+    })),
   });
 });
