@@ -42,6 +42,9 @@ GROUPS.forEach((group: Group) => {
   });
 
   group.memberOf?.forEach((parentGroupKey) => {
+    // Skip if parent group doesn't exist on Google (e.g., onlyOnPlatforms: ['github'])
+    if (!groups[parentGroupKey]) return;
+
     new gworkspace.GroupMember(`${group.name}-in-${parentGroupKey}`, {
       groupId: groups[parentGroupKey].id,
       email: groups[group.name].email,
@@ -54,6 +57,9 @@ MEMBERS.forEach((member) => {
   if (!member.email) return;
 
   member.memberOf.forEach((teamKey) => {
+    // Skip if group doesn't exist on Google (e.g., onlyOnPlatforms: ['github'])
+    if (!groups[teamKey]) return;
+
     new gworkspace.GroupMember(`${member.email}-${teamKey}`, {
       groupId: groups[teamKey].id,
       email: member.email!,
