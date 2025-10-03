@@ -33,9 +33,13 @@ MEMBERS.forEach((member) => {
 REPOSITORY_ACCESS.forEach((repo) => {
   new github.RepositoryCollaborators(`repo-${repo.repository}`, {
     repository: repo.repository,
-    teams: repo.teams.map((t) => ({
+    teams: repo.teams?.map((t) => ({
       teamId: teams[t.team].id,
       permission: t.permission,
+    })),
+    users: repo.users?.map((u) => ({
+      username: u.username,
+      permission: u.permission,
     })),
   });
 });
