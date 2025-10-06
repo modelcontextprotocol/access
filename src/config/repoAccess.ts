@@ -154,6 +154,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     repository: 'quickstart-resources',
     users: [
       { username: 'jspahrsummers', permission: 'admin' },
+      { username: 'a-akimov', permission: 'triage' },
     ],
     teams: [
       { team: 'auth-wg', permission: 'push' },
