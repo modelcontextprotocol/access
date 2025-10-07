@@ -71,7 +71,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'cliffhall',
-    memberOf: ['moderators'],
+    memberOf: ['docs-maintaners', 'moderators'],
   },
   {
     github: 'crondinini-ant',
@@ -105,7 +105,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'evalstate',
-    memberOf: ['moderators'],
+    memberOf: ['docs-maintaners', 'moderators'],
   },
   {
     github: 'fabpot',
