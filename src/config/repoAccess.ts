@@ -324,6 +324,12 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { username: 'nitsanh', permission: 'pull' },
     ],
   },
+  {
+    repository: 'ext-auth',
+    teams: [
+      { team: 'auth-wg', permission: 'admin' },
+    ],
+  },
 ];
 
 // GitHub Projects V2 permissions are NOT managed by Pulumi - no support yet
