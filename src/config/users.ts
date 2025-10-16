@@ -218,7 +218,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'pcarleton',
-    memberOf: ['core-maintainers', 'python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth'],
+    memberOf: ['core-maintainers', 'python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth', 'auth-wg', 'conformance-testing-wg'],
   },
   {
     github: 'petery-ant',

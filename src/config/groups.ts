@@ -150,6 +150,12 @@ export const GROUPS = defineGroups([
     memberOf: ['working-groups'],
     onlyOnPlatforms: ['github'],
   },
+  {
+    name: 'conformance-testing-wg',
+    description: 'Conformance Testing Working Group',
+    memberOf: ['working-groups'],
+    onlyOnPlatforms: ['github'],
+  },
 
   // Interest Groups
   {
