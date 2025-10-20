@@ -39,6 +39,12 @@ export const GROUPS = defineGroups([
     memberOf: ['steering-committee'],
     onlyOnPlatforms: ['github'],
   },
+  {
+    name: 'inspector-maintainers',
+    description: 'MCP Inspector maintainers',
+    memberOf: ['steering-committee'],
+    onlyOnPlatforms: ['github'],
+  },
 
   // SDK Maintainers
   {
