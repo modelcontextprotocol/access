@@ -55,7 +55,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'bhosmer-ant',
-    memberOf: ['core', 'core-maintainers', 'docs-maintaners', 'moderators'],
+    memberOf: ['core', 'core-maintainers', 'docs-maintaners', 'moderators', 'python-sdk', 'typescript-sdk'],
   },
   {
     github: 'carlpeaslee',
