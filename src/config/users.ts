@@ -55,7 +55,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'bhosmer-ant',
-    memberOf: ['core', 'core-maintainers', 'docs-maintaners', 'moderators'],
+    memberOf: ['core', 'core-maintainers', 'docs-maintaners', 'moderators', 'python-sdk', 'typescript-sdk'],
   },
   {
     github: 'carlpeaslee',
@@ -71,7 +71,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'cliffhall',
-    memberOf: ['docs-maintaners', 'moderators'],
+    memberOf: ['docs-maintaners', 'inspector-maintainers', 'moderators'],
   },
   {
     github: 'crondinini-ant',
@@ -157,6 +157,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: ['core-maintainers'],
   },
   {
+    github: 'KKonstantinov',
+    memberOf: ['inspector-maintainers'],
+  },
+  {
     github: 'koic',
     memberOf: ['ruby-sdk'],
   },
@@ -214,11 +218,11 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'olaservo',
-    memberOf: ['docs-maintaners', 'moderators'],
+    memberOf: ['docs-maintaners', 'inspector-maintainers', 'moderators'],
   },
   {
     github: 'pcarleton',
-    memberOf: ['core-maintainers', 'python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth'],
+    memberOf: ['core-maintainers', 'python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth', 'auth-wg'],
   },
   {
     github: 'petery-ant',

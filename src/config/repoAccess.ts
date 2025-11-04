@@ -85,11 +85,11 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     users: [
       { username: 'richardkmichael', permission: 'triage' },
       { username: 'jspahrsummers', permission: 'admin' },
-      { username: 'olaservo', permission: 'push' },
       { username: 'an-dustin', permission: 'admin' },
       { username: 'ashwin-ant', permission: 'admin' },
     ],
     teams: [
+      { team: 'inspector-maintainers', permission: 'push' },
       { team: 'auth-wg', permission: 'push' },
       { team: 'core', permission: 'maintain' },
       { team: 'core-maintainers', permission: 'push' },
@@ -322,6 +322,12 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { username: 'sambhav', permission: 'admin' },
       { username: 'KengoA', permission: 'triage' },
       { username: 'nitsanh', permission: 'pull' },
+    ],
+  },
+  {
+    repository: 'ext-auth',
+    teams: [
+      { team: 'auth-wg', permission: 'admin' },
     ],
   },
 ];
