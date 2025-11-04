@@ -225,6 +225,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: ['core-maintainers', 'python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth', 'auth-wg'],
   },
   {
+    github: 'pederhp',
+    memberOf: ['ig-financial-services'],
+  },
+  {
     github: 'petery-ant',
     memberOf: ['security-wg'],
   },
