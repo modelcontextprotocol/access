@@ -190,7 +190,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'maxisbey',
-    memberOf: ['core'],
+    memberOf: ['core', 'python-sdk'],
   },
   {
     github: 'michaelneale',
