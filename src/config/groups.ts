@@ -45,6 +45,12 @@ export const GROUPS = defineGroups([
     memberOf: ['steering-committee'],
     onlyOnPlatforms: ['github'],
   },
+  {
+    name: 'mcpb-maintainers',
+    description: 'MCPB (Model Context Protocol Bundle) maintainers',
+    memberOf: ['steering-committee'],
+    onlyOnPlatforms: ['github'],
+  },
 
   // SDK Maintainers
   {

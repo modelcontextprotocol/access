@@ -46,6 +46,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: ['go-sdk'],
   },
   {
+    github: 'asklar',
+    memberOf: ['mcpb-maintainers'],
+  },
+  {
     github: 'atesgoral',
     memberOf: ['ruby-sdk'],
   },
@@ -88,7 +92,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'domdomegg',
     email: 'adam@modelcontextprotocol.io',
-    memberOf: ['core', 'registry-wg'],
+    memberOf: ['core', 'mcpb-maintainers', 'registry-wg'],
   },
   {
     github: 'dsp-ant',
@@ -146,6 +150,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'jerome3o-anthropic',
     memberOf: ['core', 'moderators'],
+  },
+  {
+    github: 'joan-anthropic',
+    memberOf: ['mcpb-maintainers'],
   },
   {
     github: 'jonathanhefner',
