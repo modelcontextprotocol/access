@@ -166,7 +166,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'KKonstantinov',
-    memberOf: ['inspector-maintainers'],
+    memberOf: ['inspector-maintainers', 'typescript-sdk'],
   },
   {
     github: 'koic',
@@ -199,6 +199,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'maxisbey',
     memberOf: ['core', 'python-sdk'],
+  },
+  {
+    github: 'mattzcarey',
+    memberOf: ['typescript-sdk'],
   },
   {
     github: 'michaelneale',
