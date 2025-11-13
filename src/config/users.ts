@@ -46,6 +46,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: ['go-sdk'],
   },
   {
+    github: 'asklar',
+    memberOf: ['mcpb-maintainers'],
+  },
+  {
     github: 'atesgoral',
     memberOf: ['ruby-sdk'],
   },
@@ -88,7 +92,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'domdomegg',
     email: 'adam@modelcontextprotocol.io',
-    memberOf: ['core', 'registry-wg'],
+    memberOf: ['core', 'mcpb-maintainers', 'registry-wg'],
   },
   {
     github: 'dsp-ant',
@@ -148,6 +152,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: ['core', 'moderators'],
   },
   {
+    github: 'joan-anthropic',
+    memberOf: ['mcpb-maintainers'],
+  },
+  {
     github: 'jonathanhefner',
     memberOf: ['docs-maintaners', 'moderators'],
   },
@@ -158,7 +166,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'KKonstantinov',
-    memberOf: ['inspector-maintainers'],
+    memberOf: ['inspector-maintainers', 'typescript-sdk'],
   },
   {
     github: 'koic',
@@ -190,7 +198,11 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'maxisbey',
-    memberOf: ['core'],
+    memberOf: ['core', 'python-sdk'],
+  },
+  {
+    github: 'mattzcarey',
+    memberOf: ['typescript-sdk'],
   },
   {
     github: 'michaelneale',
@@ -223,6 +235,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'pcarleton',
     memberOf: ['core-maintainers', 'python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth', 'auth-wg'],
+  },
+  {
+    github: 'pederhp',
+    memberOf: ['ig-financial-services'],
   },
   {
     github: 'petery-ant',
