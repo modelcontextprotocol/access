@@ -125,7 +125,8 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     teams: [
       { team: 'inspector-maintainers', permission: 'push' },
       { team: 'inspector-v2-wg', permission: 'push' },
-      { team: 'core-maintainers', permission: 'maintain' },
+      { team: 'core-maintainers', permission: 'push' },
+      { team: 'core', permission: 'maintain' },
       { team: 'sdk-maintainers', permission: 'push' }
     ],
   },
