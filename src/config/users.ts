@@ -75,7 +75,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'cliffhall',
-    memberOf: ['docs-maintaners', 'inspector-maintainers', 'moderators'],
+    memberOf: ['docs-maintaners', 'inspector-maintainers', 'inspector-v2-wg', 'moderators'],
   },
   {
     github: 'crondinini-ant',
@@ -109,7 +109,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'evalstate',
-    memberOf: ['docs-maintaners', 'moderators'],
+    memberOf: ['docs-maintaners', 'inspector-v2-wg', 'moderators'],
   },
   {
     github: 'fabpot',
@@ -166,7 +166,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'KKonstantinov',
-    memberOf: ['inspector-maintainers', 'typescript-sdk'],
+    memberOf: ['inspector-maintainers', 'inspector-v2-wg', 'typescript-sdk'],
   },
   {
     github: 'koic',
@@ -230,11 +230,11 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'olaservo',
-    memberOf: ['docs-maintaners', 'inspector-maintainers', 'moderators'],
+    memberOf: ['docs-maintaners', 'inspector-maintainers', 'inspector-v2-wg', 'moderators'],
   },
   {
     github: 'pcarleton',
-    memberOf: ['core-maintainers', 'python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth', 'auth-wg'],
+    memberOf: ['core-maintainers', 'inspector-v2-wg', 'python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth', 'auth-wg'],
   },
   {
     github: 'pederhp',
