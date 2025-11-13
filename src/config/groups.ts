@@ -162,6 +162,12 @@ export const GROUPS = defineGroups([
     memberOf: ['working-groups'],
     onlyOnPlatforms: ['github'],
   },
+  {
+    name: 'inspector-v2-wg',
+    description: 'Inspector V2 Working Group',
+    memberOf: ['working-groups'],
+    onlyOnPlatforms: ['github'],
+  },
 
   // Interest Groups
   {

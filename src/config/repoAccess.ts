@@ -118,6 +118,18 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
+    repository: 'inspector-v2',
+    users: [
+      { username: 'dsp-ant', permission: 'admin' }
+    ],
+    teams: [
+      { team: 'inspector-maintainers', permission: 'push' },
+      { team: 'inspector-v2-wg', permission: 'push' },
+      { team: 'core-maintainers', permission: 'maintain' },
+      { team: 'sdk-maintainers', permission: 'push' }
+    ],
+  },
+  {
     repository: 'modelcontextprotocol',
     users: [
       { username: 'jspahrsummers', permission: 'admin' },
