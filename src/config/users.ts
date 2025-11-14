@@ -116,7 +116,7 @@ export const MEMBERS: readonly Member[] = [
     memberOf: ['php-sdk'],
   },
   {
-    github: 'felixreiseberg',
+    github: 'felixrieseberg',
     memberOf: ['mcpb-maintainers'],
   },
   {
