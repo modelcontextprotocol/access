@@ -116,6 +116,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: ['php-sdk'],
   },
   {
+    github: 'felixreiseberg',
+    memberOf: ['mcpb-maintainers'],
+  },
+  {
     github: 'felixweinberger',
     memberOf: ['core', 'python-sdk', 'security-wg', 'typescript-sdk'],
   },
@@ -191,6 +195,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'markpollack',
     memberOf: ['java-sdk'],
+  },
+  {
+    github: 'marshallofsound',
+    memberOf: ['mcpb-maintainers'],
   },
   {
     github: 'mattt',
