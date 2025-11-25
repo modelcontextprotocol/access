@@ -59,7 +59,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'bhosmer-ant',
-    memberOf: ['core', 'core-maintainers', 'docs-maintaners', 'moderators', 'python-sdk', 'typescript-sdk'],
+    memberOf: ['core-maintainers', 'docs-maintaners', 'moderators', 'python-sdk', 'typescript-sdk'],
   },
   {
     github: 'carlpeaslee',
@@ -79,7 +79,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'crondinini-ant',
-    memberOf: ['core'],
+    memberOf: [],
   },
   {
     github: 'dend',
@@ -92,12 +92,12 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'domdomegg',
     email: 'adam@modelcontextprotocol.io',
-    memberOf: ['core', 'mcpb-maintainers', 'registry-wg'],
+    memberOf: ['mcpb-maintainers', 'registry-wg'],
   },
   {
     github: 'dsp-ant',
     email: 'david@modelcontextprotocol.io',
-    memberOf: ['auth-wg', 'core', 'core-maintainers', 'docs-maintaners', 'go-sdk', 'ig-financial-services', 'moderators', 'php-sdk', 'python-sdk', 'security-wg', 'transport-wg', 'typescript-sdk'],
+    memberOf: ['auth-wg', 'core-maintainers', 'docs-maintaners', 'go-sdk', 'ig-financial-services', 'moderators', 'php-sdk', 'python-sdk', 'security-wg', 'transport-wg', 'typescript-sdk'],
   },
   {
     github: 'e5l',
@@ -121,7 +121,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'felixweinberger',
-    memberOf: ['core', 'python-sdk', 'security-wg', 'typescript-sdk'],
+    memberOf: ['python-sdk', 'security-wg', 'typescript-sdk'],
   },
   {
     github: 'findleyr',
@@ -137,7 +137,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'ihrpr',
-    memberOf: ['core', 'core-maintainers', 'docs-maintaners', 'python-sdk', 'typescript-sdk'],
+    memberOf: ['core-maintainers', 'docs-maintaners', 'python-sdk', 'typescript-sdk'],
   },
   {
     github: 'jamadeo',
@@ -153,7 +153,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jerome3o-anthropic',
-    memberOf: ['core', 'moderators'],
+    memberOf: ['moderators'],
   },
   {
     github: 'joan-anthropic',
@@ -190,7 +190,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'maheshmurag',
-    memberOf: ['core', 'moderators'],
+    memberOf: ['moderators'],
   },
   {
     github: 'markpollack',
@@ -206,7 +206,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'maxisbey',
-    memberOf: ['core', 'python-sdk'],
+    memberOf: ['python-sdk'],
   },
   {
     github: 'mattzcarey',
@@ -230,7 +230,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'ochafik',
-    memberOf: ['core', 'python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth'],
+    memberOf: ['python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth'],
   },
   {
     github: 'og-ant',

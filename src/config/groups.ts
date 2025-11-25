@@ -16,12 +16,6 @@ export const GROUPS = defineGroups([
     onlyOnPlatforms: ['github'],
   },
   {
-    name: 'core',
-    description: 'Core team',
-    memberOf: ['steering-committee'],
-    onlyOnPlatforms: ['github'],
-  },
-  {
     name: 'core-maintainers',
     description: 'Core maintainers',
     memberOf: ['steering-committee'],
