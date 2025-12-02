@@ -43,3 +43,10 @@ REPOSITORY_ACCESS.forEach((repo) => {
     })),
   });
 });
+
+// Assign security-advisories team as organization security managers
+// This grants members the ability to view security alerts and manage security
+// settings across all repos, including adding collaborators to security advisories
+new github.OrganizationSecurityManager('security-managers', {
+  teamSlug: 'security-advisories',
+});

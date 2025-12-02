@@ -149,7 +149,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jenn-newton',
-    memberOf: ['security-wg'],
+    memberOf: ['security-advisories'],
   },
   {
     github: 'jerome3o-anthropic',
