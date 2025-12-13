@@ -62,10 +62,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: ['core-maintainers', 'docs-maintaners', 'moderators', 'python-sdk', 'typescript-sdk'],
   },
   {
-    github: 'bolinfest',
-    memberOf: ['rust-sdk'],
-  },
-  {
     github: 'carlpeaslee',
     memberOf: ['swift-sdk'],
   },
