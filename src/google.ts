@@ -29,16 +29,17 @@ GROUPS.forEach((group: Group) => {
     // Email groups allow anyone (including externals) to post
     // Non-email groups are not intended as mailing lists, so use the most restrictive settings
     // whoCanViewGroup is badly named, but actually means 'Permissions to view group messages'. See https://developers.google.com/workspace/admin/groups-settings/v1/reference/groups
-    ...(group.isEmailGroup ? {
-      whoCanPostMessage: 'ANYONE_CAN_POST',
-      whoCanContactOwner: 'ALL_OWNERS_CAN_CONTACT',
-      whoCanViewGroup: 'ALL_MEMBERS_CAN_VIEW',
-    } : {
-      whoCanPostMessage: 'ALL_OWNERS_CAN_POST',
-      whoCanContactOwner: 'ALL_OWNERS_CAN_CONTACT',
-      whoCanViewGroup: 'ALL_OWNERS_CAN_VIEW',
-    }),
-
+    ...(group.isEmailGroup
+      ? {
+          whoCanPostMessage: 'ANYONE_CAN_POST',
+          whoCanContactOwner: 'ALL_OWNERS_CAN_CONTACT',
+          whoCanViewGroup: 'ALL_MEMBERS_CAN_VIEW',
+        }
+      : {
+          whoCanPostMessage: 'ALL_OWNERS_CAN_POST',
+          whoCanContactOwner: 'ALL_OWNERS_CAN_CONTACT',
+          whoCanViewGroup: 'ALL_OWNERS_CAN_VIEW',
+        }),
   });
 
   group.memberOf?.forEach((parentGroupKey) => {

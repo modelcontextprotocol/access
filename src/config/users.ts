@@ -97,7 +97,19 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'dsp-ant',
     email: 'david@modelcontextprotocol.io',
-    memberOf: ['auth-wg', 'core-maintainers', 'docs-maintaners', 'go-sdk', 'ig-financial-services', 'moderators', 'php-sdk', 'python-sdk', 'security-wg', 'transport-wg', 'typescript-sdk'],
+    memberOf: [
+      'auth-wg',
+      'core-maintainers',
+      'docs-maintaners',
+      'go-sdk',
+      'ig-financial-services',
+      'moderators',
+      'php-sdk',
+      'python-sdk',
+      'security-wg',
+      'transport-wg',
+      'typescript-sdk',
+    ],
   },
   {
     github: 'e5l',
@@ -242,7 +254,14 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'pcarleton',
-    memberOf: ['core-maintainers', 'python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth', 'auth-wg'],
+    memberOf: [
+      'core-maintainers',
+      'python-sdk',
+      'python-sdk-auth',
+      'typescript-sdk',
+      'typescript-sdk-auth',
+      'auth-wg',
+    ],
   },
   {
     github: 'pederhp',

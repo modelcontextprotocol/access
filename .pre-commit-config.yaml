@@ -22,3 +22,10 @@ repos:
         language: system
         pass_filenames: false
         files: ^src/config/
+
+      - id: prettier
+        name: Prettier formatting
+        entry: npx prettier --write --ignore-unknown
+        language: system
+        types: [text]
+        files: \.(ts|tsx|js|jsx|json|md)$

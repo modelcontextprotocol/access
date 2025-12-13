@@ -16,9 +16,7 @@ export interface RepositoryAccess {
 export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   {
     repository: 'docs',
-    users: [
-      { username: 'jspahrsummers', permission: 'admin' },
-    ],
+    users: [{ username: 'jspahrsummers', permission: 'admin' }],
     teams: [
       { team: 'auth-wg', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
@@ -48,9 +46,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: '.github',
-    users: [
-      { username: 'jspahrsummers', permission: 'admin' },
-    ],
+    users: [{ username: 'jspahrsummers', permission: 'admin' }],
     teams: [
       { team: 'auth-wg', permission: 'triage' },
       { team: 'core-maintainers', permission: 'maintain' },
@@ -116,9 +112,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'modelcontextprotocol',
-    users: [
-      { username: 'jspahrsummers', permission: 'admin' },
-    ],
+    users: [{ username: 'jspahrsummers', permission: 'admin' }],
     teams: [
       { team: 'auth-wg', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
@@ -251,9 +245,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'python-sdk', permission: 'admin' },
       { team: 'python-sdk-auth', permission: 'admin' },
     ],
-    users: [
-      { username: 'jspahrsummers', permission: 'admin' },
-    ],
+    users: [{ username: 'jspahrsummers', permission: 'admin' }],
   },
   {
     repository: 'ruby-sdk',
@@ -280,9 +272,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'typescript-sdk', permission: 'admin' },
       { team: 'typescript-sdk-auth', permission: 'admin' },
     ],
-    users: [
-      { username: 'jspahrsummers', permission: 'admin' },
-    ],
+    users: [{ username: 'jspahrsummers', permission: 'admin' }],
   },
   {
     repository: 'create-python-server',
@@ -301,9 +291,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   {
     repository: 'registry',
     teams: [{ team: 'registry-wg', permission: 'admin' }],
-    users: [
-      { username: 'rdimitrov', permission: 'admin' },
-    ],
+    users: [{ username: 'rdimitrov', permission: 'admin' }],
   },
   {
     repository: 'static',
@@ -322,9 +310,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'ext-auth',
-    teams: [
-      { team: 'auth-wg', permission: 'admin' },
-    ],
+    teams: [{ team: 'auth-wg', permission: 'admin' }],
   },
 ];
 

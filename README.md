@@ -21,6 +21,7 @@ Infrastructure as Code for managing access to MCP community resources using Pulu
 ### Manual Deployment
 
 Pre-requisites:
+
 - [Pulumi CLI installed](https://www.pulumi.com/docs/iac/download-install/)
 - [Google Cloud SDK installed](https://cloud.google.com/sdk/docs/install)
 - Access to GCP project and GCS bucket
@@ -79,6 +80,7 @@ gsutil mb gs://mcp-access-prod-pulumi-state
 ```
 
 Then:
+
 1. In Google Workspace Admin Console, go to **Account** → **Admin roles**
 2. Select **Groups Admin** role (or create a custom role with these privileges):
    - Read, create, update, and delete groups
@@ -104,5 +106,6 @@ pulumi config set --secret github:token "ghp_your_github_token_here"
 ### 3. Configure GitHub Actions Secrets
 
 Add the CI/CD secrets to GitHub Actions (repository settings → Secrets and variables → Actions):
+
 - `GCP_PROD_SERVICE_ACCOUNT_KEY`: Content of `sa-key.json`
 - `PULUMI_PROD_PASSPHRASE`: The passphrase you set above

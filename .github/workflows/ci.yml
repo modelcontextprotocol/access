@@ -34,3 +34,9 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      - name: Validate config
+        run: npm run validate
+
+      - name: Check formatting
+        run: npm run format:check

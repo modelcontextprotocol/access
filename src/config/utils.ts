@@ -10,10 +10,10 @@ export function defineGroups<
   const T extends readonly {
     name: Lowercase<string>;
     description: string;
-    memberOf?: readonly (T[number]['name'])[];
+    memberOf?: readonly T[number]['name'][];
     isEmailGroup?: boolean;
     onlyOnPlatforms?: readonly Platform[];
-  }[]
+  }[],
 >(groups: T) {
   for (const group of groups) {
     if (!isValidGroupName(group.name)) {
