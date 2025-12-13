@@ -21,8 +21,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
     teams: [
       { team: 'auth-wg', permission: 'push' },
-      { team: 'core', permission: 'maintain' },
-      { team: 'core-maintainers', permission: 'push' },
+      { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'push' },
       { team: 'docs-maintaners', permission: 'push' },
       { team: 'go-sdk', permission: 'push' },
@@ -54,8 +53,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
     teams: [
       { team: 'auth-wg', permission: 'triage' },
-      { team: 'core', permission: 'maintain' },
-      { team: 'core-maintainers', permission: 'push' },
+      { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'triage' },
       { team: 'docs-maintaners', permission: 'triage' },
       { team: 'go-sdk', permission: 'triage' },
@@ -91,8 +89,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     teams: [
       { team: 'inspector-maintainers', permission: 'push' },
       { team: 'auth-wg', permission: 'push' },
-      { team: 'core', permission: 'maintain' },
-      { team: 'core-maintainers', permission: 'push' },
+      { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'push' },
       { team: 'docs-maintaners', permission: 'push' },
       { team: 'go-sdk', permission: 'push' },
@@ -124,8 +121,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
     teams: [
       { team: 'auth-wg', permission: 'push' },
-      { team: 'core', permission: 'maintain' },
-      { team: 'core-maintainers', permission: 'push' },
+      { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'triage' },
       { team: 'docs-maintaners', permission: 'push' },
       { team: 'go-sdk', permission: 'triage' },
@@ -158,8 +154,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
     teams: [
       { team: 'auth-wg', permission: 'push' },
-      { team: 'core', permission: 'maintain' },
-      { team: 'core-maintainers', permission: 'push' },
+      { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'push' },
       { team: 'docs-maintaners', permission: 'push' },
       { team: 'go-sdk', permission: 'push' },
@@ -192,8 +187,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
     teams: [
       { team: 'auth-wg', permission: 'push' },
-      { team: 'core', permission: 'admin' },
-      { team: 'core-maintainers', permission: 'push' },
+      { team: 'core-maintainers', permission: 'admin' },
       { team: 'csharp-sdk', permission: 'push' },
       { team: 'docs-maintaners', permission: 'push' },
       { team: 'go-sdk', permission: 'push' },

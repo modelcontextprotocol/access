@@ -4,7 +4,8 @@
   "description": "Infrastructure as Code for MCP access management",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "validate": "npx ts-node scripts/validate-config.ts"
   },
   "license": "MIT",
   "dependencies": {
