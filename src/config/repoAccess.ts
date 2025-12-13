@@ -273,6 +273,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { username: 'jokemanfire', permission: 'push' },
       { username: '4t145', permission: 'push' },
       { username: 'bolinfest', permission: 'push' },
+      { username: 'alexhancock', permission: 'push' },
     ],
   },
   {
