@@ -51,7 +51,6 @@ jobs:
       - name: Deploy to Production
         env:
           PULUMI_PASSPHRASE: ${{ secrets.PULUMI_PROD_PASSPHRASE }}
-          GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
         run: |
           echo "$PULUMI_PASSPHRASE" > passphrase.prod.txt
           make up
