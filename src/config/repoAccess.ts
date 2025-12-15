@@ -87,10 +87,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'auth-wg', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'push' },
-      { team: 'docs-maintaners', permission: 'push' },
       { team: 'go-sdk', permission: 'push' },
-      { team: 'ig-financial-services', permission: 'push' },
-      { team: 'interest-groups', permission: 'push' },
       { team: 'java-sdk', permission: 'push' },
       { team: 'kotlin-sdk', permission: 'push' },
       { team: 'moderators', permission: 'push' },
@@ -107,7 +104,6 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'transport-wg', permission: 'push' },
       { team: 'typescript-sdk', permission: 'push' },
       { team: 'typescript-sdk-auth', permission: 'push' },
-      { team: 'working-groups', permission: 'push' },
     ],
   },
   {
@@ -142,10 +138,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'quickstart-resources',
-    users: [
-      { username: 'jspahrsummers', permission: 'admin' },
-      { username: 'a-akimov', permission: 'push' },
-    ],
+    users: [{ username: 'jspahrsummers', permission: 'admin' }],
     teams: [
       { team: 'auth-wg', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
@@ -185,8 +178,6 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'csharp-sdk', permission: 'push' },
       { team: 'docs-maintaners', permission: 'push' },
       { team: 'go-sdk', permission: 'push' },
-      { team: 'ig-financial-services', permission: 'push' },
-      { team: 'interest-groups', permission: 'push' },
       { team: 'java-sdk', permission: 'push' },
       { team: 'kotlin-sdk', permission: 'push' },
       { team: 'moderators', permission: 'push' },
@@ -203,7 +194,6 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'transport-wg', permission: 'push' },
       { team: 'typescript-sdk', permission: 'push' },
       { team: 'typescript-sdk-auth', permission: 'push' },
-      { team: 'working-groups', permission: 'push' },
     ],
   },
   {
