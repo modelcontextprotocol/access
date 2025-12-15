@@ -4,7 +4,10 @@
   "description": "Infrastructure as Code for MCP access management",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "validate": "npx ts-node scripts/validate-config.ts",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "license": "MIT",
   "dependencies": {
@@ -14,6 +17,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.18.6",
+    "prettier": "^3.7.2",
     "typescript": "^5.9.2"
   }
 }

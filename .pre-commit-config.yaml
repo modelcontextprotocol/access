@@ -15,3 +15,17 @@ repos:
         language: system
         pass_filenames: false
         files: \.(ts|tsx)$
+
+      - id: validate-config
+        name: Validate team references
+        entry: npm run validate
+        language: system
+        pass_filenames: false
+        files: ^src/config/
+
+      - id: prettier
+        name: Prettier formatting
+        entry: npx prettier --write --ignore-unknown
+        language: system
+        types: [text]
+        files: \.(ts|tsx|js|jsx|json|md)$
