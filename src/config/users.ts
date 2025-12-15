@@ -30,6 +30,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: ['kotlin-sdk'],
   },
   {
+    github: 'a-akimov',
+    memberOf: ['docs-maintaners'],
+  },
+  {
     github: 'aaronpk',
     memberOf: ['auth-wg'],
   },
