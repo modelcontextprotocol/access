@@ -173,7 +173,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jonathanhefner',
-    memberOf: ['docs-maintaners', 'moderators'],
+    memberOf: ['docs-maintaners', 'moderators', 'ruby-sdk'],
   },
   {
     github: 'jspahrsummers',
