@@ -112,6 +112,7 @@ export const MEMBERS: readonly Member[] = [
     discord: '166107790262272000', // Example Discord user ID - replace with real ID
     memberOf: [
       ROLE_IDS.AUTH_WG,
+      ROLE_IDS.LEAD_MAINTAINERS,
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.GO_SDK,
