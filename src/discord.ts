@@ -282,8 +282,8 @@ const discordMemberRoleSyncProvider: pulumi.dynamic.ResourceProvider = {
 
       // Check if roles are in sync (only considering managed roles)
       const outOfSync =
-        [...expectedRoles].some((r) => !currentRoles.has(r)) ||
-        [...currentRoles].some((r) => managedRoles.has(r) && !expectedRoles.has(r));
+        Array.from(expectedRoles).some((r) => !currentRoles.has(r)) ||
+        Array.from(currentRoles).some((r) => managedRoles.has(r) && !expectedRoles.has(r));
 
       if (outOfSync) {
         // Return current state but note it needs update
