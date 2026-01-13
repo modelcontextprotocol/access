@@ -36,7 +36,7 @@ jobs:
 
       - name: Install Pulumi packages
         env:
-          GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: pulumi install
 
       - name: Install dependencies
