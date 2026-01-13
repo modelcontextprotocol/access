@@ -264,7 +264,11 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'swift-sdk',
-    teams: [{ team: 'swift-sdk', permission: 'admin' }],
+    teams: [{ team: 'swift-sdk', permission: 'push' }],
+    users: [
+      { username: 'movetz', permission: 'admin' },
+      { username: 'stallent', permission: 'admin' },
+    ],
   },
   {
     repository: 'typescript-sdk',
