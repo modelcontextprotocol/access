@@ -62,4 +62,10 @@ export function sortRolesByGitHubDependency(
 
 // Re-export for convenience
 export { ROLE_IDS, type RoleId } from './roleIds';
-export { ROLES, type Role, type GitHubConfig, type DiscordConfig, type GoogleConfig } from './roles';
+export {
+  ROLES,
+  type Role,
+  type GitHubConfig,
+  type DiscordConfig,
+  type GoogleConfig,
+} from './roles';

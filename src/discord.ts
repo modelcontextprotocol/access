@@ -72,7 +72,9 @@ interface DiscordRoleOutputs extends DiscordRoleInputs {
 }
 
 const discordRoleProvider: pulumi.dynamic.ResourceProvider = {
-  async create(inputs: DiscordRoleInputs): Promise<pulumi.dynamic.CreateResult<DiscordRoleOutputs>> {
+  async create(
+    inputs: DiscordRoleInputs
+  ): Promise<pulumi.dynamic.CreateResult<DiscordRoleOutputs>> {
     const role = await discordFetch<DiscordRoleApiResponse>(
       inputs.token,
       `/guilds/${inputs.guildId}/roles`,
@@ -130,16 +132,12 @@ const discordRoleProvider: pulumi.dynamic.ResourceProvider = {
     _olds: DiscordRoleOutputs,
     news: DiscordRoleInputs
   ): Promise<pulumi.dynamic.UpdateResult<DiscordRoleOutputs>> {
-    await discordFetch<DiscordRoleApiResponse>(
-      news.token,
-      `/guilds/${news.guildId}/roles/${id}`,
-      {
-        method: 'PATCH',
-        body: JSON.stringify({
-          name: news.roleName,
-        }),
-      }
-    );
+    await discordFetch<DiscordRoleApiResponse>(news.token, `/guilds/${news.guildId}/roles/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({
+        name: news.roleName,
+      }),
+    });
 
     return {
       outs: {
@@ -385,7 +383,9 @@ if (DISCORD_ENABLED) {
   });
 
   // Collect all managed role IDs (roles that have Discord config)
-  const allManagedRoleIds = ROLES.filter((r) => r.discord).map((r) => roles[r.discord!.role].roleId);
+  const allManagedRoleIds = ROLES.filter((r) => r.discord).map(
+    (r) => roles[r.discord!.role].roleId
+  );
 
   // Sync roles for each member
   MEMBERS.forEach((member) => {
