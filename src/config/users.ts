@@ -64,6 +64,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'bhosmer-ant',
+    discord: '1272295077074567242',
     memberOf: [
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
@@ -108,7 +109,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'dsp-ant',
     email: 'david@modelcontextprotocol.io',
-    discord: '123456789012345678', // Example Discord user ID - replace with real ID
+    discord: '166107790262272000', // Example Discord user ID - replace with real ID
     memberOf: [
       ROLE_IDS.AUTH_WG,
       ROLE_IDS.CORE_MAINTAINERS,
@@ -365,6 +366,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'caitiem20',
+    discord: '1425586366288494722',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
 ] as const;

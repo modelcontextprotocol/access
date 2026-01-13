@@ -4,8 +4,14 @@ import { MEMBERS } from './config/users';
 import type { RoleId } from './config/roleIds';
 
 const config = new pulumi.Config('discord');
-const DISCORD_BOT_TOKEN = config.requireSecret('botToken');
-const DISCORD_GUILD_ID = config.require('guildId');
+// Discord integration is optional - only enabled if botToken and guildId are configured
+const DISCORD_BOT_TOKEN = config.getSecret('botToken');
+const DISCORD_GUILD_ID = config.get('guildId');
+const DISCORD_ENABLED = DISCORD_BOT_TOKEN !== undefined && DISCORD_GUILD_ID !== undefined;
+
+if (!DISCORD_ENABLED) {
+  pulumi.log.info('Discord integration disabled: botToken or guildId not configured');
+}
 
 const DISCORD_API_BASE = 'https://discord.com/api/v10';
 
@@ -181,76 +187,179 @@ class DiscordRole extends pulumi.dynamic.Resource {
   }
 }
 
-// Discord Role Membership Dynamic Provider
-interface DiscordRoleMembershipInputs {
+// Discord Member Role Sync Dynamic Provider
+// This provider reconciles a user's roles to match exactly what's defined in config
+// It adds missing roles AND removes extra roles (only for roles we manage)
+interface DiscordMemberRoleSyncInputs {
   guildId: string;
   userId: string;
-  roleId: string;
+  /** Role IDs that this user SHOULD have (managed roles only) */
+  expectedRoleIds: string[];
+  /** All role IDs that we manage (to know which ones to potentially remove) */
+  managedRoleIds: string[];
   token: string;
 }
 
-const discordRoleMembershipProvider: pulumi.dynamic.ResourceProvider = {
+interface DiscordMemberRoleSyncOutputs extends DiscordMemberRoleSyncInputs {
+  /** Roles that were added during last sync */
+  addedRoles: string[];
+  /** Roles that were removed during last sync */
+  removedRoles: string[];
+}
+
+async function syncMemberRoles(
+  inputs: DiscordMemberRoleSyncInputs
+): Promise<{ addedRoles: string[]; removedRoles: string[] }> {
+  // Get the user's current roles
+  const member = await discordFetch<DiscordGuildMemberApiResponse>(
+    inputs.token,
+    `/guilds/${inputs.guildId}/members/${inputs.userId}`
+  );
+
+  const currentRoles = new Set(member.roles);
+  const expectedRoles = new Set(inputs.expectedRoleIds);
+  const managedRoles = new Set(inputs.managedRoleIds);
+
+  const addedRoles: string[] = [];
+  const removedRoles: string[] = [];
+
+  // Add missing roles
+  for (const roleId of Array.from(expectedRoles)) {
+    if (!currentRoles.has(roleId)) {
+      await discordFetch<void>(
+        inputs.token,
+        `/guilds/${inputs.guildId}/members/${inputs.userId}/roles/${roleId}`,
+        { method: 'PUT' }
+      );
+      addedRoles.push(roleId);
+    }
+  }
+
+  // Remove roles that the user has but shouldn't (only managed roles)
+  for (const roleId of Array.from(currentRoles)) {
+    if (managedRoles.has(roleId) && !expectedRoles.has(roleId)) {
+      await discordFetch<void>(
+        inputs.token,
+        `/guilds/${inputs.guildId}/members/${inputs.userId}/roles/${roleId}`,
+        { method: 'DELETE' }
+      );
+      removedRoles.push(roleId);
+    }
+  }
+
+  return { addedRoles, removedRoles };
+}
+
+const discordMemberRoleSyncProvider: pulumi.dynamic.ResourceProvider = {
   async create(
-    inputs: DiscordRoleMembershipInputs
-  ): Promise<pulumi.dynamic.CreateResult<DiscordRoleMembershipInputs>> {
-    await discordFetch<void>(
-      inputs.token,
-      `/guilds/${inputs.guildId}/members/${inputs.userId}/roles/${inputs.roleId}`,
-      { method: 'PUT' }
-    );
+    inputs: DiscordMemberRoleSyncInputs
+  ): Promise<pulumi.dynamic.CreateResult<DiscordMemberRoleSyncOutputs>> {
+    const { addedRoles, removedRoles } = await syncMemberRoles(inputs);
 
     return {
-      id: `${inputs.userId}-${inputs.roleId}`,
-      outs: inputs,
+      id: inputs.userId,
+      outs: {
+        ...inputs,
+        addedRoles,
+        removedRoles,
+      },
     };
   },
 
   async read(
     id: string,
-    props: DiscordRoleMembershipInputs
-  ): Promise<pulumi.dynamic.ReadResult<DiscordRoleMembershipInputs>> {
+    props: DiscordMemberRoleSyncOutputs
+  ): Promise<pulumi.dynamic.ReadResult<DiscordMemberRoleSyncOutputs>> {
     try {
       const member = await discordFetch<DiscordGuildMemberApiResponse>(
         props.token,
         `/guilds/${props.guildId}/members/${props.userId}`
       );
 
-      if (!member.roles.includes(props.roleId)) {
-        throw new Error(`User ${props.userId} does not have role ${props.roleId}`);
+      const currentRoles = new Set(member.roles);
+      const expectedRoles = new Set(props.expectedRoleIds);
+      const managedRoles = new Set(props.managedRoleIds);
+
+      // Check if roles are in sync (only considering managed roles)
+      const outOfSync =
+        [...expectedRoles].some((r) => !currentRoles.has(r)) ||
+        [...currentRoles].some((r) => managedRoles.has(r) && !expectedRoles.has(r));
+
+      if (outOfSync) {
+        // Return current state but note it needs update
+        return {
+          id,
+          props: {
+            ...props,
+            addedRoles: [],
+            removedRoles: [],
+          },
+        };
       }
 
       return { id, props };
     } catch {
-      throw new Error(`Failed to read membership ${id}`);
+      throw new Error(`Failed to read member roles for ${id}`);
     }
   },
 
-  async delete(id: string, props: DiscordRoleMembershipInputs): Promise<void> {
-    try {
-      await discordFetch<void>(
-        props.token,
-        `/guilds/${props.guildId}/members/${props.userId}/roles/${props.roleId}`,
-        { method: 'DELETE' }
-      );
-    } catch (error) {
-      // Ignore errors if membership is already removed
-      console.warn(`Failed to remove role membership ${id}: ${error}`);
+  async update(
+    id: string,
+    _olds: DiscordMemberRoleSyncOutputs,
+    news: DiscordMemberRoleSyncInputs
+  ): Promise<pulumi.dynamic.UpdateResult<DiscordMemberRoleSyncOutputs>> {
+    const { addedRoles, removedRoles } = await syncMemberRoles(news);
+
+    return {
+      outs: {
+        ...news,
+        addedRoles,
+        removedRoles,
+      },
+    };
+  },
+
+  async delete(id: string, props: DiscordMemberRoleSyncOutputs): Promise<void> {
+    // When a user is removed from config, remove all their managed roles
+    for (const roleId of props.expectedRoleIds) {
+      try {
+        await discordFetch<void>(
+          props.token,
+          `/guilds/${props.guildId}/members/${props.userId}/roles/${roleId}`,
+          { method: 'DELETE' }
+        );
+      } catch (error) {
+        console.warn(`Failed to remove role ${roleId} from user ${id}: ${error}`);
+      }
     }
   },
 };
 
-class DiscordRoleMembership extends pulumi.dynamic.Resource {
+class DiscordMemberRoleSync extends pulumi.dynamic.Resource {
+  public readonly addedRoles!: pulumi.Output<string[]>;
+  public readonly removedRoles!: pulumi.Output<string[]>;
+
   constructor(
     name: string,
     args: {
       guildId: pulumi.Input<string>;
       userId: pulumi.Input<string>;
-      roleId: pulumi.Input<string>;
+      expectedRoleIds: pulumi.Input<pulumi.Input<string>[]>;
+      managedRoleIds: pulumi.Input<pulumi.Input<string>[]>;
       token: pulumi.Input<string>;
     },
     opts?: pulumi.CustomResourceOptions
   ) {
-    super(discordRoleMembershipProvider, name, args, opts);
+    super(
+      discordMemberRoleSyncProvider,
+      name,
+      {
+        addedRoles: undefined,
+        removedRoles: undefined,
+        ...args,
+      },
+      opts
+    );
   }
 }
 
@@ -258,37 +367,52 @@ const roleLookup = buildRoleLookup();
 // Discord roles keyed by Discord role name
 const roles: Record<string, DiscordRole> = {};
 
-// Create Discord roles for roles that have Discord config
-ROLES.forEach((role: Role) => {
-  if (!role.discord) return;
+// Only create Discord resources if Discord is enabled
+if (DISCORD_ENABLED) {
+  // These are guaranteed to be defined when DISCORD_ENABLED is true
+  const guildId = DISCORD_GUILD_ID!;
+  const botToken = DISCORD_BOT_TOKEN!;
 
-  roles[role.discord.role] = new DiscordRole(`discord-role-${role.id}`, {
-    guildId: DISCORD_GUILD_ID,
-    roleName: role.discord.role,
-    token: DISCORD_BOT_TOKEN,
+  // Create Discord roles for roles that have Discord config
+  ROLES.forEach((role: Role) => {
+    if (!role.discord) return;
+
+    roles[role.discord.role] = new DiscordRole(`discord-role-${role.id}`, {
+      guildId,
+      roleName: role.discord.role,
+      token: botToken,
+    });
   });
-});
 
-// Assign roles to members
-MEMBERS.forEach((member) => {
-  if (!member.discord) return;
+  // Collect all managed role IDs (roles that have Discord config)
+  const allManagedRoleIds = ROLES.filter((r) => r.discord).map((r) => roles[r.discord!.role].roleId);
 
-  member.memberOf.forEach((roleId: RoleId) => {
-    const role = roleLookup.get(roleId);
-    if (!role?.discord) return; // Role doesn't have Discord config
+  // Sync roles for each member
+  MEMBERS.forEach((member) => {
+    if (!member.discord) return;
 
-    const discordRole = roles[role.discord.role];
-    new DiscordRoleMembership(
-      `discord-membership-${member.discord}-${role.id}`,
+    // Get the Discord role IDs this member should have
+    const expectedRoleIds = member.memberOf
+      .map((roleId: RoleId) => {
+        const role = roleLookup.get(roleId);
+        if (!role?.discord) return null;
+        return roles[role.discord.role].roleId;
+      })
+      .filter((id): id is pulumi.Output<string> => id !== null);
+
+    // Create a sync resource for this member
+    new DiscordMemberRoleSync(
+      `discord-member-sync-${member.discord}`,
       {
-        guildId: DISCORD_GUILD_ID,
+        guildId,
         userId: member.discord!,
-        roleId: discordRole.roleId,
-        token: DISCORD_BOT_TOKEN,
+        expectedRoleIds,
+        managedRoleIds: allManagedRoleIds,
+        token: botToken,
       },
-      { dependsOn: [discordRole] }
+      { dependsOn: Object.values(roles) }
     );
   });
-});
+}
 
 export { roles as discordRoles };
