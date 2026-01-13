@@ -229,6 +229,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: ['rust-sdk'],
   },
   {
+    github: 'movetz',
+    memberOf: ['swift-sdk'],
+  },
+  {
     github: 'mikekistler',
     memberOf: ['csharp-sdk'],
   },
@@ -299,6 +303,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'stephentoub',
     memberOf: ['csharp-sdk'],
+  },
+  {
+    github: 'stallent',
+    memberOf: ['swift-sdk'],
   },
   {
     github: 'tadasant',
