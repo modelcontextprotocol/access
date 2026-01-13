@@ -114,7 +114,7 @@ export const ROLES: readonly Role[] = [
   },
   {
     id: ROLE_IDS.REGISTRY_MAINTAINERS,
-    description: 'Registry builders and maintainers',
+    description: 'Official registry builders and maintainers',
     github: { team: 'registry-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'registry maintainers' },
     google: { group: 'registry-wg' },
@@ -143,7 +143,7 @@ export const ROLES: readonly Role[] = [
   },
   {
     id: ROLE_IDS.GO_SDK,
-    description: 'Official Go SDK maintainers',
+    description: 'The Go SDK Team',
     github: { team: 'go-sdk', parent: ROLE_IDS.SDK_MAINTAINERS },
     discord: { role: 'go sdk maintainers' },
   },
@@ -197,13 +197,13 @@ export const ROLES: readonly Role[] = [
   },
   {
     id: ROLE_IDS.TYPESCRIPT_SDK,
-    description: 'Official TypeScript SDK maintainers',
+    description: 'Official TypeScript SDK',
     github: { team: 'typescript-sdk', parent: ROLE_IDS.SDK_MAINTAINERS },
     discord: { role: 'typescript sdk maintainers' },
   },
   {
     id: ROLE_IDS.TYPESCRIPT_SDK_AUTH,
-    description: 'TypeScript SDK auth code owners',
+    description: 'Code owners for auth in Typescript SDK',
     github: { team: 'typescript-sdk-auth', parent: ROLE_IDS.TYPESCRIPT_SDK },
     // GitHub only - for CODEOWNERS
   },
