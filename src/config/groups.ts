@@ -151,6 +151,12 @@ export const GROUPS = defineGroups([
     onlyOnPlatforms: ['github'],
   },
   {
+    name: 'security-advisories',
+    description: 'Security advisory managers (can add collaborators to advisories)',
+    memberOf: ['security-wg'],
+    onlyOnPlatforms: ['github'],
+  },
+  {
     name: 'transport-wg',
     description: 'Transport Working Group',
     memberOf: ['working-groups'],
