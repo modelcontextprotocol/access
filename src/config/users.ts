@@ -194,7 +194,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'kurtisvg',
-    memberOf: ['transport-wg'],
+    memberOf: ['core-maintainers', 'transport-wg'],
   },
   {
     github: 'localden',
@@ -337,5 +337,9 @@ export const MEMBERS: readonly Member[] = [
   {
     email: 'davideramian@anthropic.com',
     memberOf: ['antitrust'],
+  },
+  {
+    github: 'caitiem20',
+    memberOf: ['core-maintainers'],
   },
 ] as const;
