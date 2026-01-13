@@ -1,22 +1,24 @@
 import * as gworkspace from '@pulumi/googleworkspace';
-import { GROUPS } from './config/groups';
-import type { Group } from './config/utils';
+import { ROLES, type Role, buildRoleLookup } from './config/roles';
 import { MEMBERS } from './config/users';
+import type { RoleId } from './config/roleIds';
 
+const roleLookup = buildRoleLookup();
+// Groups keyed by Google group name
 const groups: Record<string, gworkspace.Group> = {};
 
-GROUPS.forEach((group: Group) => {
-  // Skip groups that don't include google in their platforms
-  if (group.onlyOnPlatforms && !group.onlyOnPlatforms.includes('google')) return;
+// Create Google groups for roles that have Google config
+ROLES.forEach((role: Role) => {
+  if (!role.google) return;
 
-  groups[group.name] = new gworkspace.Group(group.name, {
-    email: `${group.name}@modelcontextprotocol.io`,
-    name: group.name,
-    description: group.description + ' \n(Managed by github.com/modelcontextprotocol/access)',
+  groups[role.google.group] = new gworkspace.Group(role.google.group, {
+    email: `${role.google.group}@modelcontextprotocol.io`,
+    name: role.google.group,
+    description: role.description + ' \n(Managed by github.com/modelcontextprotocol/access)',
   });
 
-  new gworkspace.GroupSettings(group.name, {
-    email: groups[group.name].email,
+  new gworkspace.GroupSettings(role.google.group, {
+    email: groups[role.google.group].email,
 
     // Maximise visibility of group. It's visible in GitHub anyway
     whoCanViewMembership: 'ALL_IN_DOMAIN_CAN_VIEW',
@@ -29,7 +31,7 @@ GROUPS.forEach((group: Group) => {
     // Email groups allow anyone (including externals) to post
     // Non-email groups are not intended as mailing lists, so use the most restrictive settings
     // whoCanViewGroup is badly named, but actually means 'Permissions to view group messages'. See https://developers.google.com/workspace/admin/groups-settings/v1/reference/groups
-    ...(group.isEmailGroup
+    ...(role.google.isEmailGroup
       ? {
           whoCanPostMessage: 'ANYONE_CAN_POST',
           whoCanContactOwner: 'ALL_OWNERS_CAN_CONTACT',
@@ -41,30 +43,22 @@ GROUPS.forEach((group: Group) => {
           whoCanViewGroup: 'ALL_OWNERS_CAN_VIEW',
         }),
   });
-
-  group.memberOf?.forEach((parentGroupKey) => {
-    // Skip if parent group doesn't exist on Google (e.g., onlyOnPlatforms: ['github'])
-    if (!groups[parentGroupKey]) return;
-
-    new gworkspace.GroupMember(`${group.name}-in-${parentGroupKey}`, {
-      groupId: groups[parentGroupKey].id,
-      email: groups[group.name].email,
-      role: 'MEMBER',
-    });
-  });
 });
 
+// Create group memberships for users
 MEMBERS.forEach((member) => {
   if (!member.email) return;
 
-  member.memberOf.forEach((teamKey) => {
-    // Skip if group doesn't exist on Google (e.g., onlyOnPlatforms: ['github'])
-    if (!groups[teamKey]) return;
+  member.memberOf.forEach((roleId: RoleId) => {
+    const role = roleLookup.get(roleId);
+    if (!role?.google) return; // Role doesn't have Google config
 
-    new gworkspace.GroupMember(`${member.email}-${teamKey}`, {
-      groupId: groups[teamKey].id,
+    new gworkspace.GroupMember(`${member.email}-${role.google.group}`, {
+      groupId: groups[role.google.group].id,
       email: member.email!,
       role: 'MEMBER',
     });
   });
 });
+
+export { groups as googleGroups };

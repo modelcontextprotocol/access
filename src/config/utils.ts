@@ -1,43 +1,21 @@
-import type { GROUPS } from './groups';
+import type { RoleId } from './roleIds';
 
-function isValidGroupName(name: string): boolean {
-  return /^[a-z][a-z0-9-]*[a-z]$/.test(name);
-}
-
-export type Platform = 'github' | 'google';
-
-export function defineGroups<
-  const T extends readonly {
-    name: Lowercase<string>;
-    description: string;
-    memberOf?: readonly T[number]['name'][];
-    isEmailGroup?: boolean;
-    onlyOnPlatforms?: readonly Platform[];
-  }[],
->(groups: T) {
-  for (const group of groups) {
-    if (!isValidGroupName(group.name)) {
-      throw new Error(
-        `Invalid group name: ${group.name}. Must be lowercase alphanumeric with dashes, starting with a letter.`
-      );
-    }
-  }
-
-  return groups;
-}
-
-export type GroupKey = (typeof GROUPS)[number]['name'];
-
-export interface Group {
-  name: GroupKey;
-  description: string;
-  memberOf?: readonly GroupKey[];
-  isEmailGroup?: boolean;
-  onlyOnPlatforms?: readonly Platform[];
-}
-
+/**
+ * A member of the MCP organization.
+ * Members are assigned to roles via memberOf, and the role definitions
+ * determine which platforms (GitHub, Discord, Google) they get access to.
+ */
 export interface Member {
+  /** GitHub username */
   github?: string;
+  /** Email address (for Google Workspace) */
   email?: string;
-  memberOf: readonly GroupKey[];
+  /** Discord user ID (snowflake) */
+  discord?: string;
+  /** Roles this member belongs to */
+  memberOf: readonly RoleId[];
 }
+
+// Re-export for convenience
+export { ROLE_IDS, type RoleId } from './roleIds';
+export { ROLES, type Role, type GitHubConfig, type DiscordConfig, type GoogleConfig } from './roles';

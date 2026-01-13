@@ -1,0 +1,143 @@
+name: Preview
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  PULUMI_VERSION: "3.197.0"
+
+jobs:
+  preview:
+    name: Preview Changes
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Setup Pulumi
+        uses: pulumi/actions@v6
+        with:
+          pulumi-version: ${{ env.PULUMI_VERSION }}
+
+      - name: Install Pulumi packages
+        run: pulumi install
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run validation
+        run: npm run check
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_PROD_SERVICE_ACCOUNT_KEY }}
+
+      - name: Preview changes
+        id: preview
+        env:
+          PULUMI_PASSPHRASE: ${{ secrets.PULUMI_PROD_PASSPHRASE }}
+          GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+        run: |
+          echo "$PULUMI_PASSPHRASE" > passphrase.prod.txt
+          pulumi login gs://mcp-access-prod-pulumi-state
+
+          # Build config flags for Discord if secrets are available
+          CONFIG_FLAGS=""
+          if [ -n "$DISCORD_GUILD_ID" ]; then
+            CONFIG_FLAGS="$CONFIG_FLAGS --config discord:guildId=$DISCORD_GUILD_ID"
+          fi
+          if [ -n "$DISCORD_BOT_TOKEN" ]; then
+            CONFIG_FLAGS="$CONFIG_FLAGS --config discord:botToken=$DISCORD_BOT_TOKEN"
+          fi
+
+          # Run preview and capture output
+          set +e
+          PREVIEW_OUTPUT=$(PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi preview --stack prod --diff $CONFIG_FLAGS 2>&1)
+          PREVIEW_EXIT_CODE=$?
+          set -e
+
+          # Save output for comment
+          echo "exit_code=$PREVIEW_EXIT_CODE" >> $GITHUB_OUTPUT
+
+          # Write preview to file (handles multiline)
+          echo "$PREVIEW_OUTPUT" > preview_output.txt
+
+          # Also print to logs
+          echo "$PREVIEW_OUTPUT"
+
+          # Exit with preview exit code
+          exit $PREVIEW_EXIT_CODE
+
+      - name: Comment on PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let output = '';
+            try {
+              output = fs.readFileSync('preview_output.txt', 'utf8');
+            } catch (e) {
+              output = 'Failed to read preview output';
+            }
+
+            // Truncate if too long for GitHub comment
+            const maxLength = 60000;
+            if (output.length > maxLength) {
+              output = output.substring(0, maxLength) + '\n\n... (truncated)';
+            }
+
+            const body = `## Pulumi Preview
+
+            <details>
+            <summary>Click to expand preview output</summary>
+
+            \`\`\`
+            ${output}
+            \`\`\`
+
+            </details>
+            `;
+
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const botComment = comments.find(c =>
+              c.user.type === 'Bot' && c.body.includes('## Pulumi Preview')
+            );
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: body
+              });
+            }

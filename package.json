@@ -6,6 +6,8 @@
   "scripts": {
     "build": "tsc",
     "validate": "npx ts-node scripts/validate-config.ts",
+    "test": "npx ts-node scripts/test-config.ts",
+    "check": "npm run validate && npm run test",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

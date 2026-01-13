@@ -1,27 +1,27 @@
 #!/usr/bin/env npx ts-node
 
 /**
- * Validates that all team references in repoAccess.ts exist in groups.ts
+ * Validates that all references in the config are valid.
  * Run with: npx ts-node scripts/validate-config.ts
  */
 
-import { GROUPS } from '../src/config/groups';
+import { ROLES, buildRoleLookup } from '../src/config/roles';
 import { REPOSITORY_ACCESS } from '../src/config/repoAccess';
 import { MEMBERS } from '../src/config/users';
-import type { Group, Member } from '../src/config/utils';
+import type { RoleId } from '../src/config/roleIds';
 
-// Get all GitHub team names (groups not limited to google-only platforms)
+const roleLookup = buildRoleLookup();
+
+// Get all GitHub team names (roles that have GitHub config)
 const githubTeamNames = new Set<string>();
-// Get all group names (for member validation - members can be in any group)
-const allGroupNames = new Set<string>();
+// Get all role IDs (for member validation)
+const allRoleIds = new Set<RoleId>();
 
-for (const g of GROUPS) {
-  const group = g as Group;
-  allGroupNames.add(group.name);
+for (const role of ROLES) {
+  allRoleIds.add(role.id);
 
-  const platforms = group.onlyOnPlatforms;
-  if (!platforms || platforms.includes('github')) {
-    githubTeamNames.add(group.name);
+  if (role.github) {
+    githubTeamNames.add(role.github.team);
   }
 }
 
@@ -35,41 +35,42 @@ for (const repo of REPOSITORY_ACCESS) {
   for (const teamRef of repo.teams) {
     if (!githubTeamNames.has(teamRef.team)) {
       console.error(
-        `ERROR: Repository "${repo.repository}" references team "${teamRef.team}" which does not exist in groups.ts`
+        `ERROR: Repository "${repo.repository}" references team "${teamRef.team}" which does not exist in roles.ts`
       );
       hasErrors = true;
     }
   }
 }
 
-// Validate team references in MEMBERS (memberOf)
-// Members can be in any group (GitHub or Google-only)
-console.log('Validating team references in users.ts...');
-for (const m of MEMBERS) {
-  const member = m as Member;
-  for (const teamKey of member.memberOf) {
-    if (!allGroupNames.has(teamKey)) {
+// Validate role references in MEMBERS (memberOf)
+console.log('Validating role references in users.ts...');
+for (const member of MEMBERS) {
+  for (const roleId of member.memberOf) {
+    if (!allRoleIds.has(roleId)) {
       console.error(
-        `ERROR: Member "${member.github || member.email}" references team "${teamKey}" which does not exist in groups.ts`
+        `ERROR: Member "${member.github || member.email}" references role "${roleId}" which does not exist in roles.ts`
       );
       hasErrors = true;
     }
   }
 }
 
-// Validate parent team references (memberOf in groups)
-console.log('Validating parent team references in groups.ts...');
-for (const g of GROUPS) {
-  const group = g as Group;
-  if (!group.memberOf) continue;
+// Validate parent role references in roles.ts
+console.log('Validating parent role references in roles.ts...');
+for (const role of ROLES) {
+  if (!role.github?.parent) continue;
 
-  for (const parentTeam of group.memberOf) {
-    if (!allGroupNames.has(parentTeam)) {
-      console.error(
-        `ERROR: Group "${group.name}" has parent "${parentTeam}" which does not exist in groups.ts`
-      );
-      hasErrors = true;
-    }
+  const parentRole = roleLookup.get(role.github.parent);
+  if (!parentRole) {
+    console.error(
+      `ERROR: Role "${role.id}" has parent "${role.github.parent}" which does not exist in roles.ts`
+    );
+    hasErrors = true;
+  } else if (!parentRole.github) {
+    console.error(
+      `ERROR: Role "${role.id}" has parent "${role.github.parent}" which does not have GitHub config`
+    );
+    hasErrors = true;
   }
 }
 
@@ -77,6 +78,6 @@ if (hasErrors) {
   console.error('\nValidation failed! Please fix the errors above.');
   process.exit(1);
 } else {
-  console.log('\nAll team references are valid.');
+  console.log('\nAll references are valid.');
   process.exit(0);
 }

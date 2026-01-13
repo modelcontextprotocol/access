@@ -52,6 +52,10 @@ jobs:
         env:
           PULUMI_PASSPHRASE: ${{ secrets.PULUMI_PROD_PASSPHRASE }}
           GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
         run: |
           echo "$PULUMI_PASSPHRASE" > passphrase.prod.txt
+          pulumi config set discord:guildId "$DISCORD_GUILD_ID" --stack prod
+          pulumi config set discord:botToken "$DISCORD_BOT_TOKEN" --secret --stack prod
           make up
