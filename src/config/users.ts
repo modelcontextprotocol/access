@@ -149,7 +149,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'ihrpr',
-    memberOf: ['core-maintainers', 'docs-maintaners', 'python-sdk', 'typescript-sdk'],
+    memberOf: ['docs-maintaners', 'python-sdk', 'typescript-sdk'],
   },
   {
     github: 'jamadeo',
