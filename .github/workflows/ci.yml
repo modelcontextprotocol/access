@@ -26,7 +26,17 @@ jobs:
         with:
           pulumi-version: '3.197.0'
 
+      - name: Cache Pulumi plugins
+        uses: actions/cache@v4
+        with:
+          path: ~/.pulumi/plugins
+          key: pulumi-plugins-${{ hashFiles('Pulumi.yaml') }}
+          restore-keys: |
+            pulumi-plugins-
+
       - name: Install Pulumi packages
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: pulumi install
 
       - name: Install dependencies

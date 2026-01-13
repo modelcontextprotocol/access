@@ -1,85 +1,93 @@
 import type { Member } from './utils';
+import { ROLE_IDS } from './roleIds';
 
 export const MEMBERS: readonly Member[] = [
   {
     github: '000-000-000-000-000',
-    memberOf: ['core-maintainers'],
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
     github: 'CodeWithKyrian',
-    memberOf: ['php-sdk'],
+    memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'D-McAdams',
-    memberOf: ['auth-wg'],
+    memberOf: [ROLE_IDS.AUTH_WG],
   },
   {
     github: 'Kehrlann',
-    memberOf: ['java-sdk'],
+    memberOf: [ROLE_IDS.JAVA_SDK],
   },
   {
     github: 'Kludex',
-    memberOf: ['python-sdk'],
+    memberOf: [ROLE_IDS.PYTHON_SDK],
   },
   {
     github: 'Nyholm',
-    memberOf: ['php-sdk'],
+    memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'Ololoshechkin',
-    memberOf: ['kotlin-sdk'],
+    memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'a-akimov',
-    memberOf: ['docs-maintaners'],
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS],
   },
   {
     github: 'aaronpk',
-    memberOf: ['auth-wg'],
+    memberOf: [ROLE_IDS.AUTH_WG],
   },
   {
     github: 'alexhancock',
-    memberOf: ['rust-sdk'],
+    memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'an-dustin',
-    memberOf: ['security-wg'],
+    memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
     github: 'ansaba',
-    memberOf: ['go-sdk'],
+    memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'asklar',
-    memberOf: ['mcpb-maintainers'],
+    memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'atesgoral',
-    memberOf: ['ruby-sdk'],
+    memberOf: [ROLE_IDS.RUBY_SDK],
   },
   {
     github: 'baxen',
-    memberOf: ['rust-sdk'],
+    memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'bhosmer-ant',
-    memberOf: ['core-maintainers', 'docs-maintaners', 'moderators', 'python-sdk', 'typescript-sdk'],
+    discord: '1272295077074567242',
+    memberOf: [
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.MODERATORS,
+      ROLE_IDS.PYTHON_SDK,
+      ROLE_IDS.TYPESCRIPT_SDK,
+    ],
   },
   {
     github: 'carlpeaslee',
-    memberOf: ['swift-sdk'],
+    memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
     github: 'chemicL',
-    memberOf: ['java-sdk'],
+    memberOf: [ROLE_IDS.JAVA_SDK],
   },
   {
     github: 'chr-hertel',
-    memberOf: ['php-sdk'],
+    memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'cliffhall',
-    memberOf: ['docs-maintaners', 'inspector-maintainers', 'moderators'],
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.MODERATORS],
   },
   {
     github: 'crondinini-ant',
@@ -87,271 +95,278 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'dend',
-    memberOf: ['csharp-sdk'],
+    memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
     github: 'devcrocod',
-    memberOf: ['kotlin-sdk'],
+    memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'domdomegg',
     email: 'adam@modelcontextprotocol.io',
-    memberOf: ['mcpb-maintainers', 'registry-wg'],
+    memberOf: [ROLE_IDS.MCPB_MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
     github: 'dsp-ant',
     email: 'david@modelcontextprotocol.io',
+    discord: '166107790262272000', // Example Discord user ID - replace with real ID
     memberOf: [
-      'auth-wg',
-      'core-maintainers',
-      'docs-maintaners',
-      'go-sdk',
-      'ig-financial-services',
-      'moderators',
-      'php-sdk',
-      'python-sdk',
-      'security-wg',
-      'transport-wg',
-      'typescript-sdk',
+      ROLE_IDS.AUTH_WG,
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.GO_SDK,
+      ROLE_IDS.FINANCIAL_SERVICES_IG,
+      ROLE_IDS.MODERATORS,
+      ROLE_IDS.PHP_SDK,
+      ROLE_IDS.PYTHON_SDK,
+      ROLE_IDS.SECURITY_WG,
+      ROLE_IDS.TRANSPORT_WG,
+      ROLE_IDS.TYPESCRIPT_SDK,
     ],
   },
   {
     github: 'e5l',
-    memberOf: ['kotlin-sdk'],
+    memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'eiriktsarpalis',
-    memberOf: ['csharp-sdk'],
+    memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
     github: 'evalstate',
-    memberOf: ['docs-maintaners', 'moderators'],
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MODERATORS],
   },
   {
     github: 'fabpot',
-    memberOf: ['php-sdk'],
+    memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'felixrieseberg',
-    memberOf: ['mcpb-maintainers'],
+    memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'felixweinberger',
-    memberOf: ['python-sdk', 'security-wg', 'typescript-sdk'],
+    memberOf: [ROLE_IDS.PYTHON_SDK, ROLE_IDS.SECURITY_WG, ROLE_IDS.TYPESCRIPT_SDK],
   },
   {
     github: 'findleyr',
-    memberOf: ['go-sdk'],
+    memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'halter73',
-    memberOf: ['csharp-sdk'],
+    memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
     github: 'ignatov',
-    memberOf: ['kotlin-sdk'],
+    memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'ihrpr',
-    memberOf: ['docs-maintaners', 'python-sdk', 'typescript-sdk'],
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.PYTHON_SDK, ROLE_IDS.TYPESCRIPT_SDK],
   },
   {
     github: 'jamadeo',
-    memberOf: ['rust-sdk'],
+    memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'jba',
-    memberOf: ['go-sdk'],
+    memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'jenn-newton',
-    memberOf: ['security-wg'],
+    memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
     github: 'jerome3o-anthropic',
-    memberOf: ['moderators'],
+    memberOf: [ROLE_IDS.MODERATORS],
   },
   {
     github: 'joan-anthropic',
-    memberOf: ['mcpb-maintainers'],
+    memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'jonathanhefner',
-    memberOf: ['docs-maintaners', 'moderators', 'ruby-sdk'],
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MODERATORS, ROLE_IDS.RUBY_SDK],
   },
   {
     github: 'jspahrsummers',
     email: 'justin@modelcontextprotocol.io',
-    memberOf: ['core-maintainers'],
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
     github: 'KKonstantinov',
-    memberOf: ['inspector-maintainers', 'typescript-sdk'],
+    memberOf: [ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.TYPESCRIPT_SDK],
   },
   {
     github: 'koic',
-    memberOf: ['ruby-sdk'],
+    memberOf: [ROLE_IDS.RUBY_SDK],
   },
   {
     github: 'kpavlov',
-    memberOf: ['kotlin-sdk'],
+    memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'kurtisvg',
-    memberOf: ['core-maintainers', 'transport-wg'],
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
     github: 'localden',
-    memberOf: ['auth-wg', 'core-maintainers'],
+    memberOf: [ROLE_IDS.AUTH_WG, ROLE_IDS.CORE_MAINTAINERS],
   },
   {
     github: 'maheshmurag',
-    memberOf: ['moderators'],
+    memberOf: [ROLE_IDS.MODERATORS],
   },
   {
     github: 'markpollack',
-    memberOf: ['java-sdk'],
+    memberOf: [ROLE_IDS.JAVA_SDK],
   },
   {
     github: 'marshallofsound',
-    memberOf: ['mcpb-maintainers'],
+    memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'mattt',
-    memberOf: ['swift-sdk'],
+    memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
     github: 'maxisbey',
-    memberOf: ['python-sdk'],
+    memberOf: [ROLE_IDS.PYTHON_SDK],
   },
   {
     github: 'mattzcarey',
-    memberOf: ['typescript-sdk'],
+    memberOf: [ROLE_IDS.TYPESCRIPT_SDK],
   },
   {
     github: 'michaelneale',
-    memberOf: ['rust-sdk'],
+    memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'movetz',
-    memberOf: ['swift-sdk'],
+    memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
     github: 'mikekistler',
-    memberOf: ['csharp-sdk'],
+    memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
     github: 'nickcoai',
-    memberOf: ['core-maintainers'],
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
     github: 'nicolas-grekas',
-    memberOf: ['php-sdk'],
+    memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'ochafik',
-    memberOf: ['python-sdk', 'python-sdk-auth', 'typescript-sdk', 'typescript-sdk-auth'],
+    memberOf: [
+      ROLE_IDS.PYTHON_SDK,
+      ROLE_IDS.PYTHON_SDK_AUTH,
+      ROLE_IDS.TYPESCRIPT_SDK,
+      ROLE_IDS.TYPESCRIPT_SDK_AUTH,
+    ],
   },
   {
     github: 'og-ant',
-    memberOf: ['security-wg'],
+    memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
     github: 'olaservo',
-    memberOf: ['docs-maintaners', 'inspector-maintainers', 'moderators'],
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.MODERATORS],
   },
   {
     github: 'pcarleton',
     memberOf: [
-      'core-maintainers',
-      'python-sdk',
-      'python-sdk-auth',
-      'typescript-sdk',
-      'typescript-sdk-auth',
-      'auth-wg',
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.PYTHON_SDK,
+      ROLE_IDS.PYTHON_SDK_AUTH,
+      ROLE_IDS.TYPESCRIPT_SDK,
+      ROLE_IDS.TYPESCRIPT_SDK_AUTH,
+      ROLE_IDS.AUTH_WG,
     ],
   },
   {
     github: 'pederhp',
-    memberOf: ['ig-financial-services'],
+    memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
   },
   {
     github: 'petery-ant',
-    memberOf: ['security-wg'],
+    memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
     github: 'pronskiy',
-    memberOf: ['php-sdk'],
+    memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'pwwpche',
-    memberOf: ['core-maintainers'],
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
     github: 'rdimitrov',
     email: 'radoslav@modelcontextprotocol.io',
-    memberOf: ['registry-wg'],
+    memberOf: [ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
     github: 'sambhav',
-    memberOf: ['ig-financial-services'],
+    memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
   },
   {
     github: 'samthanawalla',
-    memberOf: ['go-sdk'],
+    memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'sdubov',
-    memberOf: ['kotlin-sdk'],
+    memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'stephentoub',
-    memberOf: ['csharp-sdk'],
+    memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
     github: 'stallent',
-    memberOf: ['swift-sdk'],
+    memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
     github: 'tadasant',
     email: 'tadas@modelcontextprotocol.io',
-    memberOf: ['moderators', 'registry-wg'],
+    memberOf: [ROLE_IDS.MODERATORS, ROLE_IDS.REGISTRY_MAINTAINERS, ROLE_IDS.ADMINISTRATORS],
   },
   {
     github: 'tiginamaria',
-    memberOf: ['kotlin-sdk'],
+    memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'toby',
     email: 'toby@modelcontextprotocol.io',
-    memberOf: ['registry-wg'],
+    memberOf: [ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
     github: 'topherbullock',
-    memberOf: ['ruby-sdk'],
+    memberOf: [ROLE_IDS.RUBY_SDK],
   },
   {
     github: 'tzolov',
-    memberOf: ['docs-maintaners', 'java-sdk'],
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.JAVA_SDK],
   },
   {
     email: 'adamj@anthropic.com',
-    memberOf: ['catch-all'],
+    memberOf: [ROLE_IDS.CATCH_ALL],
   },
   {
     email: 'davidsp@anthropic.com',
-    memberOf: ['antitrust'],
+    memberOf: [ROLE_IDS.ANTITRUST],
   },
   {
     email: 'mattsamuels@anthropic.com',
-    memberOf: ['antitrust'],
+    memberOf: [ROLE_IDS.ANTITRUST],
   },
   {
     email: 'davideramian@anthropic.com',
-    memberOf: ['antitrust'],
+    memberOf: [ROLE_IDS.ANTITRUST],
   },
   {
     github: 'caitiem20',
-    memberOf: ['core-maintainers'],
+    discord: '1425586366288494722',
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
 ] as const;

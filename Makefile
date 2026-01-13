@@ -1,4 +1,4 @@
-.PHONY: help login preview up
+.PHONY: help login preview refresh up
 
 # Default target
 help: ## Show this help message
@@ -12,20 +12,8 @@ login: ## Login to Pulumi backend (GCS)
 preview: login ## Preview infrastructure changes
 	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi preview --stack prod
 
-cleanup-state: login ## Remove orphaned resources from state
-	@echo "Cleaning up orphaned state entries..."
-	-PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi state delete --stack prod 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::dsp-ant-core' --yes 2>/dev/null
-	-PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi state delete --stack prod 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::maxisbey-core' --yes 2>/dev/null
-	-PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi state delete --stack prod 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::bhosmer-ant-core' --yes 2>/dev/null
-	-PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi state delete --stack prod 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::crondinini-ant-core' --yes 2>/dev/null
-	-PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi state delete --stack prod 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::ochafik-core' --yes 2>/dev/null
-	-PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi state delete --stack prod 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::ihrpr-core' --yes 2>/dev/null
-	-PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi state delete --stack prod 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::jerome3o-anthropic-core' --yes 2>/dev/null
-	-PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi state delete --stack prod 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::felixweinberger-core' --yes 2>/dev/null
-	-PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi state delete --stack prod 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::maheshmurag-core' --yes 2>/dev/null
-	-PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi state delete --stack prod 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::domdomegg-core' --yes 2>/dev/null
-	-PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi state delete --stack prod 'urn:pulumi:prod::mcp-access::github:index/team:Team::core' --yes 2>/dev/null
-	@echo "State cleanup complete"
+refresh: login ## Refresh state to match reality
+	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi refresh --yes --stack prod
 
-up: login cleanup-state ## Deploy infrastructure
+up: login refresh ## Deploy infrastructure
 	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi up --yes --stack prod
