@@ -295,6 +295,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
+    github: 'pja-ant',
+    discord: '328628782497923072',
+    memberOf: [ROLE_IDS.TRANSPORT_WG],
+  },
+  {
     github: 'pronskiy',
     memberOf: [ROLE_IDS.PHP_SDK],
   },
