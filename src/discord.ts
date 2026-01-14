@@ -203,16 +203,31 @@ interface DiscordMemberRoleSyncOutputs extends DiscordMemberRoleSyncInputs {
   addedRoles: string[];
   /** Roles that were removed during last sync */
   removedRoles: string[];
+  /** True if the member was not found on the Discord server */
+  memberNotFound: boolean;
 }
 
 async function syncMemberRoles(
   inputs: DiscordMemberRoleSyncInputs
-): Promise<{ addedRoles: string[]; removedRoles: string[] }> {
+): Promise<{ addedRoles: string[]; removedRoles: string[]; memberNotFound: boolean }> {
   // Get the user's current roles
-  const member = await discordFetch<DiscordGuildMemberApiResponse>(
-    inputs.token,
-    `/guilds/${inputs.guildId}/members/${inputs.userId}`
-  );
+  let member: DiscordGuildMemberApiResponse;
+  try {
+    member = await discordFetch<DiscordGuildMemberApiResponse>(
+      inputs.token,
+      `/guilds/${inputs.guildId}/members/${inputs.userId}`
+    );
+  } catch (error) {
+    // If the member isn't on the server, skip gracefully
+    if (error instanceof Error && error.message.includes('code: 10007')) {
+      console.warn(
+        `Discord member ${inputs.userId} not found on server - skipping role sync. ` +
+          `They may have left the server or the Discord ID may be incorrect.`
+      );
+      return { addedRoles: [], removedRoles: [], memberNotFound: true };
+    }
+    throw error;
+  }
 
   const currentRoles = new Set(member.roles);
   const expectedRoles = new Set(inputs.expectedRoleIds);
@@ -245,14 +260,14 @@ async function syncMemberRoles(
     }
   }
 
-  return { addedRoles, removedRoles };
+  return { addedRoles, removedRoles, memberNotFound: false };
 }
 
 const discordMemberRoleSyncProvider: pulumi.dynamic.ResourceProvider = {
   async create(
     inputs: DiscordMemberRoleSyncInputs
   ): Promise<pulumi.dynamic.CreateResult<DiscordMemberRoleSyncOutputs>> {
-    const { addedRoles, removedRoles } = await syncMemberRoles(inputs);
+    const { addedRoles, removedRoles, memberNotFound } = await syncMemberRoles(inputs);
 
     return {
       id: inputs.userId,
@@ -260,6 +275,7 @@ const discordMemberRoleSyncProvider: pulumi.dynamic.ResourceProvider = {
         ...inputs,
         addedRoles,
         removedRoles,
+        memberNotFound,
       },
     };
   },
@@ -268,37 +284,51 @@ const discordMemberRoleSyncProvider: pulumi.dynamic.ResourceProvider = {
     id: string,
     props: DiscordMemberRoleSyncOutputs
   ): Promise<pulumi.dynamic.ReadResult<DiscordMemberRoleSyncOutputs>> {
+    let member: DiscordGuildMemberApiResponse;
     try {
-      const member = await discordFetch<DiscordGuildMemberApiResponse>(
+      member = await discordFetch<DiscordGuildMemberApiResponse>(
         props.token,
         `/guilds/${props.guildId}/members/${props.userId}`
       );
-
-      const currentRoles = new Set(member.roles);
-      const expectedRoles = new Set(props.expectedRoleIds);
-      const managedRoles = new Set(props.managedRoleIds);
-
-      // Check if roles are in sync (only considering managed roles)
-      const outOfSync =
-        Array.from(expectedRoles).some((r) => !currentRoles.has(r)) ||
-        Array.from(currentRoles).some((r) => managedRoles.has(r) && !expectedRoles.has(r));
-
-      if (outOfSync) {
-        // Return current state but note it needs update
+    } catch (error) {
+      // If the member isn't on the server, return state indicating they're not found
+      if (error instanceof Error && error.message.includes('code: 10007')) {
         return {
           id,
           props: {
             ...props,
             addedRoles: [],
             removedRoles: [],
+            memberNotFound: true,
           },
         };
       }
-
-      return { id, props };
-    } catch {
       throw new Error(`Failed to read member roles for ${id}`);
     }
+
+    const currentRoles = new Set(member.roles);
+    const expectedRoles = new Set(props.expectedRoleIds);
+    const managedRoles = new Set(props.managedRoleIds);
+
+    // Check if roles are in sync (only considering managed roles)
+    const outOfSync =
+      Array.from(expectedRoles).some((r) => !currentRoles.has(r)) ||
+      Array.from(currentRoles).some((r) => managedRoles.has(r) && !expectedRoles.has(r));
+
+    if (outOfSync) {
+      // Return current state but note it needs update
+      return {
+        id,
+        props: {
+          ...props,
+          addedRoles: [],
+          removedRoles: [],
+          memberNotFound: false,
+        },
+      };
+    }
+
+    return { id, props: { ...props, memberNotFound: false } };
   },
 
   async update(
@@ -306,13 +336,14 @@ const discordMemberRoleSyncProvider: pulumi.dynamic.ResourceProvider = {
     _olds: DiscordMemberRoleSyncOutputs,
     news: DiscordMemberRoleSyncInputs
   ): Promise<pulumi.dynamic.UpdateResult<DiscordMemberRoleSyncOutputs>> {
-    const { addedRoles, removedRoles } = await syncMemberRoles(news);
+    const { addedRoles, removedRoles, memberNotFound } = await syncMemberRoles(news);
 
     return {
       outs: {
         ...news,
         addedRoles,
         removedRoles,
+        memberNotFound,
       },
     };
   },
@@ -336,6 +367,7 @@ const discordMemberRoleSyncProvider: pulumi.dynamic.ResourceProvider = {
 class DiscordMemberRoleSync extends pulumi.dynamic.Resource {
   public readonly addedRoles!: pulumi.Output<string[]>;
   public readonly removedRoles!: pulumi.Output<string[]>;
+  public readonly memberNotFound!: pulumi.Output<boolean>;
 
   constructor(
     name: string,
@@ -354,6 +386,7 @@ class DiscordMemberRoleSync extends pulumi.dynamic.Resource {
       {
         addedRoles: undefined,
         removedRoles: undefined,
+        memberNotFound: undefined,
         ...args,
       },
       opts
