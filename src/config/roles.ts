@@ -247,11 +247,10 @@ export const ROLES: readonly Role[] = [
     description: 'Transport Working Group',
     github: { team: 'transport-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'transports working group (synced)' },
-  },
   {
     id: ROLE_IDS.APPS_WG,
     description: 'MCP Apps Working Group',
-    // No GitHub role yet
+    github: { team: 'apps-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'mcp apps working group (synced)' },
   },
 
