@@ -95,11 +95,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [],
   },
   {
-    github: 'dend',
-    discord: '1351224014143754260',
-    memberOf: [ROLE_IDS.CSHARP_SDK],
-  },
-  {
     github: 'devcrocod',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
@@ -166,7 +161,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'ihrpr',
     discord: '1086709448816468038',
-    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.PYTHON_SDK, ROLE_IDS.TYPESCRIPT_SDK],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.PYTHON_SDK, ROLE_IDS.TYPESCRIPT_SDK],
   },
   {
     github: 'jamadeo',
@@ -217,7 +212,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'localden',
     discord: '1351224014143754260',
-    memberOf: [ROLE_IDS.AUTH_WG, ROLE_IDS.CORE_MAINTAINERS],
+    memberOf: [ROLE_IDS.AUTH_WG, ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.CSHARP_SDK, ROLE_IDS.DOCS_MAINTAINERS],
   },
   {
     github: 'maheshmurag',
@@ -258,7 +253,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'nickcoai',
     discord: '1153783469860732968',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.SERVER_IDENTITY_WG],
   },
   {
     github: 'nicolas-grekas',
