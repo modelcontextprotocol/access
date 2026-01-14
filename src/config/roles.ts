@@ -276,6 +276,12 @@ export const ROLES: readonly Role[] = [
     github: { team: 'ig-financial-services', parent: ROLE_IDS.INTEREST_GROUPS },
     discord: { role: 'financial services interest group (synced)' },
   },
+  {
+    id: ROLE_IDS.GATEWAYS_IG,
+    description: 'Gateways Interest Group',
+    // No GitHub role yet
+    discord: { role: 'gateways interest group (synced)' },
+  },
 
   // ===================
   // Email Groups (Google only)

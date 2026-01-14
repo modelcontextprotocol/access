@@ -57,6 +57,7 @@ export const ROLE_IDS = {
   AUTH_IG: 'auth-ig',
   CLIENT_IMPLEMENTOR_IG: 'client-implementor-ig',
   FINANCIAL_SERVICES_IG: 'financial-services-ig',
+  GATEWAYS_IG: 'gateways-ig',
 
   // ===================
   // Email Groups (Google only)
