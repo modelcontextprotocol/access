@@ -4,6 +4,7 @@ import { ROLE_IDS } from './roleIds';
 export const MEMBERS: readonly Member[] = [
   {
     github: '000-000-000-000-000',
+    discord: '1360717264051241071',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
@@ -112,10 +113,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [],
   },
   {
-    github: 'dend',
-    memberOf: [ROLE_IDS.CSHARP_SDK],
-  },
-  {
     github: 'devcrocod',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
@@ -181,7 +178,13 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'ihrpr',
-    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.PYTHON_SDK, ROLE_IDS.TYPESCRIPT_SDK],
+    discord: '1086709448816468038',
+    memberOf: [
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.PYTHON_SDK,
+      ROLE_IDS.TYPESCRIPT_SDK,
+    ],
   },
   {
     github: 'jamadeo',
@@ -226,11 +229,18 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'kurtisvg',
+    discord: '1158458388917780590',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
     github: 'localden',
-    memberOf: [ROLE_IDS.AUTH_WG, ROLE_IDS.CORE_MAINTAINERS],
+    discord: '1351224014143754260',
+    memberOf: [
+      ROLE_IDS.AUTH_WG,
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.CSHARP_SDK,
+      ROLE_IDS.DOCS_MAINTAINERS,
+    ],
   },
   {
     github: 'LucaButBoring',
@@ -275,7 +285,8 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'nickcoai',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
+    discord: '1153783469860732968',
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.SERVER_IDENTITY_WG],
   },
   {
     github: 'nicolas-grekas',
@@ -300,6 +311,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'pcarleton',
+    discord: '1354465170969067852',
     memberOf: [
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.PYTHON_SDK,
@@ -323,6 +335,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'pwwpche',
+    discord: '1226238847013228604',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
