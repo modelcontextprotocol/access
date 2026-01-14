@@ -164,7 +164,7 @@ export const ROLES: readonly Role[] = [
     id: ROLE_IDS.MCP_APPS_SDK,
     description: 'Official MCP Apps SDK maintainers',
     github: { team: 'mcp-apps-sdk', parent: ROLE_IDS.SDK_MAINTAINERS },
-    // TBD Discord - future #mcp-apps-sdk-dev channel would map to this role
+    // No Discord channel/role yet: #mcp-apps-sdk-dev in the future
   },
   {
     id: ROLE_IDS.PHP_SDK,
