@@ -281,7 +281,7 @@ export const ROLES: readonly Role[] = [
     description: 'Gateways Interest Group',
     // No GitHub role yet
     discord: { role: 'gateways interest group (synced)' },
-  }
+  },
 
   // ===================
   // Email Groups (Google only)
