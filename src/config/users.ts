@@ -87,7 +87,9 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'cliffhall',
-    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.MODERATORS],
+    email: 'cliff@futurescale.com',
+    discord: "501498061965754380",
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.REFERENCE_SERVERS_MAINTAINERS, ROLE_IDS.MODERATORS],
   },
   {
     github: 'crondinini-ant',
