@@ -211,6 +211,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'kurtisvg',
+    discord: '1158458388917780590',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
