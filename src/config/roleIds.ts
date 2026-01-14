@@ -27,6 +27,7 @@ export const ROLE_IDS = {
   // SDK Maintainers
   // ===================
   SDK_MAINTAINERS: 'sdk-maintainers',
+  APPS_SDK: 'apps-sdk',
   CSHARP_SDK: 'csharp-sdk',
   GO_SDK: 'go-sdk',
   JAVA_SDK: 'java-sdk',
@@ -48,6 +49,7 @@ export const ROLE_IDS = {
   SECURITY_WG: 'security-wg',
   SERVER_IDENTITY_WG: 'server-identity-wg',
   TRANSPORT_WG: 'transport-wg',
+  APPS_WG: 'mcpapps-wg',
 
   // ===================
   // Interest Groups

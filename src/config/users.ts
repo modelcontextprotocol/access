@@ -228,6 +228,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
+    github: 'liady',
+    discord: '383565833768665088',
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.WORKING_GROUPS, ROLE_IDS.APPS_WG, ROLE_IDS.APPS_SDK],
+  },
+  {
     github: 'localden',
     memberOf: [ROLE_IDS.AUTH_WG, ROLE_IDS.CORE_MAINTAINERS],
   },

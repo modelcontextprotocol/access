@@ -137,6 +137,12 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'sdk maintainers (synced)' },
   },
   {
+    id: ROLE_IDS.APPS_SDK,
+    description: 'Official MCP Apps SDK maintainers',
+    github: { team: 'apps-sdk', parent: ROLE_IDS.SDK_MAINTAINERS },
+    discord: { role: 'apps sdk maintainers (synced)' },
+  },
+  {
     id: ROLE_IDS.CSHARP_SDK,
     description: 'Official C# SDK maintainers',
     github: { team: 'csharp-sdk', parent: ROLE_IDS.SDK_MAINTAINERS },
@@ -241,6 +247,12 @@ export const ROLES: readonly Role[] = [
     description: 'Transport Working Group',
     github: { team: 'transport-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'transports working group (synced)' },
+  },
+  {
+    id: ROLE_IDS.APPS_WG,
+    description: 'MCP Apps Working Group',
+    // No GitHub role yet
+    discord: { role: 'mcp apps working group (synced)' },
   },
 
   // ===================
