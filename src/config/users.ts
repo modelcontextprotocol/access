@@ -161,7 +161,12 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'ihrpr',
     discord: '1086709448816468038',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.PYTHON_SDK, ROLE_IDS.TYPESCRIPT_SDK],
+    memberOf: [
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.PYTHON_SDK,
+      ROLE_IDS.TYPESCRIPT_SDK,
+    ],
   },
   {
     github: 'jamadeo',
@@ -212,7 +217,12 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'localden',
     discord: '1351224014143754260',
-    memberOf: [ROLE_IDS.AUTH_WG, ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.CSHARP_SDK, ROLE_IDS.DOCS_MAINTAINERS],
+    memberOf: [
+      ROLE_IDS.AUTH_WG,
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.CSHARP_SDK,
+      ROLE_IDS.DOCS_MAINTAINERS,
+    ],
   },
   {
     github: 'maheshmurag',
