@@ -234,7 +234,12 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'liady',
     discord: '383565833768665088',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.WORKING_GROUPS, ROLE_IDS.APPS_WG, ROLE_IDS.APPS_SDK],
+    memberOf: [
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.WORKING_GROUPS,
+      ROLE_IDS.MCP_APPS_WG,
+      ROLE_IDS.MCP_APPS_SDK,
+    ],
   },
   {
     github: 'localden',
