@@ -89,7 +89,9 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'chr-hertel',
-    memberOf: [ROLE_IDS.PHP_SDK],
+    email: 'mail@christopher-hertel.de',
+    discord: '633566986827464704',
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.PHP_SDK],
   },
   {
     github: 'cliffhall',
