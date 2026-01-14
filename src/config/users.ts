@@ -74,6 +74,15 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'caitiem20',
+    email: 'caitie.mccaffrey@microsoft.com',
+    discord: '1425586366288494722',
+    memberOf: [
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.TRANSPORT_WG
+    ],
+  },
+  {
     github: 'carlpeaslee',
     memberOf: [ROLE_IDS.SWIFT_SDK],
   },
