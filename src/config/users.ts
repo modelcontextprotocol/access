@@ -4,6 +4,7 @@ import { ROLE_IDS } from './roleIds';
 export const MEMBERS: readonly Member[] = [
   {
     github: '000-000-000-000-000',
+    discord: '1360717264051241071',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
@@ -95,6 +96,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'dend',
+    discord: '1351224014143754260',
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
@@ -163,6 +165,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'ihrpr',
+    discord: '1086709448816468038',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.PYTHON_SDK, ROLE_IDS.TYPESCRIPT_SDK],
   },
   {
@@ -212,6 +215,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'localden',
+    discord: '1351224014143754260',
     memberOf: [ROLE_IDS.AUTH_WG, ROLE_IDS.CORE_MAINTAINERS],
   },
   {
@@ -252,6 +256,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'nickcoai',
+    discord: '1153783469860732968',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
@@ -277,6 +282,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'pcarleton',
+    discord: '1354465170969067852',
     memberOf: [
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.PYTHON_SDK,
@@ -300,6 +306,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'pwwpche',
+    discord: '1226238847013228604',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
