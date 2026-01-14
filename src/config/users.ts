@@ -353,7 +353,14 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'tadasant',
     email: 'tadas@modelcontextprotocol.io',
-    memberOf: [ROLE_IDS.MODERATORS, ROLE_IDS.REGISTRY_MAINTAINERS, ROLE_IDS.ADMINISTRATORS],
+    memberOf: [
+      ROLE_IDS.MODERATORS,
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.WORKING_GROUPS,
+      ROLE_IDS.INTEREST_GROUPS,
+      ROLE_IDS.REGISTRY_MAINTAINERS,
+      ROLE_IDS.ADMINISTRATORS
+    ],
   },
   {
     github: 'tiginamaria',
