@@ -178,7 +178,6 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'ihrpr',
-    discord: '1086709448816468038',
     memberOf: [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
