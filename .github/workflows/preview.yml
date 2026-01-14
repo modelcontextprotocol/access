@@ -16,6 +16,8 @@ jobs:
   preview:
     name: Preview Changes
     runs-on: ubuntu-latest
+    # Skip preview for fork PRs - they don't have access to secrets
+    if: github.event.pull_request.head.repo.full_name == github.repository
     environment: production
     steps:
       - name: Checkout code
