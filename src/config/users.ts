@@ -267,6 +267,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.AGENTS_IG, ROLE_IDS.WORKING_GROUPS],
   },
   {
+    github: 'maciej-kisiel',
+    discord: '936242781733654588',
+    memberOf: [ROLE_IDS.GO_SDK],
+  },
+  {
     github: 'maheshmurag',
     memberOf: [ROLE_IDS.MODERATORS],
   },
