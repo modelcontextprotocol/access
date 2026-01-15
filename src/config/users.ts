@@ -49,7 +49,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'alexhancock',
     discord: '1325885093343924316',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.RUST_SDK],
+    memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'an-dustin',
@@ -104,7 +104,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'chr-hertel',
     email: 'mail@christopher-hertel.de',
     discord: '633566986827464704',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.PHP_SDK],
+    memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'cliffhall',
@@ -193,12 +193,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'ihrpr',
-    memberOf: [
-      ROLE_IDS.MAINTAINERS,
-      ROLE_IDS.DOCS_MAINTAINERS,
-      ROLE_IDS.PYTHON_SDK,
-      ROLE_IDS.TYPESCRIPT_SDK,
-    ],
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.PYTHON_SDK, ROLE_IDS.TYPESCRIPT_SDK],
   },
   {
     github: 'jamadeo',
@@ -254,12 +249,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'liady',
     discord: '383565833768665088',
-    memberOf: [
-      ROLE_IDS.MAINTAINERS,
-      ROLE_IDS.WORKING_GROUPS,
-      ROLE_IDS.MCP_APPS_WG,
-      ROLE_IDS.MCP_APPS_SDK,
-    ],
+    memberOf: [ROLE_IDS.WORKING_GROUPS, ROLE_IDS.MCP_APPS_WG, ROLE_IDS.MCP_APPS_SDK],
   },
   {
     github: 'localden',
