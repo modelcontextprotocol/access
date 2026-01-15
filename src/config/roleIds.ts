@@ -31,6 +31,7 @@ export const ROLE_IDS = {
   GO_SDK: 'go-sdk',
   JAVA_SDK: 'java-sdk',
   KOTLIN_SDK: 'kotlin-sdk',
+  MCP_APPS_SDK: 'mcp-apps-sdk',
   PHP_SDK: 'php-sdk',
   PYTHON_SDK: 'python-sdk',
   PYTHON_SDK_AUTH: 'python-sdk-auth', // GitHub only (CODEOWNERS)
@@ -48,6 +49,7 @@ export const ROLE_IDS = {
   SECURITY_WG: 'security-wg',
   SERVER_IDENTITY_WG: 'server-identity-wg',
   TRANSPORT_WG: 'transport-wg',
+  MCP_APPS_WG: 'mcp-apps-wg',
 
   // ===================
   // Interest Groups

@@ -161,6 +161,12 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'kotlin sdk maintainers (synced)' },
   },
   {
+    id: ROLE_IDS.MCP_APPS_SDK,
+    description: 'Official MCP Apps SDK maintainers',
+    github: { team: 'mcp-apps-sdk', parent: ROLE_IDS.SDK_MAINTAINERS },
+    // No Discord channel/role yet: #mcp-apps-sdk-dev in the future
+  },
+  {
     id: ROLE_IDS.PHP_SDK,
     description: 'Official PHP SDK maintainers',
     github: { team: 'php-sdk', parent: ROLE_IDS.SDK_MAINTAINERS },
@@ -241,6 +247,12 @@ export const ROLES: readonly Role[] = [
     description: 'Transport Working Group',
     github: { team: 'transport-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'transports working group (synced)' },
+  },
+  {
+    id: ROLE_IDS.MCP_APPS_WG,
+    description: 'MCP Apps Working Group',
+    github: { team: 'mcp-apps-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'mcp apps working group (synced)' },
   },
 
   // ===================
