@@ -9,22 +9,27 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'CodeWithKyrian',
+    discord: '951883230250946633',
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'D-McAdams',
+    discord: '1364696680980545697',
     memberOf: [ROLE_IDS.AUTH_WG],
   },
   {
     github: 'Kehrlann',
+    discord: '1112624611901837373',
     memberOf: [ROLE_IDS.JAVA_SDK],
   },
   {
     github: 'Kludex',
+    discord: '247021664624312322',
     memberOf: [ROLE_IDS.PYTHON_SDK],
   },
   {
     github: 'Nyholm',
+    discord: '466593085984342016',
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
@@ -33,10 +38,12 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'a-akimov',
+    discord: '1365254196621738116',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS],
   },
   {
     github: 'aaronpk',
+    discord: '324624369428987905',
     memberOf: [ROLE_IDS.AUTH_WG],
   },
   {
@@ -54,14 +61,17 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'asklar',
+    discord: '633837375734153216',
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'atesgoral',
+    discord: '201179934775836672',
     memberOf: [ROLE_IDS.RUBY_SDK],
   },
   {
     github: 'baxen',
+    discord: '360224027769307136',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
@@ -83,6 +93,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'carlpeaslee',
+    discord: '288330838951723009',
     memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
@@ -119,6 +130,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'domdomegg',
     email: 'adam@modelcontextprotocol.io',
+    discord: '102128241715716096',
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
@@ -150,6 +162,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'evalstate',
+    discord: '779268016121577492',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MODERATORS],
   },
   {
@@ -162,10 +175,12 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'felixweinberger',
+    discord: '1377138523492057212',
     memberOf: [ROLE_IDS.PYTHON_SDK, ROLE_IDS.SECURITY_WG, ROLE_IDS.TYPESCRIPT_SDK],
   },
   {
     github: 'findleyr',
+    discord: '776094836796424213',
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
@@ -191,6 +206,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jba',
+    discord: '773276903364755518',
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
@@ -199,14 +215,17 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jerome3o-anthropic',
+    discord: '222246825397059585',
     memberOf: [ROLE_IDS.MODERATORS],
   },
   {
     github: 'joan-anthropic',
+    discord: '1398403578892128437',
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'jonathanhefner',
+    discord: '1301960963087663186',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MODERATORS, ROLE_IDS.RUBY_SDK],
   },
   {
@@ -220,6 +239,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'koic',
+    discord: '880937364208361483',
     memberOf: [ROLE_IDS.RUBY_SDK],
   },
   {
@@ -290,6 +310,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'mikekistler',
+    discord: '915345005982408754',
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
@@ -303,6 +324,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'ochafik',
+    discord: '1004897332069925024',
     memberOf: [
       ROLE_IDS.PYTHON_SDK,
       ROLE_IDS.PYTHON_SDK_AUTH,
@@ -316,6 +338,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'olaservo',
+    discord: '1079841769946095620',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.MODERATORS],
   },
   {
@@ -332,6 +355,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'pederhp',
+    discord: '166255967665651713',
     memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
   },
   {
@@ -355,6 +379,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'sambhav',
+    discord: '840109459212206090',
     memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
   },
   {
@@ -371,6 +396,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'stallent',
+    discord: '1137898074086314136',
     memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
@@ -393,14 +419,17 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'toby',
     email: 'toby@modelcontextprotocol.io',
+    discord: '560155411777323048',
     memberOf: [ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
     github: 'topherbullock',
+    discord: '1059910719124013168',
     memberOf: [ROLE_IDS.RUBY_SDK],
   },
   {
     github: 'tzolov',
+    discord: '1097924660055777290',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.JAVA_SDK],
   },
   {
