@@ -166,6 +166,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'findleyr',
+    discord: '776094836796424213',
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
@@ -255,6 +256,10 @@ export const MEMBERS: readonly Member[] = [
     github: 'LucaButBoring',
     discord: '1366470072729866252',
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.AGENTS_IG, ROLE_IDS.WORKING_GROUPS],
+  },
+  {
+    github: 'maciej-kisiel',
+    memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'maheshmurag',
