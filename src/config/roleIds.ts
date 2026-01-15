@@ -11,6 +11,7 @@ export const ROLE_IDS = {
   LEAD_MAINTAINERS: 'lead-maintainers',
   MODERATORS: 'moderators',
   ADMINISTRATORS: 'administrators', // Discord only
+  COMMUNITY_MANAGERS: 'community-managers', // Discord only
 
   // ===================
   // Maintainer Groups

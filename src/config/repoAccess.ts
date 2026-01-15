@@ -313,7 +313,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     teams: [
       { team: 'core-maintainers', permission: 'push' },
       { team: 'moderators', permission: 'triage' },
-      { team: 'mcp-apps-wg', permission: 'admin' },
+      { team: 'mcp-apps-wg', permission: 'push' },
       { team: 'mcp-apps-sdk', permission: 'admin' },
     ],
     users: [

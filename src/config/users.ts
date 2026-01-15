@@ -111,6 +111,7 @@ export const MEMBERS: readonly Member[] = [
     email: 'cliff@futurescale.com',
     discord: '501498061965754380',
     memberOf: [
+      ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.INSPECTOR_MAINTAINERS,
@@ -163,7 +164,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'evalstate',
     discord: '779268016121577492',
-    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MODERATORS],
+    memberOf: [ROLE_IDS.COMMUNITY_MANAGERS, ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MODERATORS],
   },
   {
     github: 'fabpot',
@@ -272,6 +273,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
+    github: 'macoughl',
+    discord: '740279257548193803',
+    memberOf: [ROLE_IDS.COMMUNITY_MANAGERS],
+  },
+  {
     github: 'maheshmurag',
     memberOf: [ROLE_IDS.MODERATORS],
   },
@@ -334,7 +340,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'olaservo',
     discord: '1079841769946095620',
-    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.MODERATORS],
+    memberOf: [ROLE_IDS.COMMUNITY_MANAGERS, ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.MODERATORS],
   },
   {
     github: 'pcarleton',
@@ -399,6 +405,7 @@ export const MEMBERS: readonly Member[] = [
     discord: '400092503677599754',
     email: 'tadas@modelcontextprotocol.io',
     memberOf: [
+      ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.WORKING_GROUPS,
