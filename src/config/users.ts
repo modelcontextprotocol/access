@@ -259,6 +259,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'maciej-kisiel',
+    discord: '936242781733654588',
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
