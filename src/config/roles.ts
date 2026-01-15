@@ -38,6 +38,12 @@ export interface Role {
   github?: GitHubConfig;
   discord?: DiscordConfig;
   google?: GoogleConfig;
+  /**
+   * Roles that are implied for Discord membership.
+   * If a user has this role, they automatically get the implied roles' Discord roles too.
+   * This is separate from GitHub parent relationships and allows Discord-specific hierarchy.
+   */
+  discordImplies?: readonly RoleId[];
 }
 
 /**
@@ -135,6 +141,7 @@ export const ROLES: readonly Role[] = [
     description: 'Authors and maintainers of official MCP SDKs',
     github: { team: 'sdk-maintainers', parent: ROLE_IDS.STEERING_COMMITTEE },
     discord: { role: 'sdk maintainers (synced)' },
+    discordImplies: [ROLE_IDS.MAINTAINERS], // SDK maintainers are also general maintainers
   },
   {
     id: ROLE_IDS.CSHARP_SDK,

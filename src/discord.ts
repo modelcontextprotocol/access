@@ -398,6 +398,38 @@ const roleLookup = buildRoleLookup();
 // Discord roles keyed by Discord role name
 const roles: Record<string, DiscordRole> = {};
 
+/**
+ * Expand a set of role IDs to include all implied Discord roles.
+ * This traverses:
+ * 1. GitHub parent relationships (e.g., GO_SDK -> SDK_MAINTAINERS)
+ * 2. discordImplies relationships (e.g., SDK_MAINTAINERS -> MAINTAINERS)
+ */
+function expandDiscordRoles(roleIds: readonly RoleId[]): Set<RoleId> {
+  const expanded = new Set<RoleId>();
+  const toProcess = [...roleIds];
+
+  while (toProcess.length > 0) {
+    const roleId = toProcess.pop()!;
+    if (expanded.has(roleId)) continue;
+    expanded.add(roleId);
+
+    const role = roleLookup.get(roleId);
+    if (!role) continue;
+
+    // Follow GitHub parent relationship
+    if (role.github?.parent) {
+      toProcess.push(role.github.parent);
+    }
+
+    // Follow discordImplies relationships
+    if (role.discordImplies) {
+      toProcess.push(...role.discordImplies);
+    }
+  }
+
+  return expanded;
+}
+
 // Only create Discord resources if Discord is enabled
 if (DISCORD_ENABLED) {
   // These are guaranteed to be defined when DISCORD_ENABLED is true
@@ -424,8 +456,11 @@ if (DISCORD_ENABLED) {
   MEMBERS.forEach((member) => {
     if (!member.discord) return;
 
+    // Expand roles to include parents and implied roles
+    const expandedRoleIds = expandDiscordRoles(member.memberOf);
+
     // Get the Discord role IDs this member should have
-    const expectedRoleIds = member.memberOf
+    const expectedRoleIds = Array.from(expandedRoleIds)
       .map((roleId: RoleId) => {
         const role = roleLookup.get(roleId);
         if (!role?.discord) return null;
