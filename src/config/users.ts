@@ -327,6 +327,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'ochafik',
     discord: '1004897332069925024',
     memberOf: [
+      ROLE_IDS.MCP_APPS_SDK,
       ROLE_IDS.PYTHON_SDK,
       ROLE_IDS.PYTHON_SDK_AUTH,
       ROLE_IDS.TYPESCRIPT_SDK,
