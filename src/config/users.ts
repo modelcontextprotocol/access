@@ -44,7 +44,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'aaronpk',
     discord: '324624369428987905',
-    memberOf: [ROLE_IDS.AUTH_WG],
+    memberOf: [ROLE_IDS.AUTH_WG, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'alexhancock',
@@ -346,7 +346,12 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'olaservo',
     discord: '1079841769946095620',
-    memberOf: [ROLE_IDS.COMMUNITY_MANAGERS, ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.MODERATORS],
+    memberOf: [
+      ROLE_IDS.COMMUNITY_MANAGERS,
+      ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.INSPECTOR_MAINTAINERS,
+      ROLE_IDS.MODERATORS,
+    ],
   },
   {
     github: 'pcarleton',
