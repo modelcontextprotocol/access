@@ -378,6 +378,10 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'pja-ant',
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
+  },
+  {
     github: 'pederhp',
     discord: '166255967665651713',
     memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
