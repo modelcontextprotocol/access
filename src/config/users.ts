@@ -154,6 +154,23 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'dsp',
+    memberOf: [
+      ROLE_IDS.AUTH_WG,
+      ROLE_IDS.LEAD_MAINTAINERS,
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.GO_SDK,
+      ROLE_IDS.FINANCIAL_SERVICES_IG,
+      ROLE_IDS.MODERATORS,
+      ROLE_IDS.PHP_SDK,
+      ROLE_IDS.PYTHON_SDK,
+      ROLE_IDS.SECURITY_WG,
+      ROLE_IDS.TRANSPORT_WG,
+      ROLE_IDS.TYPESCRIPT_SDK,
+    ],
+  },
+  {
     github: 'e5l',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
