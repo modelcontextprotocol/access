@@ -8,35 +8,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
-    github: 'CodeWithKyrian',
-    discord: '951883230250946633',
-    memberOf: [ROLE_IDS.PHP_SDK],
-  },
-  {
-    github: 'D-McAdams',
-    discord: '1364696680980545697',
-    memberOf: [ROLE_IDS.AUTH_WG],
-  },
-  {
-    github: 'Kehrlann',
-    discord: '1112624611901837373',
-    memberOf: [ROLE_IDS.JAVA_SDK],
-  },
-  {
-    github: 'Kludex',
-    discord: '247021664624312322',
-    memberOf: [ROLE_IDS.PYTHON_SDK],
-  },
-  {
-    github: 'Nyholm',
-    discord: '466593085984342016',
-    memberOf: [ROLE_IDS.PHP_SDK],
-  },
-  {
-    github: 'Ololoshechkin',
-    memberOf: [ROLE_IDS.KOTLIN_SDK],
-  },
-  {
     github: 'a-akimov',
     discord: '1365254196621738116',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS],
@@ -121,8 +92,18 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'CodeWithKyrian',
+    discord: '951883230250946633',
+    memberOf: [ROLE_IDS.PHP_SDK],
+  },
+  {
     github: 'crondinini-ant',
     memberOf: [],
+  },
+  {
+    github: 'D-McAdams',
+    discord: '1364696680980545697',
+    memberOf: [ROLE_IDS.AUTH_WG],
   },
   {
     github: 'devcrocod',
@@ -135,9 +116,7 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
-    github: 'dsp-ant',
-    email: 'david@modelcontextprotocol.io',
-    discord: '166107790262272000', // Example Discord user ID - replace with real ID
+    github: 'dsp',
     memberOf: [
       ROLE_IDS.AUTH_WG,
       ROLE_IDS.LEAD_MAINTAINERS,
@@ -154,7 +133,9 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
-    github: 'dsp',
+    github: 'dsp-ant',
+    email: 'david@modelcontextprotocol.io',
+    discord: '166107790262272000',
     memberOf: [
       ROLE_IDS.AUTH_WG,
       ROLE_IDS.LEAD_MAINTAINERS,
@@ -252,8 +233,18 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
+    github: 'Kehrlann',
+    discord: '1112624611901837373',
+    memberOf: [ROLE_IDS.JAVA_SDK],
+  },
+  {
     github: 'KKonstantinov',
     memberOf: [ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.TYPESCRIPT_SDK],
+  },
+  {
+    github: 'Kludex',
+    discord: '247021664624312322',
+    memberOf: [ROLE_IDS.PYTHON_SDK],
   },
   {
     github: 'koic',
@@ -316,25 +307,25 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
-    github: 'maxisbey',
-    memberOf: [ROLE_IDS.PYTHON_SDK],
-  },
-  {
     github: 'mattzcarey',
     memberOf: [ROLE_IDS.TYPESCRIPT_SDK],
+  },
+  {
+    github: 'maxisbey',
+    memberOf: [ROLE_IDS.PYTHON_SDK],
   },
   {
     github: 'michaelneale',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
-    github: 'movetz',
-    memberOf: [ROLE_IDS.SWIFT_SDK],
-  },
-  {
     github: 'mikekistler',
     discord: '915345005982408754',
     memberOf: [ROLE_IDS.CSHARP_SDK],
+  },
+  {
+    github: 'movetz',
+    memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
     github: 'nickcoai',
@@ -343,6 +334,11 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'nicolas-grekas',
+    memberOf: [ROLE_IDS.PHP_SDK],
+  },
+  {
+    github: 'Nyholm',
+    discord: '466593085984342016',
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
@@ -363,7 +359,16 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'olaservo',
     discord: '1079841769946095620',
-    memberOf: [ROLE_IDS.COMMUNITY_MANAGERS, ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.MODERATORS],
+    memberOf: [
+      ROLE_IDS.COMMUNITY_MANAGERS,
+      ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.INSPECTOR_MAINTAINERS,
+      ROLE_IDS.MODERATORS,
+    ],
+  },
+  {
+    github: 'Ololoshechkin',
+    memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'pcarleton',
@@ -378,10 +383,6 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
-    github: 'pja-ant',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
-  },
-  {
     github: 'pederhp',
     discord: '166255967665651713',
     memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
@@ -389,6 +390,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'petery-ant',
     memberOf: [ROLE_IDS.SECURITY_WG],
+  },
+  {
+    github: 'pja-ant',
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
     github: 'pronskiy',
@@ -401,8 +406,8 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'rdimitrov',
-    discord: '1088231882979815424',
     email: 'radoslav@modelcontextprotocol.io',
+    discord: '1088231882979815424',
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
@@ -419,18 +424,18 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
-    github: 'stephentoub',
-    memberOf: [ROLE_IDS.CSHARP_SDK],
-  },
-  {
     github: 'stallent',
     discord: '1137898074086314136',
     memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
+    github: 'stephentoub',
+    memberOf: [ROLE_IDS.CSHARP_SDK],
+  },
+  {
     github: 'tadasant',
-    discord: '400092503677599754',
     email: 'tadas@modelcontextprotocol.io',
+    discord: '400092503677599754',
     memberOf: [
       ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.MODERATORS,
