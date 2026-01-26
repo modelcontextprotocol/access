@@ -205,6 +205,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { username: 'jozkee', permission: 'admin' },
       { username: 'localden', permission: 'admin' },
       { username: 'PederHP', permission: 'triage' },
+      { username: 'tarekgh', permission: 'push' },
     ],
   },
   {
@@ -306,6 +307,44 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   {
     repository: 'ext-auth',
     teams: [{ team: 'auth-wg', permission: 'admin' }],
+  },
+  {
+    repository: 'ext-apps',
+    teams: [
+      { team: 'core-maintainers', permission: 'push' },
+      { team: 'moderators', permission: 'triage' },
+      { team: 'mcp-apps-wg', permission: 'push' },
+      { team: 'mcp-apps-sdk', permission: 'admin' },
+    ],
+    users: [
+      { username: 'liady', permission: 'admin' },
+      { username: 'idosal', permission: 'admin' },
+      { username: 'ststrong', permission: 'admin' },
+      { username: 'martinalong', permission: 'push' },
+      { username: 'antonpk1', permission: 'admin' },
+      { username: 'conorkel', permission: 'admin' },
+      { username: 'alexi-openai', permission: 'admin' },
+    ],
+  },
+  {
+    repository: 'use-mcp',
+    teams: [
+      { team: 'core-maintainers', permission: 'push' },
+      { team: 'moderators', permission: 'triage' },
+    ],
+    users: [{ username: 'geelen', permission: 'admin' }],
+  },
+  {
+    repository: 'example-remote-client',
+    teams: [
+      { team: 'core-maintainers', permission: 'push' },
+      { team: 'moderators', permission: 'triage' },
+    ],
+    users: [
+      { username: 'geelen', permission: 'push' },
+      { username: 'markyfyi', permission: 'push' },
+      { username: 'jerryhong1', permission: 'push' },
+    ],
   },
 ];
 

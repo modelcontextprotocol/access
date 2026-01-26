@@ -38,6 +38,12 @@ export interface Role {
   github?: GitHubConfig;
   discord?: DiscordConfig;
   google?: GoogleConfig;
+  /**
+   * Roles that are implied for Discord membership.
+   * If a user has this role, they automatically get the implied roles' Discord roles too.
+   * This is separate from GitHub parent relationships and allows Discord-specific hierarchy.
+   */
+  discordImplies?: readonly RoleId[];
 }
 
 /**
@@ -58,6 +64,12 @@ export const ROLES: readonly Role[] = [
     id: ROLE_IDS.ADMINISTRATORS,
     description: 'Discord server administrators',
     discord: { role: 'administrators (synced)' },
+    // Discord only - no GitHub equivalent
+  },
+  {
+    id: ROLE_IDS.COMMUNITY_MANAGERS,
+    description: 'Discord community managers',
+    discord: { role: 'community managers (synced)' },
     // Discord only - no GitHub equivalent
   },
   {
@@ -135,6 +147,7 @@ export const ROLES: readonly Role[] = [
     description: 'Authors and maintainers of official MCP SDKs',
     github: { team: 'sdk-maintainers', parent: ROLE_IDS.STEERING_COMMITTEE },
     discord: { role: 'sdk maintainers (synced)' },
+    discordImplies: [ROLE_IDS.MAINTAINERS], // SDK maintainers are also general maintainers
   },
   {
     id: ROLE_IDS.CSHARP_SDK,
@@ -159,6 +172,12 @@ export const ROLES: readonly Role[] = [
     description: 'Official Kotlin SDK maintainers',
     github: { team: 'kotlin-sdk', parent: ROLE_IDS.SDK_MAINTAINERS },
     discord: { role: 'kotlin sdk maintainers (synced)' },
+  },
+  {
+    id: ROLE_IDS.MCP_APPS_SDK,
+    description: 'Official MCP Apps SDK maintainers',
+    github: { team: 'mcp-apps-sdk', parent: ROLE_IDS.SDK_MAINTAINERS },
+    // No Discord channel/role yet: #mcp-apps-sdk-dev in the future
   },
   {
     id: ROLE_IDS.PHP_SDK,
@@ -242,6 +261,12 @@ export const ROLES: readonly Role[] = [
     github: { team: 'transport-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'transports working group (synced)' },
   },
+  {
+    id: ROLE_IDS.MCP_APPS_WG,
+    description: 'MCP Apps Working Group',
+    github: { team: 'mcp-apps-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'mcp apps working group (synced)' },
+  },
 
   // ===================
   // Interest Groups
@@ -275,6 +300,12 @@ export const ROLES: readonly Role[] = [
     description: 'Financial Services Interest Group',
     github: { team: 'ig-financial-services', parent: ROLE_IDS.INTEREST_GROUPS },
     discord: { role: 'financial services interest group (synced)' },
+  },
+  {
+    id: ROLE_IDS.GATEWAYS_IG,
+    description: 'Gateways Interest Group',
+    // No GitHub role yet
+    discord: { role: 'gateways interest group (synced)' },
   },
 
   // ===================

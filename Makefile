@@ -15,5 +15,5 @@ preview: login ## Preview infrastructure changes
 refresh: login ## Refresh state to match reality
 	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi refresh --yes --stack prod
 
-up: login refresh ## Deploy infrastructure
+up: login ## Deploy infrastructure
 	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi up --yes --stack prod

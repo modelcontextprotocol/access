@@ -11,6 +11,7 @@ export const ROLE_IDS = {
   LEAD_MAINTAINERS: 'lead-maintainers',
   MODERATORS: 'moderators',
   ADMINISTRATORS: 'administrators', // Discord only
+  COMMUNITY_MANAGERS: 'community-managers', // Discord only
 
   // ===================
   // Maintainer Groups
@@ -31,6 +32,7 @@ export const ROLE_IDS = {
   GO_SDK: 'go-sdk',
   JAVA_SDK: 'java-sdk',
   KOTLIN_SDK: 'kotlin-sdk',
+  MCP_APPS_SDK: 'mcp-apps-sdk',
   PHP_SDK: 'php-sdk',
   PYTHON_SDK: 'python-sdk',
   PYTHON_SDK_AUTH: 'python-sdk-auth', // GitHub only (CODEOWNERS)
@@ -48,6 +50,7 @@ export const ROLE_IDS = {
   SECURITY_WG: 'security-wg',
   SERVER_IDENTITY_WG: 'server-identity-wg',
   TRANSPORT_WG: 'transport-wg',
+  MCP_APPS_WG: 'mcp-apps-wg',
 
   // ===================
   // Interest Groups
@@ -57,6 +60,7 @@ export const ROLE_IDS = {
   AUTH_IG: 'auth-ig',
   CLIENT_IMPLEMENTOR_IG: 'client-implementor-ig',
   FINANCIAL_SERVICES_IG: 'financial-services-ig',
+  GATEWAYS_IG: 'gateways-ig',
 
   // ===================
   // Email Groups (Google only)
