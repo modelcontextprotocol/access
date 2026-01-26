@@ -166,6 +166,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
+    github: 'EmLauber',
+    discord: '1408222390361657426',
+    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
+  },
+  {
     github: 'evalstate',
     discord: '779268016121577492',
     memberOf: [ROLE_IDS.COMMUNITY_MANAGERS, ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MODERATORS],
@@ -340,6 +345,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
+    github: 'nbarbettini',
+    discord: '784552628930478090',
+    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
+  },
+  {
     github: 'nickcoai',
     discord: '1153783469860732968',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.SERVER_IDENTITY_WG],
@@ -495,15 +505,5 @@ export const MEMBERS: readonly Member[] = [
   {
     email: 'davideramian@anthropic.com',
     memberOf: [ROLE_IDS.ANTITRUST],
-  },
-  {
-    github: 'EmLauber',
-    discord: '1408222390361657426',
-    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
-  },
-  {
-    github: 'nbarbettini',
-    discord: '784552628930478090',
-    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
   },
 ] as const;
