@@ -55,6 +55,49 @@ for (const member of MEMBERS) {
   }
 }
 
+// Validate member ordering in users.ts
+console.log('Validating member ordering in users.ts...');
+{
+  // Split members into github members and email-only members
+  const githubMembers: (typeof MEMBERS)[number][] = [];
+  const emailOnlyMembers: (typeof MEMBERS)[number][] = [];
+
+  for (const member of MEMBERS) {
+    if (member.github) {
+      githubMembers.push(member);
+    } else if (member.email) {
+      emailOnlyMembers.push(member);
+    }
+  }
+
+  // Check that github members come before email-only members
+  let foundEmailOnly = false;
+  for (const member of MEMBERS) {
+    if (!member.github && member.email) {
+      foundEmailOnly = true;
+    } else if (member.github && foundEmailOnly) {
+      console.error(
+        `ERROR: Member "${member.github}" appears after email-only members. GitHub members should come before email-only members.`
+      );
+      hasErrors = true;
+      break;
+    }
+  }
+
+  // Check that github members are sorted alphabetically (case-insensitive)
+  for (let i = 1; i < githubMembers.length; i++) {
+    const prev = githubMembers[i - 1].github!.toLowerCase();
+    const curr = githubMembers[i].github!.toLowerCase();
+    if (prev > curr) {
+      console.error(
+        `ERROR: Members are not sorted alphabetically. "${githubMembers[i - 1].github}" should come after "${githubMembers[i].github}".`
+      );
+      hasErrors = true;
+      break;
+    }
+  }
+}
+
 // Validate parent role references in roles.ts
 console.log('Validating parent role references in roles.ts...');
 for (const role of ROLES) {
