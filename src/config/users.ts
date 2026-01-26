@@ -74,6 +74,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'chemicL',
+    discord: '1346243721271971923',
     memberOf: [ROLE_IDS.JAVA_SDK],
   },
   {
