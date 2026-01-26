@@ -496,4 +496,14 @@ export const MEMBERS: readonly Member[] = [
     email: 'davideramian@anthropic.com',
     memberOf: [ROLE_IDS.ANTITRUST],
   },
+  {
+    github: 'EmLauber',
+    discord: '1408222390361657426',
+    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
+  },
+  {
+    github: 'nbarbettini',
+    discord: '784552628930478090',
+    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
+  },
 ] as const;
