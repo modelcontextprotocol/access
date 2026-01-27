@@ -391,7 +391,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'pederhp',
     discord: '166255967665651713',
-    memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.FINANCIAL_SERVICES_IG],
   },
   {
     github: 'petery-ant',
@@ -419,8 +419,9 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'sambhav',
+    email: 'sambhavs.email@gmail.com',
     discord: '840109459212206090',
-    memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.FINANCIAL_SERVICES_IG],
   },
   {
     github: 'samthanawalla',
