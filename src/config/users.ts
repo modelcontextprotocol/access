@@ -193,6 +193,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
+    github: 'herczyn',
+    memberOf: [ROLE_IDS.GO_SDK],
+  },
+  {
     github: 'ignatov',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
