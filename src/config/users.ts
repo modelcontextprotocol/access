@@ -318,6 +318,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'maxisbey',
+    discord: '1404871241738748058',
     memberOf: [ROLE_IDS.PYTHON_SDK],
   },
   {
