@@ -194,6 +194,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'herczyn',
+    discord: '1001427188068917279',
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
