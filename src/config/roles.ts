@@ -309,6 +309,16 @@ export const ROLES: readonly Role[] = [
   },
 
   // ===================
+  // WG/IG Facilitators (Discord only)
+  // ===================
+  {
+    id: ROLE_IDS.WG_IG_FACILITATORS,
+    description: 'Working Group and Interest Group facilitators with calendar access',
+    discord: { role: 'wg/ig facilitators (synced)' },
+    // Discord only - grants meet.modelcontextprotocol.io calendar access
+  },
+
+  // ===================
   // Email Groups (Google only)
   // ===================
   {

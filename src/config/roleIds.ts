@@ -63,6 +63,11 @@ export const ROLE_IDS = {
   GATEWAYS_IG: 'gateways-ig',
 
   // ===================
+  // WG/IG Facilitators (Discord only)
+  // ===================
+  WG_IG_FACILITATORS: 'wg-ig-facilitators',
+
+  // ===================
   // Email Groups (Google only)
   // ===================
   ANTITRUST: 'antitrust',
