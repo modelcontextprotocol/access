@@ -197,6 +197,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
+    github: 'idosal',
+    discord: '593070927202484244',
+    memberOf: [ROLE_IDS.WORKING_GROUPS, ROLE_IDS.MCP_APPS_WG, ROLE_IDS.MCP_APPS_SDK],
+  },
+  {
     github: 'ignatov',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
@@ -322,6 +327,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'maxisbey',
+    discord: '1404871241738748058',
     memberOf: [ROLE_IDS.PYTHON_SDK],
   },
   {
@@ -395,7 +401,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'pederhp',
     discord: '166255967665651713',
-    memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.FINANCIAL_SERVICES_IG],
   },
   {
     github: 'petery-ant',
@@ -423,8 +429,9 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'sambhav',
+    email: 'sambhavs.email@gmail.com',
     discord: '840109459212206090',
-    memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.FINANCIAL_SERVICES_IG],
   },
   {
     github: 'samthanawalla',
