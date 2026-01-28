@@ -193,6 +193,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
+    github: 'idosal',
+    discord: '593070927202484244',
+    memberOf: [ROLE_IDS.WORKING_GROUPS, ROLE_IDS.MCP_APPS_WG, ROLE_IDS.MCP_APPS_SDK],
+  },
+  {
     github: 'ignatov',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
@@ -265,11 +270,6 @@ export const MEMBERS: readonly Member[] = [
     github: 'kurtisvg',
     discord: '1158458388917780590',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
-  },
-  {
-    github: 'idosal',
-    discord: '593070927202484244',
-    memberOf: [ROLE_IDS.WORKING_GROUPS, ROLE_IDS.MCP_APPS_WG, ROLE_IDS.MCP_APPS_SDK],
   },
   {
     github: 'liady',
