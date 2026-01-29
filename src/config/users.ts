@@ -15,7 +15,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'aaronpk',
     discord: '324624369428987905',
-    memberOf: [ROLE_IDS.AUTH_WG, ROLE_IDS.MAINTAINERS],
+    memberOf: [ROLE_IDS.AUTH_MAINTAINERS, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'alexhancock',
@@ -109,7 +109,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'D-McAdams',
     discord: '1364696680980545697',
-    memberOf: [ROLE_IDS.AUTH_WG],
+    memberOf: [ROLE_IDS.AUTH_MAINTAINERS],
   },
   {
     github: 'devcrocod',
@@ -124,7 +124,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'dsp',
     memberOf: [
-      ROLE_IDS.AUTH_WG,
+      ROLE_IDS.AUTH_MAINTAINERS,
       ROLE_IDS.LEAD_MAINTAINERS,
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
@@ -143,7 +143,7 @@ export const MEMBERS: readonly Member[] = [
     email: 'david@modelcontextprotocol.io',
     discord: '166107790262272000',
     memberOf: [
-      ROLE_IDS.AUTH_WG,
+      ROLE_IDS.AUTH_MAINTAINERS,
       ROLE_IDS.LEAD_MAINTAINERS,
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
@@ -286,7 +286,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'localden',
     discord: '1351224014143754260',
     memberOf: [
-      ROLE_IDS.AUTH_WG,
+      ROLE_IDS.AUTH_MAINTAINERS,
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.CSHARP_SDK,
       ROLE_IDS.DOCS_MAINTAINERS,
@@ -402,7 +402,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.PYTHON_SDK_AUTH,
       ROLE_IDS.TYPESCRIPT_SDK,
       ROLE_IDS.TYPESCRIPT_SDK_AUTH,
-      ROLE_IDS.AUTH_WG,
+      ROLE_IDS.AUTH_MAINTAINERS,
     ],
   },
   {
