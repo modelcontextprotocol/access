@@ -21,7 +21,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'auth-wg', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'push' },
-      { team: 'docs-maintaners', permission: 'push' },
+      { team: 'docs-maintainers', permission: 'push' },
       { team: 'go-sdk', permission: 'push' },
       { team: 'ig-financial-services', permission: 'push' },
       { team: 'interest-groups', permission: 'push' },
@@ -51,7 +51,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'auth-wg', permission: 'triage' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'triage' },
-      { team: 'docs-maintaners', permission: 'triage' },
+      { team: 'docs-maintainers', permission: 'triage' },
       { team: 'go-sdk', permission: 'triage' },
       { team: 'ig-financial-services', permission: 'triage' },
       { team: 'interest-groups', permission: 'triage' },
@@ -87,10 +87,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'auth-wg', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'push' },
-      { team: 'docs-maintaners', permission: 'push' },
       { team: 'go-sdk', permission: 'push' },
-      { team: 'ig-financial-services', permission: 'push' },
-      { team: 'interest-groups', permission: 'push' },
       { team: 'java-sdk', permission: 'push' },
       { team: 'kotlin-sdk', permission: 'push' },
       { team: 'moderators', permission: 'push' },
@@ -107,7 +104,6 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'transport-wg', permission: 'push' },
       { team: 'typescript-sdk', permission: 'push' },
       { team: 'typescript-sdk-auth', permission: 'push' },
-      { team: 'working-groups', permission: 'push' },
     ],
   },
   {
@@ -117,7 +113,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'auth-wg', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'triage' },
-      { team: 'docs-maintaners', permission: 'push' },
+      { team: 'docs-maintainers', permission: 'push' },
       { team: 'go-sdk', permission: 'triage' },
       { team: 'ig-financial-services', permission: 'triage' },
       { team: 'interest-groups', permission: 'triage' },
@@ -142,15 +138,12 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'quickstart-resources',
-    users: [
-      { username: 'jspahrsummers', permission: 'admin' },
-      { username: 'a-akimov', permission: 'push' },
-    ],
+    users: [{ username: 'jspahrsummers', permission: 'admin' }],
     teams: [
       { team: 'auth-wg', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'push' },
-      { team: 'docs-maintaners', permission: 'push' },
+      { team: 'docs-maintainers', permission: 'push' },
       { team: 'go-sdk', permission: 'push' },
       { team: 'ig-financial-services', permission: 'push' },
       { team: 'interest-groups', permission: 'push' },
@@ -183,10 +176,8 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'auth-wg', permission: 'push' },
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'csharp-sdk', permission: 'push' },
-      { team: 'docs-maintaners', permission: 'push' },
+      { team: 'docs-maintainers', permission: 'push' },
       { team: 'go-sdk', permission: 'push' },
-      { team: 'ig-financial-services', permission: 'push' },
-      { team: 'interest-groups', permission: 'push' },
       { team: 'java-sdk', permission: 'push' },
       { team: 'kotlin-sdk', permission: 'push' },
       { team: 'moderators', permission: 'push' },
@@ -203,7 +194,6 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'transport-wg', permission: 'push' },
       { team: 'typescript-sdk', permission: 'push' },
       { team: 'typescript-sdk-auth', permission: 'push' },
-      { team: 'working-groups', permission: 'push' },
     ],
   },
   {
@@ -215,6 +205,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { username: 'jozkee', permission: 'admin' },
       { username: 'localden', permission: 'admin' },
       { username: 'PederHP', permission: 'triage' },
+      { username: 'tarekgh', permission: 'push' },
     ],
   },
   {
@@ -264,7 +255,12 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'swift-sdk',
-    teams: [{ team: 'swift-sdk', permission: 'admin' }],
+    teams: [{ team: 'swift-sdk', permission: 'push' }],
+    users: [
+      { username: 'mattt', permission: 'admin' },
+      { username: 'movetz', permission: 'admin' },
+      { username: 'stallent', permission: 'admin' },
+    ],
   },
   {
     repository: 'typescript-sdk',
@@ -311,6 +307,44 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   {
     repository: 'ext-auth',
     teams: [{ team: 'auth-wg', permission: 'admin' }],
+  },
+  {
+    repository: 'ext-apps',
+    teams: [
+      { team: 'core-maintainers', permission: 'push' },
+      { team: 'moderators', permission: 'triage' },
+      { team: 'mcp-apps-wg', permission: 'push' },
+      { team: 'mcp-apps-sdk', permission: 'admin' },
+    ],
+    users: [
+      { username: 'liady', permission: 'admin' },
+      { username: 'idosal', permission: 'admin' },
+      { username: 'ststrong', permission: 'admin' },
+      { username: 'martinalong', permission: 'push' },
+      { username: 'antonpk1', permission: 'admin' },
+      { username: 'conorkel', permission: 'admin' },
+      { username: 'alexi-openai', permission: 'admin' },
+    ],
+  },
+  {
+    repository: 'use-mcp',
+    teams: [
+      { team: 'core-maintainers', permission: 'push' },
+      { team: 'moderators', permission: 'triage' },
+    ],
+    users: [{ username: 'geelen', permission: 'admin' }],
+  },
+  {
+    repository: 'example-remote-client',
+    teams: [
+      { team: 'core-maintainers', permission: 'push' },
+      { team: 'moderators', permission: 'triage' },
+    ],
+    users: [
+      { username: 'geelen', permission: 'push' },
+      { username: 'markyfyi', permission: 'push' },
+      { username: 'jerryhong1', permission: 'push' },
+    ],
   },
 ];
 

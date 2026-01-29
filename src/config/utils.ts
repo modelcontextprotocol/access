@@ -1,43 +1,71 @@
-import type { GROUPS } from './groups';
+import type { RoleId } from './roleIds';
+import type { Role } from './roles';
 
-function isValidGroupName(name: string): boolean {
-  return /^[a-z][a-z0-9-]*[a-z]$/.test(name);
+/**
+ * A member of the MCP organization.
+ * Members are assigned to roles via memberOf, and the role definitions
+ * determine which platforms (GitHub, Discord, Google) they get access to.
+ */
+export interface Member {
+  /** GitHub username */
+  github?: string;
+  /** Email address (for Google Workspace) */
+  email?: string;
+  /** Discord user ID (snowflake) */
+  discord?: string;
+  /** Roles this member belongs to */
+  memberOf: readonly RoleId[];
 }
 
-export type Platform = 'github' | 'google';
+/**
+ * Sort roles by GitHub parent dependency (topological sort).
+ * Ensures parent teams are created before child teams.
+ *
+ * This is necessary because when creating GitHub teams, we need the parent
+ * team's ID. If we process roles in arbitrary order, a child team might be
+ * processed before its parent, resulting in undefined parentTeamId.
+ */
+export function sortRolesByGitHubDependency(
+  roles: readonly Role[],
+  roleLookup: Map<RoleId, Role>
+): Role[] {
+  const result: Role[] = [];
+  const visited = new Set<RoleId>();
 
-export function defineGroups<
-  const T extends readonly {
-    name: Lowercase<string>;
-    description: string;
-    memberOf?: readonly T[number]['name'][];
-    isEmailGroup?: boolean;
-    onlyOnPlatforms?: readonly Platform[];
-  }[],
->(groups: T) {
-  for (const group of groups) {
-    if (!isValidGroupName(group.name)) {
-      throw new Error(
-        `Invalid group name: ${group.name}. Must be lowercase alphanumeric with dashes, starting with a letter.`
-      );
+  function visit(role: Role): void {
+    if (visited.has(role.id)) return;
+
+    // Only process roles with GitHub config
+    if (!role.github) {
+      visited.add(role.id);
+      return;
     }
+
+    // Visit parent first if it exists and has GitHub config
+    if (role.github.parent) {
+      const parentRole = roleLookup.get(role.github.parent);
+      if (parentRole) {
+        visit(parentRole);
+      }
+    }
+
+    visited.add(role.id);
+    result.push(role);
   }
 
-  return groups;
+  for (const role of roles) {
+    visit(role);
+  }
+
+  return result;
 }
 
-export type GroupKey = (typeof GROUPS)[number]['name'];
-
-export interface Group {
-  name: GroupKey;
-  description: string;
-  memberOf?: readonly GroupKey[];
-  isEmailGroup?: boolean;
-  onlyOnPlatforms?: readonly Platform[];
-}
-
-export interface Member {
-  github?: string;
-  email?: string;
-  memberOf: readonly GroupKey[];
-}
+// Re-export for convenience
+export { ROLE_IDS, type RoleId } from './roleIds';
+export {
+  ROLES,
+  type Role,
+  type GitHubConfig,
+  type DiscordConfig,
+  type GoogleConfig,
+} from './roles';

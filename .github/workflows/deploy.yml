@@ -34,7 +34,17 @@ jobs:
         with:
           pulumi-version: ${{ env.PULUMI_VERSION }}
 
+      - name: Cache Pulumi plugins
+        uses: actions/cache@v4
+        with:
+          path: ~/.pulumi/plugins
+          key: pulumi-plugins-${{ hashFiles('Pulumi.yaml') }}
+          restore-keys: |
+            pulumi-plugins-
+
       - name: Install Pulumi packages
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         run: pulumi install
 
       - name: Install dependencies
@@ -52,6 +62,12 @@ jobs:
         env:
           PULUMI_PASSPHRASE: ${{ secrets.PULUMI_PROD_PASSPHRASE }}
           GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
         run: |
           echo "$PULUMI_PASSPHRASE" > passphrase.prod.txt
+          export PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt
+          pulumi login gs://mcp-access-prod-pulumi-state
+          pulumi config set discord:guildId "$DISCORD_GUILD_ID" --stack prod
+          pulumi config set discord:botToken "$DISCORD_BOT_TOKEN" --secret --stack prod
           make up
