@@ -441,6 +441,12 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.FINANCIAL_SERVICES_IG],
   },
   {
+    github: 'SamMorrowDrums',
+    email: 'sammorrowdrums@github.com',
+    discord: '782948163694493696',
+    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
+  },
+  {
     github: 'samthanawalla',
     memberOf: [ROLE_IDS.GO_SDK],
   },
