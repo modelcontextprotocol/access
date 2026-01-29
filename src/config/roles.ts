@@ -244,12 +244,6 @@ export const ROLES: readonly Role[] = [
     // See AUTH_IG for Discord role
   },
   {
-    id: ROLE_IDS.AUTH_TOOL_SCOPES_WG,
-    description: 'Auth Working Group - Tool Scopes',
-    github: { team: 'auth-tool-scopes-wg', parent: ROLE_IDS.AUTH_WG },
-    discord: { role: 'auth-tool-scopes-wg (synced)' },
-  },
-  {
     id: ROLE_IDS.SECURITY_WG,
     description: 'Security Working Group',
     github: { team: 'security-wg', parent: ROLE_IDS.WORKING_GROUPS },

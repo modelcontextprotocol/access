@@ -383,7 +383,6 @@ export const MEMBERS: readonly Member[] = [
     github: 'olaservo',
     discord: '1079841769946095620',
     memberOf: [
-      ROLE_IDS.AUTH_TOOL_SCOPES_WG,
       ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.INSPECTOR_MAINTAINERS,
@@ -445,7 +444,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'SamMorrowDrums',
     email: 'sammorrowdrums@github.com',
     discord: '782948163694493696',
-    memberOf: [ROLE_IDS.AUTH_TOOL_SCOPES_WG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'samthanawalla',
