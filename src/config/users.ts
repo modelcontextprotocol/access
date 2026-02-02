@@ -54,7 +54,6 @@ export const MEMBERS: readonly Member[] = [
     github: 'bhosmer-ant',
     discord: '1272295077074567242',
     memberOf: [
-      ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.PYTHON_SDK,
