@@ -27,10 +27,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
-    github: 'ansaba',
-    memberOf: [ROLE_IDS.GO_SDK],
-  },
-  {
     github: 'antonpk1',
     discord: '738474760480227358',
     memberOf: [ROLE_IDS.MCP_APPS_SDK],
@@ -433,10 +429,6 @@ export const MEMBERS: readonly Member[] = [
     email: 'sambhavs.email@gmail.com',
     discord: '840109459212206090',
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.FINANCIAL_SERVICES_IG],
-  },
-  {
-    github: 'samthanawalla',
-    memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'sdubov',
