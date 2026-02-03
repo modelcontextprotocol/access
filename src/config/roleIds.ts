@@ -46,7 +46,7 @@ export const ROLE_IDS = {
   // Working Groups
   // ===================
   WORKING_GROUPS: 'working-groups',
-  AUTH_WG: 'auth-wg',
+  AUTH_MAINTAINERS: 'auth-maintainers',
   SECURITY_WG: 'security-wg',
   SERVER_IDENTITY_WG: 'server-identity-wg',
   TRANSPORT_WG: 'transport-wg',
