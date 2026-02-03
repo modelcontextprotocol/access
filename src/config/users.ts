@@ -168,7 +168,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'evalstate',
     discord: '779268016121577492',
-    memberOf: [ROLE_IDS.COMMUNITY_MANAGERS, ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MODERATORS],
+    memberOf: [ROLE_IDS.MAINTAINERS,ROLE_IDS.COMMUNITY_MANAGERS, ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MODERATORS],
   },
   {
     github: 'fabpot',
