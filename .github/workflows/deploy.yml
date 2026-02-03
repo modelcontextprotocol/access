@@ -79,5 +79,5 @@ jobs:
           pulumi state delete 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::aaronpk-auth-maintainers' --stack prod --yes || true
           pulumi state delete 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::localden-auth-maintainers' --stack prod --yes || true
           pulumi state delete 'urn:pulumi:prod::mcp-access::github:index/teamMembership:TeamMembership::D-McAdams-auth-maintainers' --stack prod --yes || true
-          pulumi state delete 'urn:pulumi:prod::mcp-access::github:index/team:Team::auth-maintainers' --stack prod --yes --force || true
+          pulumi state delete 'urn:pulumi:prod::mcp-access::github:index/team:Team::auth-maintainers' --stack prod --yes --target-dependents || true
           make up
