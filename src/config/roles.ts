@@ -238,9 +238,9 @@ export const ROLES: readonly Role[] = [
     // No discord - organizational container
   },
   {
-    id: ROLE_IDS.AUTH_WG,
-    description: 'Authentication Working Group',
-    github: { team: 'auth-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    id: ROLE_IDS.AUTH_MAINTAINERS,
+    description: 'Auth Maintainers',
+    github: { team: 'auth-maintainers', parent: ROLE_IDS.WORKING_GROUPS },
     // See AUTH_IG for Discord role
   },
   {
@@ -287,7 +287,7 @@ export const ROLES: readonly Role[] = [
     id: ROLE_IDS.AUTH_IG,
     description: 'Auth Interest Group',
     discord: { role: 'auth interest group (synced)' },
-    // Discord only - separate from AUTH_WG which is GitHub
+    // Discord only - separate from AUTH_MAINTAINERS which is GitHub
   },
   {
     id: ROLE_IDS.CLIENT_IMPLEMENTOR_IG,
@@ -306,6 +306,16 @@ export const ROLES: readonly Role[] = [
     description: 'Gateways Interest Group',
     // No GitHub role yet
     discord: { role: 'gateways interest group (synced)' },
+  },
+
+  // ===================
+  // WG/IG Facilitators (Discord only)
+  // ===================
+  {
+    id: ROLE_IDS.WG_IG_FACILITATORS,
+    description: 'Working Group and Interest Group facilitators with calendar access',
+    discord: { role: 'wg/ig facilitators (synced)' },
+    // Discord only - grants meet.modelcontextprotocol.io calendar access
   },
 
   // ===================

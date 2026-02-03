@@ -18,7 +18,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     repository: 'docs',
     users: [{ username: 'jspahrsummers', permission: 'admin' }],
     teams: [
-      { team: 'auth-wg', permission: 'push' },
+      { team: 'auth-maintainers', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'push' },
       { team: 'docs-maintainers', permission: 'push' },
@@ -48,7 +48,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     repository: '.github',
     users: [{ username: 'jspahrsummers', permission: 'admin' }],
     teams: [
-      { team: 'auth-wg', permission: 'triage' },
+      { team: 'auth-maintainers', permission: 'triage' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'triage' },
       { team: 'docs-maintainers', permission: 'triage' },
@@ -84,7 +84,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
     teams: [
       { team: 'inspector-maintainers', permission: 'push' },
-      { team: 'auth-wg', permission: 'push' },
+      { team: 'auth-maintainers', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'push' },
       { team: 'go-sdk', permission: 'push' },
@@ -110,7 +110,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     repository: 'modelcontextprotocol',
     users: [{ username: 'jspahrsummers', permission: 'admin' }],
     teams: [
-      { team: 'auth-wg', permission: 'push' },
+      { team: 'auth-maintainers', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'triage' },
       { team: 'docs-maintainers', permission: 'push' },
@@ -140,7 +140,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     repository: 'quickstart-resources',
     users: [{ username: 'jspahrsummers', permission: 'admin' }],
     teams: [
-      { team: 'auth-wg', permission: 'push' },
+      { team: 'auth-maintainers', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'push' },
       { team: 'docs-maintainers', permission: 'push' },
@@ -173,7 +173,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { username: 'slimslenderslacks', permission: 'push' },
     ],
     teams: [
-      { team: 'auth-wg', permission: 'push' },
+      { team: 'auth-maintainers', permission: 'push' },
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'csharp-sdk', permission: 'push' },
       { team: 'docs-maintainers', permission: 'push' },
@@ -306,7 +306,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'ext-auth',
-    teams: [{ team: 'auth-wg', permission: 'admin' }],
+    teams: [{ team: 'auth-maintainers', permission: 'admin' }],
   },
   {
     repository: 'ext-apps',
