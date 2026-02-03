@@ -251,7 +251,9 @@ export const MEMBERS: readonly Member[] = [
     github: 'jonathanhefner',
     discord: '1301960963087663186',
     memberOf: [
+      ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.MAINTAINERS,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.RUBY_SDK,
       ROLE_IDS.MCP_APPS_SDK,
