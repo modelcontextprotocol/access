@@ -346,6 +346,14 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { username: 'jerryhong1', permission: 'push' },
     ],
   },
+  {
+    repository: 'experimental-ext-skills',
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'moderators', permission: 'triage' },
+      { team: 'skills-over-mcp-ig', permission: 'admin' },
+    ],
+  },
 ];
 
 // GitHub Projects V2 permissions are NOT managed by Pulumi - no support yet
