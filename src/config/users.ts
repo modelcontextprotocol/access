@@ -162,13 +162,13 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
-    github: 'erain',
-    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
-  },
-  {
     github: 'EmLauber',
     discord: '1408222390361657426',
     memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
+  },
+  {
+    github: 'erain',
+    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
     github: 'evalstate',
@@ -495,10 +495,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
-    github: 'TeamSparkAI',
-    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
-  },
-  {
     github: 'tadasant',
     email: 'tadas@modelcontextprotocol.io',
     discord: '400092503677599754',
@@ -511,6 +507,10 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.REGISTRY_MAINTAINERS,
       ROLE_IDS.ADMINISTRATORS,
     ],
+  },
+  {
+    github: 'TeamSparkAI',
+    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
     github: 'tiginamaria',
