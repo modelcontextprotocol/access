@@ -467,7 +467,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'rdimitrov',
     email: 'radoslav@modelcontextprotocol.io',
     discord: '1088231882979815424',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS, ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
     github: 'sambhav',
