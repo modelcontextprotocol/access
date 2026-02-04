@@ -71,8 +71,4 @@ jobs:
           pulumi login gs://mcp-access-prod-pulumi-state
           pulumi config set discord:guildId "$DISCORD_GUILD_ID" --stack prod
           pulumi config set discord:botToken "$DISCORD_BOT_TOKEN" --secret --stack prod
-          # One-time import: auth-maintainers team exists on GitHub (ID 16083315)
-          # but was lost from Pulumi state during the auth-wg -> auth-maintainers rename.
-          # Remove this import line after the next successful deploy.
-          pulumi import github:index/team:Team auth-maintainers 16083315 --stack prod --yes || true
           make up
