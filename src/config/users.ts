@@ -260,7 +260,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'jspahrsummers',
     email: 'justin@modelcontextprotocol.io',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
+    memberOf: [ROLE_IDS.LEAD_MAINTAINERS, ROLE_IDS.CORE_MAINTAINERS],
   },
   {
     github: 'kaxil',
