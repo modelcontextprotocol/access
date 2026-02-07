@@ -79,6 +79,16 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
+    github: 'chughtapan',
+    email: 'chugh.tapan@gmail.com',
+    discord: '941245973357793340',
+    memberOf: [
+      ROLE_IDS.INTEREST_GROUPS,
+      ROLE_IDS.PRIMITIVE_GROUPING_IG,
+      ROLE_IDS.WG_IG_FACILITATORS,
+    ],
+  },
+  {
     github: 'cliffhall',
     email: 'cliff@futurescale.com',
     discord: '501498061965754380',
