@@ -83,6 +83,7 @@ export const MEMBERS: readonly Member[] = [
     email: 'chugh.tapan@gmail.com',
     discord: '941245973357793340',
     memberOf: [
+      ROLE_IDS.MAINTAINERS,
       ROLE_IDS.INTEREST_GROUPS,
       ROLE_IDS.PRIMITIVE_GROUPING_IG,
       ROLE_IDS.WG_IG_FACILITATORS,
