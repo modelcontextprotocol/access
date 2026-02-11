@@ -493,7 +493,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'SamMorrowDrums',
     email: 'sammorrowdrums@github.com',
     discord: '782948163694493696',
-    memberOf: [ROLE_IDS.PRIMITIVE_GROUPING_IG, ROLE_IDS.SKILLS_OVER_MCP_IG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [
+      ROLE_IDS.PRIMITIVE_GROUPING_IG,
+      ROLE_IDS.SKILLS_OVER_MCP_IG,
+      ROLE_IDS.WG_IG_FACILITATORS,
+    ],
   },
   {
     github: 'sdubov',

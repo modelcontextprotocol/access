@@ -348,9 +348,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'experimental-ext-grouping',
-    teams: [
-      { team: 'primitive-grouping-ig', permission: 'push' },
-    ],
+    teams: [{ team: 'primitive-grouping-ig', permission: 'push' }],
   },
   {
     repository: 'experimental-ext-skills',
