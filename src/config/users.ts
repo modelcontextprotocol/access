@@ -98,6 +98,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.INSPECTOR_MAINTAINERS,
+      ROLE_IDS.PRIMITIVE_GROUPING_IG,
       ROLE_IDS.REFERENCE_SERVERS_MAINTAINERS,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.SKILLS_OVER_MCP_IG,
@@ -492,7 +493,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'SamMorrowDrums',
     email: 'sammorrowdrums@github.com',
     discord: '782948163694493696',
-    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.PRIMITIVE_GROUPING_IG, ROLE_IDS.SKILLS_OVER_MCP_IG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'sdubov',
