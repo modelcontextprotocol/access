@@ -196,12 +196,6 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   {
     repository: 'go-sdk',
     teams: [{ team: 'go-sdk', permission: 'admin' }],
-    users: [
-      { username: 'neild', permission: 'push' },
-      { username: 'rsc', permission: 'push' },
-      { username: 'rolandshoemaker', permission: 'push' },
-      { username: 'h9jiang', permission: 'maintain' },
-    ],
   },
   {
     repository: 'java-sdk',
