@@ -74,10 +74,6 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'inspector',
-    users: [
-      { username: 'richardkmichael', permission: 'triage' },
-      { username: 'ashwin-ant', permission: 'admin' },
-    ],
     teams: [
       { team: 'inspector-maintainers', permission: 'push' },
       { team: 'auth-maintainers', permission: 'push' },
@@ -162,7 +158,6 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'servers',
-    users: [{ username: 'slimslenderslacks', permission: 'push' }],
     teams: [
       { team: 'auth-maintainers', permission: 'push' },
       { team: 'core-maintainers', permission: 'admin' },
