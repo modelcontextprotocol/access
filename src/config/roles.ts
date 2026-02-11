@@ -308,6 +308,12 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'gateways interest group (synced)' },
   },
   {
+    id: ROLE_IDS.PRIMITIVE_GROUPING_IG,
+    description: 'Primitive Grouping Interest Group',
+    github: { team: 'primitive-grouping-ig', parent: ROLE_IDS.INTEREST_GROUPS },
+    discord: { role: 'primitive grouping interest group (synced)' },
+  },
+  {
     id: ROLE_IDS.SKILLS_OVER_MCP_IG,
     description: 'Skills Over MCP Interest Group',
     github: { team: 'skills-over-mcp-ig', parent: ROLE_IDS.INTEREST_GROUPS },
