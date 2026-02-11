@@ -347,6 +347,14 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
+    repository: 'experimental-ext-grouping',
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'moderators', permission: 'triage' },
+      { team: 'primitive-grouping-ig', permission: 'admin' },
+    ],
+  },
+  {
     repository: 'experimental-ext-skills',
     teams: [
       { team: 'core-maintainers', permission: 'admin' },
