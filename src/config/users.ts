@@ -527,10 +527,6 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
-    github: 'TeamSparkAI',
-    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
-  },
-  {
     github: 'tiginamaria',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
