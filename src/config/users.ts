@@ -57,6 +57,10 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'bolinfest',
+    memberOf: [ROLE_IDS.RUST_SDK],
+  },
+  {
     github: 'caitiem20',
     email: 'caitie.mccaffrey@microsoft.com',
     discord: '1425586366288494722',
@@ -258,6 +262,10 @@ export const MEMBERS: readonly Member[] = [
     github: 'joan-anthropic',
     discord: '1398403578892128437',
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
+  },
+  {
+    github: 'jokemanfire',
+    memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'jonathanhefner',

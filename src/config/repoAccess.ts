@@ -229,11 +229,6 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   {
     repository: 'rust-sdk',
     teams: [{ team: 'rust-sdk', permission: 'admin' }],
-    users: [
-      { username: 'jokemanfire', permission: 'push' },
-      { username: '4t145', permission: 'push' },
-      { username: 'bolinfest', permission: 'push' },
-    ],
   },
   {
     repository: 'swift-sdk',
