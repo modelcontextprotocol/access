@@ -465,7 +465,13 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'pederhp',
     discord: '166255967665651713',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.FINANCIAL_SERVICES_IG, ROLE_IDS.SKILLS_OVER_MCP_IG],
+    memberOf: [
+      ROLE_IDS.COMMUNITY_MANAGERS,
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.FINANCIAL_SERVICES_IG,
+      ROLE_IDS.MODERATORS,
+      ROLE_IDS.SKILLS_OVER_MCP_IG,
+    ],
   },
   {
     github: 'petery-ant',
