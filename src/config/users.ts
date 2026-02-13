@@ -57,6 +57,10 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'BobDickinson',
+    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
+  },
+  {
     github: 'bolinfest',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
