@@ -322,6 +322,14 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'skills-over-mcp-ig', permission: 'admin' },
     ],
   },
+  {
+    repository: 'governance',
+    teams: [
+      { team: 'lead-maintainers', permission: 'maintain' },
+      { team: 'core-maintainers', permission: 'maintain' },
+    ],
+    users: [{ username: 'sambhav', permission: 'admin' }],
+  },
 ];
 
 // GitHub Projects V2 permissions are NOT managed by Pulumi - no support yet
