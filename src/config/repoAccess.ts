@@ -326,7 +326,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     repository: 'maintainer-docs',
     teams: [
       { team: 'lead-maintainers', permission: 'maintain' },
-      { team: 'core-maintainers', permission: 'maintain' },
+      { team: 'core-maintainers', permission: 'admin' },
       { team: 'steering-committee', permission: 'maintain' },
     ],
     users: [{ username: 'sambhav', permission: 'admin' }],
