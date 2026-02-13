@@ -27,10 +27,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
-    github: 'ansaba',
-    memberOf: [ROLE_IDS.GO_SDK],
-  },
-  {
     github: 'antonpk1',
     discord: '738474760480227358',
     memberOf: [ROLE_IDS.MCP_APPS_SDK],
@@ -61,6 +57,10 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'bolinfest',
+    memberOf: [ROLE_IDS.RUST_SDK],
+  },
+  {
     github: 'caitiem20',
     email: 'caitie.mccaffrey@microsoft.com',
     discord: '1425586366288494722',
@@ -83,6 +83,17 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
+    github: 'chughtapan',
+    email: 'chugh.tapan@gmail.com',
+    discord: '941245973357793340',
+    memberOf: [
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.INTEREST_GROUPS,
+      ROLE_IDS.PRIMITIVE_GROUPING_IG,
+      ROLE_IDS.WG_IG_FACILITATORS,
+    ],
+  },
+  {
     github: 'cliffhall',
     email: 'cliff@futurescale.com',
     discord: '501498061965754380',
@@ -91,8 +102,10 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.INSPECTOR_MAINTAINERS,
+      ROLE_IDS.PRIMITIVE_GROUPING_IG,
       ROLE_IDS.REFERENCE_SERVERS_MAINTAINERS,
       ROLE_IDS.MODERATORS,
+      ROLE_IDS.SKILLS_OVER_MCP_IG,
       ROLE_IDS.WORKING_GROUPS,
     ],
   },
@@ -170,9 +183,18 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
+    github: 'erain',
+    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
+  },
+  {
     github: 'evalstate',
     discord: '779268016121577492',
-    memberOf: [ROLE_IDS.COMMUNITY_MANAGERS, ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MODERATORS],
+    memberOf: [
+      ROLE_IDS.COMMUNITY_MANAGERS,
+      ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.MODERATORS,
+    ],
   },
   {
     github: 'fabpot',
@@ -197,6 +219,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
+    github: 'herczyn',
+    discord: '1001427188068917279',
+    memberOf: [ROLE_IDS.GO_SDK],
+  },
+  {
     github: 'idosal',
     discord: '593070927202484244',
     memberOf: [ROLE_IDS.WORKING_GROUPS, ROLE_IDS.MCP_APPS_WG, ROLE_IDS.MCP_APPS_SDK],
@@ -212,6 +239,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'jamadeo',
     memberOf: [ROLE_IDS.RUST_SDK],
+  },
+  {
+    github: 'JAORMX',
+    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
     github: 'jba',
@@ -233,10 +264,16 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
+    github: 'jokemanfire',
+    memberOf: [ROLE_IDS.RUST_SDK],
+  },
+  {
     github: 'jonathanhefner',
     discord: '1301960963087663186',
     memberOf: [
+      ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.MAINTAINERS,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.RUBY_SDK,
       ROLE_IDS.MCP_APPS_SDK,
@@ -245,12 +282,20 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'jspahrsummers',
     email: 'justin@modelcontextprotocol.io',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
+    memberOf: [ROLE_IDS.LEAD_MAINTAINERS, ROLE_IDS.CORE_MAINTAINERS],
+  },
+  {
+    github: 'kaxil',
+    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
     github: 'Kehrlann',
     discord: '1112624611901837373',
     memberOf: [ROLE_IDS.JAVA_SDK],
+  },
+  {
+    github: 'keithagroves',
+    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
     github: 'KKonstantinov',
@@ -394,7 +439,11 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.INSPECTOR_MAINTAINERS,
+      ROLE_IDS.MAINTAINERS,
       ROLE_IDS.MODERATORS,
+      ROLE_IDS.REFERENCE_SERVERS_MAINTAINERS,
+      ROLE_IDS.SKILLS_OVER_MCP_IG,
+      ROLE_IDS.WORKING_GROUPS,
     ],
   },
   {
@@ -416,7 +465,13 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'pederhp',
     discord: '166255967665651713',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.FINANCIAL_SERVICES_IG],
+    memberOf: [
+      ROLE_IDS.COMMUNITY_MANAGERS,
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.FINANCIAL_SERVICES_IG,
+      ROLE_IDS.MODERATORS,
+      ROLE_IDS.SKILLS_OVER_MCP_IG,
+    ],
   },
   {
     github: 'petery-ant',
@@ -440,7 +495,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'rdimitrov',
     email: 'radoslav@modelcontextprotocol.io',
     discord: '1088231882979815424',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS, ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
     github: 'sambhav',
@@ -452,11 +507,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'SamMorrowDrums',
     email: 'sammorrowdrums@github.com',
     discord: '782948163694493696',
-    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
-  },
-  {
-    github: 'samthanawalla',
-    memberOf: [ROLE_IDS.GO_SDK],
+    memberOf: [
+      ROLE_IDS.PRIMITIVE_GROUPING_IG,
+      ROLE_IDS.SKILLS_OVER_MCP_IG,
+      ROLE_IDS.WG_IG_FACILITATORS,
+    ],
   },
   {
     github: 'sdubov',
