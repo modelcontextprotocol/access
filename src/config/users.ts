@@ -57,12 +57,12 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
-    github: 'bolinfest',
-    memberOf: [ROLE_IDS.RUST_SDK],
-  },
-  {
     github: 'BobDickinson',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
+  },
+  {
+    github: 'bolinfest',
+    memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'caitiem20',
