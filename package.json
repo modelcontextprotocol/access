@@ -13,9 +13,9 @@
   },
   "license": "MIT",
   "dependencies": {
-    "@pulumi/github": "^6.7.3",
+    "@pulumi/github": "^6.11.0",
     "@pulumi/googleworkspace": "file:sdks/googleworkspace",
-    "@pulumi/pulumi": "^3.197.0"
+    "@pulumi/pulumi": "^3.218.0"
   },
   "devDependencies": {
     "@types/node": "^22.18.6",
