@@ -11,7 +11,6 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'a-akimov',
     discord: '1365254196621738116',
-    skipGoogleUserProvisioning: true,
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS],
   },
   {
@@ -62,6 +61,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'BobDickinson',
     email: 'bob.dickinson@gmail.com',
     discord: '1175893001202045139',
+    skipGoogleUserProvisioning: true,
     memberOf: [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.INSPECTOR_MAINTAINERS,
