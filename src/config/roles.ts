@@ -26,6 +26,8 @@ export interface GoogleConfig {
   group: string;
   /** If true, accepts emails from anyone including external users */
   isEmailGroup?: boolean;
+  /** If true, members of this role get a Google Workspace user account */
+  provisionUser?: boolean;
 }
 
 /**
@@ -77,13 +79,14 @@ export const ROLES: readonly Role[] = [
     description: 'Lead core maintainers',
     github: { team: 'lead-maintainers', parent: ROLE_IDS.STEERING_COMMITTEE },
     discord: { role: 'lead maintainers (synced)' },
-    // Discord only for now - could add GitHub if needed
+    google: { group: 'lead-maintainers', provisionUser: true },
   },
   {
     id: ROLE_IDS.CORE_MAINTAINERS,
     description: 'Core maintainers',
     github: { team: 'core-maintainers', parent: ROLE_IDS.STEERING_COMMITTEE },
     discord: { role: 'core maintainers (synced)' },
+    google: { group: 'core-maintainers', provisionUser: true },
   },
   {
     id: ROLE_IDS.MODERATORS,
@@ -130,7 +133,7 @@ export const ROLES: readonly Role[] = [
     description: 'Official registry builders and maintainers',
     github: { team: 'registry-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'registry maintainers (synced)' },
-    google: { group: 'registry-wg' },
+    google: { group: 'registry-wg', provisionUser: true },
   },
   {
     id: ROLE_IDS.USE_MCP_MAINTAINERS,

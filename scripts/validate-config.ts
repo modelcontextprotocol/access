@@ -98,6 +98,72 @@ console.log('Validating member ordering in users.ts...');
   }
 }
 
+// Validate Google Workspace user provisioning fields
+console.log('Validating Google Workspace user provisioning fields...');
+{
+  const googleEmailPrefixes = new Map<string, string>();
+
+  for (const member of MEMBERS) {
+    const memberId = member.github || member.email || 'unknown';
+
+    // Members with googleEmailPrefix must also have firstName and lastName
+    if (member.googleEmailPrefix) {
+      if (!member.firstName) {
+        console.error(`ERROR: Member "${memberId}" has googleEmailPrefix but is missing firstName`);
+        hasErrors = true;
+      }
+      if (!member.lastName) {
+        console.error(`ERROR: Member "${memberId}" has googleEmailPrefix but is missing lastName`);
+        hasErrors = true;
+      }
+
+      // Check uniqueness of googleEmailPrefix
+      const existing = googleEmailPrefixes.get(member.googleEmailPrefix);
+      if (existing) {
+        console.error(
+          `ERROR: googleEmailPrefix "${member.googleEmailPrefix}" is used by both "${existing}" and "${memberId}"`
+        );
+        hasErrors = true;
+      } else {
+        googleEmailPrefixes.set(member.googleEmailPrefix, memberId);
+      }
+    }
+
+    // Members in provisionUser roles without all three fields won't get a GWS account
+    const inProvisionUserRole = member.memberOf.some((roleId: RoleId) => {
+      const role = roleLookup.get(roleId);
+      return role?.google?.provisionUser === true;
+    });
+
+    const hasProvisioningFields = !!(
+      member.googleEmailPrefix &&
+      member.firstName &&
+      member.lastName
+    );
+
+    if (member.skipGoogleUserProvisioning && !inProvisionUserRole) {
+      console.error(
+        `ERROR: Member "${memberId}" has skipGoogleUserProvisioning=true but is not in a provisionUser role`
+      );
+      hasErrors = true;
+    }
+
+    if (inProvisionUserRole && hasProvisioningFields && member.skipGoogleUserProvisioning) {
+      console.error(
+        `ERROR: Member "${memberId}" has provisioning fields and skipGoogleUserProvisioning=true; pick one`
+      );
+      hasErrors = true;
+    }
+
+    if (inProvisionUserRole && !hasProvisioningFields && !member.skipGoogleUserProvisioning) {
+      console.error(
+        `ERROR: Member "${memberId}" is in a provisionUser role but is missing Google user fields. Add fields or set skipGoogleUserProvisioning: true`
+      );
+      hasErrors = true;
+    }
+  }
+}
+
 // Validate parent role references in roles.ts
 console.log('Validating parent role references in roles.ts...');
 for (const role of ROLES) {
