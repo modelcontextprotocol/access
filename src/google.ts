@@ -1,4 +1,7 @@
+import * as crypto from 'crypto';
+import * as pulumi from '@pulumi/pulumi';
 import * as gworkspace from '@pulumi/googleworkspace';
+import * as random from '@pulumi/random';
 import { ROLES, type Role, buildRoleLookup } from './config/roles';
 import { MEMBERS } from './config/users';
 import type { RoleId } from './config/roleIds';
@@ -45,20 +48,91 @@ ROLES.forEach((role: Role) => {
   });
 });
 
+// Provision Google Workspace user accounts for members in roles with provisionUser
+const provisionedUsersByEmail: Record<string, gworkspace.User> = {};
+const newUserPasswords: Record<string, pulumi.Output<string>> = {};
+
+MEMBERS.forEach((member) => {
+  if (
+    !member.firstName ||
+    !member.lastName ||
+    !member.googleEmailPrefix ||
+    member.skipGoogleUserProvisioning
+  )
+    return;
+
+  const needsUser = member.memberOf.some((roleId: RoleId) => {
+    const role = roleLookup.get(roleId);
+    return role?.google?.provisionUser === true;
+  });
+  if (!needsUser) return;
+
+  const primaryEmail = `${member.googleEmailPrefix}@modelcontextprotocol.io`;
+
+  if (member.existingGWSUser) {
+    // Import existing user into Pulumi state without recreating
+    const user = new gworkspace.User(
+      `gws-user-${member.googleEmailPrefix}`,
+      {
+        primaryEmail,
+        name: { familyName: member.lastName!, givenName: member.firstName! },
+        orgUnitPath: '/Model Context Protocol',
+      },
+      { import: primaryEmail }
+    );
+    provisionedUsersByEmail[primaryEmail] = user;
+  } else {
+    // Create new user with random password
+    const password = new random.RandomPassword(`gws-pwd-${member.googleEmailPrefix}`, {
+      length: 24,
+      special: true,
+    });
+    const hashedPassword = password.result.apply((plaintext: string) =>
+      crypto.createHash('sha1').update(plaintext).digest('hex')
+    );
+
+    const user = new gworkspace.User(`gws-user-${member.googleEmailPrefix}`, {
+      primaryEmail,
+      name: { familyName: member.lastName!, givenName: member.firstName! },
+      password: hashedPassword,
+      hashFunction: 'SHA-1',
+      changePasswordAtNextLogin: true,
+      orgUnitPath: '/Model Context Protocol',
+    });
+    provisionedUsersByEmail[primaryEmail] = user;
+
+    // Track password for export so an admin can retrieve it
+    newUserPasswords[primaryEmail] = password.result;
+  }
+});
+
 // Create group memberships for users
 MEMBERS.forEach((member) => {
-  if (!member.email) return;
+  // Prefer the provisioned GWS email over the personal email for group memberships
+  const gwsEmail = member.googleEmailPrefix
+    ? `${member.googleEmailPrefix}@modelcontextprotocol.io`
+    : undefined;
+  const memberEmail = gwsEmail || member.email;
+  if (!memberEmail) return;
+  const provisionedUser = gwsEmail ? provisionedUsersByEmail[gwsEmail] : undefined;
 
   member.memberOf.forEach((roleId: RoleId) => {
     const role = roleLookup.get(roleId);
     if (!role?.google) return; // Role doesn't have Google config
 
-    new gworkspace.GroupMember(`${member.email}-${role.google.group}`, {
-      groupId: groups[role.google.group].id,
-      email: member.email!,
-      role: 'MEMBER',
-    });
+    new gworkspace.GroupMember(
+      `${memberEmail}-${role.google.group}`,
+      {
+        groupId: groups[role.google.group].id,
+        email: memberEmail,
+        role: 'MEMBER',
+      },
+      provisionedUser ? { dependsOn: [provisionedUser] } : undefined
+    );
   });
 });
 
 export { groups as googleGroups };
+// Export initial passwords as secrets so an admin can retrieve them with:
+//   pulumi stack output --show-secrets newGWSUserPasswords
+export const newGWSUserPasswords = pulumi.secret(newUserPasswords);
