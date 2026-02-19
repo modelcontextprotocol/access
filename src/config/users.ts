@@ -135,6 +135,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.AUTH_MAINTAINERS],
   },
   {
+    github: 'daleseo',
+    discord: '267646459187298305',
+    memberOf: [ROLE_IDS.RUST_SDK],
+  },
+  {
     github: 'devcrocod',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
