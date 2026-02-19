@@ -48,6 +48,13 @@ ROLES.forEach((role: Role) => {
   });
 });
 
+// Create the organizational unit for MCP users
+const mcpOrgUnit = new gworkspace.OrgUnit('mcp-org-unit', {
+  name: 'Model Context Protocol',
+  parentOrgUnitPath: '/',
+  description: 'Organizational unit for MCP team members (Managed by github.com/modelcontextprotocol/access)',
+});
+
 // Provision Google Workspace user accounts for members in roles with provisionUser
 const provisionedUsersByEmail: Record<string, gworkspace.User> = {};
 const newUserPasswords: Record<string, pulumi.Output<string>> = {};
@@ -76,9 +83,9 @@ MEMBERS.forEach((member) => {
       {
         primaryEmail,
         name: { familyName: member.lastName!, givenName: member.firstName! },
-        orgUnitPath: '/Model Context Protocol',
+        orgUnitPath: mcpOrgUnit.orgUnitPath,
       },
-      { import: primaryEmail }
+      { import: primaryEmail, dependsOn: [mcpOrgUnit] }
     );
     provisionedUsersByEmail[primaryEmail] = user;
   } else {
@@ -91,14 +98,18 @@ MEMBERS.forEach((member) => {
       crypto.createHash('sha1').update(plaintext).digest('hex')
     );
 
-    const user = new gworkspace.User(`gws-user-${member.googleEmailPrefix}`, {
-      primaryEmail,
-      name: { familyName: member.lastName!, givenName: member.firstName! },
-      password: hashedPassword,
-      hashFunction: 'SHA-1',
-      changePasswordAtNextLogin: true,
-      orgUnitPath: '/Model Context Protocol',
-    });
+    const user = new gworkspace.User(
+      `gws-user-${member.googleEmailPrefix}`,
+      {
+        primaryEmail,
+        name: { familyName: member.lastName!, givenName: member.firstName! },
+        password: hashedPassword,
+        hashFunction: 'SHA-1',
+        changePasswordAtNextLogin: true,
+        orgUnitPath: mcpOrgUnit.orgUnitPath,
+      },
+      { dependsOn: [mcpOrgUnit] }
+    );
     provisionedUsersByEmail[primaryEmail] = user;
 
     // Track password for export so an admin can retrieve it
