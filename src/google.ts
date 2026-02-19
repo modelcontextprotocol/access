@@ -49,11 +49,15 @@ ROLES.forEach((role: Role) => {
 });
 
 // Create the organizational unit for MCP users
-const mcpOrgUnit = new gworkspace.OrgUnit('mcp-org-unit', {
-  name: 'Model Context Protocol',
-  parentOrgUnitPath: '/',
-  description: 'Organizational unit for MCP team members (Managed by github.com/modelcontextprotocol/access)',
-});
+const mcpOrgUnit = new gworkspace.OrgUnit(
+  'mcp-org-unit',
+  {
+    name: 'Model Context Protocol',
+    parentOrgUnitPath: '/',
+    description: 'Organizational unit for MCP team members (Managed by github.com/modelcontextprotocol/access)',
+  },
+  { import: 'id:03ph8a2z0nc6rsr' }
+);
 
 // Provision Google Workspace user accounts for members in roles with provisionUser
 const provisionedUsersByEmail: Record<string, gworkspace.User> = {};
