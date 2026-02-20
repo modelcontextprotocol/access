@@ -56,7 +56,7 @@ const mcpOrgUnit = new gworkspace.OrgUnit(
     description: 'Model Context Protocol',
     parentOrgUnitPath: '/',
   },
-  { import: 'id:03ph8a2z0nc6rsr', ignoreChanges: ['parentOrgUnitPath', 'description'] }
+  { import: 'id:03ph8a2z0nc6rsr', ignoreChanges: ['description'] }
 );
 
 // Provision Google Workspace user accounts for members in roles with provisionUser
