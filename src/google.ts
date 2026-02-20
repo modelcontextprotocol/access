@@ -89,7 +89,39 @@ MEMBERS.forEach((member) => {
         name: { familyName: member.lastName!, givenName: member.firstName! },
         orgUnitPath: mcpOrgUnit.orgUnitPath,
       },
-      { import: primaryEmail, dependsOn: [mcpOrgUnit], ignoreChanges: ['recoveryEmail', 'recoveryPhone'] }
+      {
+        import: primaryEmail,
+        dependsOn: [mcpOrgUnit],
+        ignoreChanges: [
+          'recoveryEmail',
+          'recoveryPhone',
+          'password',
+          'hashFunction',
+          'changePasswordAtNextLogin',
+          'orgUnitPath',
+          'archived',
+          'suspended',
+          'isAdmin',
+          'includeInGlobalAddressList',
+          'ipAllowlist',
+          'addresses',
+          'aliases',
+          'customSchemas',
+          'emails',
+          'externalIds',
+          'ims',
+          'keywords',
+          'languages',
+          'locations',
+          'organizations',
+          'phones',
+          'posixAccounts',
+          'relations',
+          'sshPublicKeys',
+          'websites',
+          'name',
+        ],
+      }
     );
     provisionedUsersByEmail[primaryEmail] = user;
   } else {
@@ -112,7 +144,38 @@ MEMBERS.forEach((member) => {
         changePasswordAtNextLogin: true,
         orgUnitPath: mcpOrgUnit.orgUnitPath,
       },
-      { dependsOn: [mcpOrgUnit] }
+      {
+        dependsOn: [mcpOrgUnit],
+        ignoreChanges: [
+          'recoveryEmail',
+          'recoveryPhone',
+          'password',
+          'hashFunction',
+          'changePasswordAtNextLogin',
+          'orgUnitPath',
+          'archived',
+          'suspended',
+          'isAdmin',
+          'includeInGlobalAddressList',
+          'ipAllowlist',
+          'addresses',
+          'aliases',
+          'customSchemas',
+          'emails',
+          'externalIds',
+          'ims',
+          'keywords',
+          'languages',
+          'locations',
+          'organizations',
+          'phones',
+          'posixAccounts',
+          'relations',
+          'sshPublicKeys',
+          'websites',
+          'name',
+        ],
+      }
     );
     provisionedUsersByEmail[primaryEmail] = user;
 
