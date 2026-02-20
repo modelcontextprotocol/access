@@ -89,7 +89,7 @@ MEMBERS.forEach((member) => {
         name: { familyName: member.lastName!, givenName: member.firstName! },
         orgUnitPath: mcpOrgUnit.orgUnitPath,
       },
-      { import: primaryEmail, dependsOn: [mcpOrgUnit] }
+      { import: primaryEmail, dependsOn: [mcpOrgUnit], ignoreChanges: ['recoveryEmail', 'recoveryPhone'] }
     );
     provisionedUsersByEmail[primaryEmail] = user;
   } else {
