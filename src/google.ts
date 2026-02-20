@@ -53,6 +53,7 @@ const mcpOrgUnit = new gworkspace.OrgUnit(
   'mcp-org-unit',
   {
     name: 'Model Context Protocol',
+    parentOrgUnitPath: '/',
   },
   { import: 'id:03ph8a2z0nc6rsr' }
 );
