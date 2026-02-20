@@ -517,6 +517,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Peter',
     lastName: 'Alexander',
     googleEmailPrefix: 'pja',
+    existingGWSUser: true,
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
