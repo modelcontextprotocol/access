@@ -81,49 +81,12 @@ MEMBERS.forEach((member) => {
   const primaryEmail = `${member.googleEmailPrefix}@modelcontextprotocol.io`;
 
   if (member.existingGWSUser) {
-    // Import existing user into Pulumi state without recreating
-    const user = new gworkspace.User(
-      `gws-user-${member.googleEmailPrefix}`,
-      {
-        primaryEmail,
-        name: { familyName: member.lastName!, givenName: member.firstName! },
-        orgUnitPath: mcpOrgUnit.orgUnitPath,
-      },
-      {
-        import: primaryEmail,
-        dependsOn: [mcpOrgUnit],
-        ignoreChanges: [
-          'recoveryEmail',
-          'recoveryPhone',
-          'password',
-          'hashFunction',
-          'changePasswordAtNextLogin',
-          'orgUnitPath',
-          'archived',
-          'suspended',
-          'isAdmin',
-          'includeInGlobalAddressList',
-          'ipAllowlist',
-          'addresses',
-          'aliases',
-          'customSchemas',
-          'emails',
-          'externalIds',
-          'ims',
-          'keywords',
-          'languages',
-          'locations',
-          'organizations',
-          'phones',
-          'posixAccounts',
-          'relations',
-          'sshPublicKeys',
-          'websites',
-          'name',
-        ],
-      }
-    );
-    provisionedUsersByEmail[primaryEmail] = user;
+    // Existing GWS users are not managed by Pulumi — the GWS provider's import
+    // validation rejects empty email types that GWS itself sets on primary/alias
+    // emails, and there's no way to fix this at the provider level.
+    // Group memberships for these users are created without dependsOn since the
+    // user already exists in GWS.
+    return;
   } else {
     // Create new user with random password
     const password = new random.RandomPassword(`gws-pwd-${member.googleEmailPrefix}`, {
