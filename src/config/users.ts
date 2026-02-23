@@ -5,7 +5,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: '000-000-000-000-000',
     discord: '1360717264051241071',
-    skipGoogleUserProvisioning: true,
+    firstName: 'Nick',
+    lastName: 'Aldridge',
+    googleEmailPrefix: 'nick',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
@@ -77,7 +79,9 @@ export const MEMBERS: readonly Member[] = [
     github: 'caitiem20',
     email: 'caitie.mccaffrey@microsoft.com',
     discord: '1425586366288494722',
-    skipGoogleUserProvisioning: true,
+    firstName: 'Caitie',
+    lastName: 'McCaffrey',
+    googleEmailPrefix: 'caitie',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
