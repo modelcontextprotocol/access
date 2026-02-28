@@ -5,6 +5,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: '000-000-000-000-000',
     discord: '1360717264051241071',
+    firstName: 'Nick',
+    lastName: 'Aldridge',
+    googleEmailPrefix: 'nick',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
@@ -60,7 +63,13 @@ export const MEMBERS: readonly Member[] = [
     github: 'BobDickinson',
     email: 'bob.dickinson@gmail.com',
     discord: '1175893001202045139',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.SKILLS_OVER_MCP_IG],
+    skipGoogleUserProvisioning: true,
+    memberOf: [
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.INSPECTOR_MAINTAINERS,
+      ROLE_IDS.REGISTRY_MAINTAINERS,
+      ROLE_IDS.SKILLS_OVER_MCP_IG,
+    ],
   },
   {
     github: 'bolinfest',
@@ -70,6 +79,9 @@ export const MEMBERS: readonly Member[] = [
     github: 'caitiem20',
     email: 'caitie.mccaffrey@microsoft.com',
     discord: '1425586366288494722',
+    firstName: 'Caitie',
+    lastName: 'McCaffrey',
+    googleEmailPrefix: 'caitie',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
@@ -125,6 +137,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.AUTH_MAINTAINERS],
   },
   {
+    github: 'daleseo',
+    discord: '267646459187298305',
+    memberOf: [ROLE_IDS.RUST_SDK],
+  },
+  {
     github: 'devcrocod',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
@@ -132,10 +149,15 @@ export const MEMBERS: readonly Member[] = [
     github: 'domdomegg',
     email: 'adam@modelcontextprotocol.io',
     discord: '102128241715716096',
+    firstName: 'Adam',
+    lastName: 'Jones',
+    googleEmailPrefix: 'adam',
+    existingGWSUser: true,
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
     github: 'dsp',
+    skipGoogleUserProvisioning: true,
     memberOf: [
       ROLE_IDS.AUTH_MAINTAINERS,
       ROLE_IDS.LEAD_MAINTAINERS,
@@ -155,19 +177,16 @@ export const MEMBERS: readonly Member[] = [
     github: 'dsp-ant',
     email: 'david@modelcontextprotocol.io',
     discord: '166107790262272000',
+    firstName: 'David',
+    lastName: 'Soria Parra',
+    googleEmailPrefix: 'david',
+    existingGWSUser: true,
     memberOf: [
       ROLE_IDS.AUTH_MAINTAINERS,
       ROLE_IDS.LEAD_MAINTAINERS,
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
-      ROLE_IDS.GO_SDK,
-      ROLE_IDS.FINANCIAL_SERVICES_IG,
       ROLE_IDS.MODERATORS,
-      ROLE_IDS.PHP_SDK,
-      ROLE_IDS.PYTHON_SDK,
-      ROLE_IDS.SECURITY_WG,
-      ROLE_IDS.TRANSPORT_WG,
-      ROLE_IDS.TYPESCRIPT_SDK,
     ],
   },
   {
@@ -283,6 +302,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'jspahrsummers',
     email: 'justin@modelcontextprotocol.io',
+    firstName: 'Justin',
+    lastName: 'Spahr-Summers',
+    googleEmailPrefix: 'justin',
+    existingGWSUser: true,
     memberOf: [ROLE_IDS.LEAD_MAINTAINERS, ROLE_IDS.CORE_MAINTAINERS],
   },
   {
@@ -320,6 +343,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'kurtisvg',
     discord: '1158458388917780590',
+    skipGoogleUserProvisioning: true,
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
@@ -330,6 +354,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'localden',
     discord: '1351224014143754260',
+    firstName: 'Den',
+    lastName: 'Delimarsky',
+    googleEmailPrefix: 'den',
+    existingGWSUser: true,
     memberOf: [
       ROLE_IDS.AUTH_MAINTAINERS,
       ROLE_IDS.CORE_MAINTAINERS,
@@ -404,6 +432,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'nickcoai',
     discord: '1153783469860732968',
+    skipGoogleUserProvisioning: true,
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.SERVER_IDENTITY_WG],
   },
   {
@@ -451,6 +480,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'pcarleton',
     discord: '1354465170969067852',
+    firstName: 'Paul',
+    lastName: 'Carleton',
+    googleEmailPrefix: 'paul',
+    existingGWSUser: true,
     memberOf: [
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.PYTHON_SDK,
@@ -478,6 +511,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'pja-ant',
     discord: '328628782497923072',
+    firstName: 'Peter',
+    lastName: 'Alexander',
+    googleEmailPrefix: 'pja',
+    existingGWSUser: true,
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
@@ -487,12 +524,17 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'pwwpche',
     discord: '1226238847013228604',
+    skipGoogleUserProvisioning: true,
     memberOf: [ROLE_IDS.CORE_MAINTAINERS],
   },
   {
     github: 'rdimitrov',
     email: 'radoslav@modelcontextprotocol.io',
     discord: '1088231882979815424',
+    firstName: 'Radoslav',
+    lastName: 'Dimitrov',
+    googleEmailPrefix: 'radoslav',
+    existingGWSUser: true,
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS, ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
@@ -528,6 +570,10 @@ export const MEMBERS: readonly Member[] = [
     github: 'tadasant',
     email: 'tadas@modelcontextprotocol.io',
     discord: '400092503677599754',
+    firstName: 'Tadas',
+    lastName: 'Antanavicius',
+    googleEmailPrefix: 'tadas',
+    existingGWSUser: true,
     memberOf: [
       ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.MODERATORS,
@@ -546,7 +592,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'toby',
     email: 'toby@modelcontextprotocol.io',
     discord: '560155411777323048',
-    memberOf: [ROLE_IDS.REGISTRY_MAINTAINERS],
+    firstName: 'Toby',
+    lastName: 'Padilla',
+    googleEmailPrefix: 'toby',
+    existingGWSUser: true,
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
     github: 'topherbullock',
