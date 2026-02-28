@@ -85,11 +85,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
-    github: 'carlpeaslee',
-    discord: '288330838951723009',
-    memberOf: [ROLE_IDS.SWIFT_SDK],
-  },
-  {
     github: 'chemicL',
     discord: '1346243721271971923',
     memberOf: [ROLE_IDS.JAVA_SDK],
@@ -407,10 +402,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
-    github: 'mattt',
-    memberOf: [ROLE_IDS.SWIFT_SDK],
-  },
-  {
     github: 'mattzcarey',
     memberOf: [ROLE_IDS.TYPESCRIPT_SDK],
   },
@@ -430,6 +421,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'movetz',
+    discord: '1427569183427919906',
     memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
