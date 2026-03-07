@@ -154,13 +154,6 @@ console.log('Validating Google Workspace user provisioning fields...');
       );
       hasErrors = true;
     }
-
-    if (inProvisionUserRole && !hasProvisioningFields && !member.skipGoogleUserProvisioning) {
-      console.error(
-        `ERROR: Member "${memberId}" is in a provisionUser role but is missing Google user fields. Add fields or set skipGoogleUserProvisioning: true`
-      );
-      hasErrors = true;
-    }
   }
 }
 

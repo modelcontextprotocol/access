@@ -102,7 +102,9 @@ export const ROLES: readonly Role[] = [
     id: ROLE_IDS.MAINTAINERS,
     description: 'General maintainers',
     discord: { role: 'maintainers (synced)' },
-    // Discord only - general maintainer role
+    // GWS user accounts are opt-in: maintainers add firstName/lastName/googleEmailPrefix
+    // to their entry in users.ts via PR to get an @modelcontextprotocol.io account
+    google: { group: 'maintainers', provisionUser: true },
   },
   {
     id: ROLE_IDS.DOCS_MAINTAINERS,

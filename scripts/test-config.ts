@@ -99,7 +99,7 @@ test('googleEmailPrefix values are unique', () => {
   return prefixes.length === new Set(prefixes).size;
 });
 
-test('ProvisionUser members are explicit: fields present or skip flag set', () => {
+test('skipGoogleUserProvisioning is only used in provisionUser roles and without fields', () => {
   const provisionRoleIds = new Set(ROLES.filter((r) => r.google?.provisionUser).map((r) => r.id));
   return MEMBERS.every((member) => {
     const inProvisionRole = member.memberOf.some((id) => provisionRoleIds.has(id));
@@ -110,7 +110,7 @@ test('ProvisionUser members are explicit: fields present or skip flag set', () =
       member.lastName &&
       member.googleEmailPrefix
     );
-    return hasProvisioningFields !== !!member.skipGoogleUserProvisioning;
+    return !(hasProvisioningFields && member.skipGoogleUserProvisioning);
   });
 });
 
