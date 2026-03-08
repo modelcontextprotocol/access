@@ -110,6 +110,9 @@ export const MEMBERS: readonly Member[] = [
     github: 'cliffhall',
     email: 'cliff@futurescale.com',
     discord: '501498061965754380',
+    firstName: 'Cliff',
+    lastName: 'Hall',
+    googleEmailPrefix: 'cliff',
     memberOf: [
       ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.MAINTAINERS,
