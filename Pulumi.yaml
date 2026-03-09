@@ -6,4 +6,5 @@ packages:
     source: terraform-provider
     version: 0.14.0
     parameters:
-      - hashicorp/googleworkspace
+      - SamuZad/googleworkspace
+      - 0.11.1
