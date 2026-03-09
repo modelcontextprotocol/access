@@ -232,6 +232,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'evalstate',
     discord: '779268016121577492',
+    firstName: 'Shaun',
+    lastName: 'Smith',
+    googleEmailPrefix: 'shaun.smith',
     memberOf: [
       ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.DOCS_MAINTAINERS,
