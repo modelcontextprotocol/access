@@ -396,6 +396,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'LucaButBoring',
     discord: '1366470072729866252',
+    firstName: 'Luca',
+    lastName: 'Chang',
+    googleEmailPrefix: 'luca',
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.AGENTS_IG, ROLE_IDS.WORKING_GROUPS],
   },
   {
@@ -481,6 +484,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'olaservo',
     discord: '1079841769946095620',
+    firstName: 'Ola',
+    lastName: 'Hungerford',
+    googleEmailPrefix: 'ola',
     memberOf: [
       ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.DOCS_MAINTAINERS,
