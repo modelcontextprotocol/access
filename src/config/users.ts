@@ -350,7 +350,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'KKonstantinov',
     discord: '390932438903422987',
-    memberOf: [ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.TYPESCRIPT_SDK],
+    memberOf: [ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.MAINTAINERS, ROLE_IDS.TYPESCRIPT_SDK],
     firstName: 'Konstantin',
     lastName: 'Konstantinov',
     googleEmailPrefix: 'konstantin',
