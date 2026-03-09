@@ -350,7 +350,7 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.TYPESCRIPT_SDK],
     firstName: 'Konstantin',
     lastName: 'Konstantinov',
-    googleEmailPrefix: 'konstantin'
+    googleEmailPrefix: 'konstantin',
   },
   {
     github: 'Kludex',
