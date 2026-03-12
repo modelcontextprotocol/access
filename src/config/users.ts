@@ -152,7 +152,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.AUTH_MAINTAINERS,
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
-      ROLE_IDS.CSHARP_SDK,
+      ROLE_IDS.CSHARP_SDK_ADMIN,
       ROLE_IDS.ADMINISTRATORS,
       ROLE_IDS.GO_SDK,
       ROLE_IDS.FINANCIAL_SERVICES_IG,
@@ -221,6 +221,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
+    github: 'ericstj',
+    memberOf: [ROLE_IDS.CSHARP_SDK],
+  },
+  {
     github: 'EmLauber',
     discord: '1408222390361657426',
     memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
@@ -262,7 +266,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'halter73',
-    memberOf: [ROLE_IDS.CSHARP_SDK],
+    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
     github: 'herczyn',
@@ -300,6 +304,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
+    github: 'jeffhandley',
+    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
+  },
+  {
     github: 'jerome3o-anthropic',
     discord: '222246825397059585',
     memberOf: [ROLE_IDS.MODERATORS],
@@ -324,6 +332,10 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.RUBY_SDK,
       ROLE_IDS.MCP_APPS_SDK,
     ],
+  },
+  {
+    github: 'jozkee',
+    memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
     github: 'jspahrsummers',
@@ -391,7 +403,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.AUTH_MAINTAINERS,
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
-      ROLE_IDS.CSHARP_SDK,
+      ROLE_IDS.CSHARP_SDK_ADMIN,
       ROLE_IDS.ADMINISTRATORS,
       ROLE_IDS.GO_SDK,
       ROLE_IDS.FINANCIAL_SERVICES_IG,
@@ -449,7 +461,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'mikekistler',
     discord: '915345005982408754',
-    memberOf: [ROLE_IDS.CSHARP_SDK],
+    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
     github: 'movetz',
@@ -602,7 +614,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'stephentoub',
-    memberOf: [ROLE_IDS.CSHARP_SDK],
+    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
     github: 'tadasant',
@@ -621,6 +633,10 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.REGISTRY_MAINTAINERS,
       ROLE_IDS.ADMINISTRATORS,
     ],
+  },
+  {
+    github: 'tarekgh',
+    memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
     github: 'tiginamaria',
