@@ -533,6 +533,9 @@ export const MEMBERS: readonly Member[] = [
     existingGWSUser: true,
     memberOf: [
       ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.ADMINISTRATORS,
+      ROLE_IDS.MODERATORS,
       ROLE_IDS.PYTHON_SDK,
       ROLE_IDS.PYTHON_SDK_AUTH,
       ROLE_IDS.TYPESCRIPT_SDK,
