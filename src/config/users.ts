@@ -221,10 +221,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
-    github: 'ericstj',
-    memberOf: [ROLE_IDS.CSHARP_SDK],
-  },
-  {
     github: 'EmLauber',
     discord: '1408222390361657426',
     memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
@@ -232,6 +228,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'erain',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
+  },
+  {
+    github: 'ericstj',
+    memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
     github: 'evalstate',
@@ -300,12 +300,12 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
-    github: 'jenn-newton',
-    memberOf: [ROLE_IDS.SECURITY_WG],
-  },
-  {
     github: 'jeffhandley',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
+  },
+  {
+    github: 'jenn-newton',
+    memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
     github: 'jerome3o-anthropic',
