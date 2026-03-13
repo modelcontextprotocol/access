@@ -184,14 +184,11 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'csharp-sdk',
-    teams: [{ team: 'csharp-sdk', permission: 'admin' }],
-    users: [
-      { username: 'jeffhandley', permission: 'admin' },
-      { username: 'MackinnonBuck', permission: 'admin' },
-      { username: 'jozkee', permission: 'admin' },
-      { username: 'PederHP', permission: 'triage' },
-      { username: 'tarekgh', permission: 'push' },
+    teams: [
+      { team: 'csharp-sdk-admin', permission: 'admin' },
+      { team: 'csharp-sdk', permission: 'push' },
     ],
+    users: [{ username: 'PederHP', permission: 'triage' }],
   },
   {
     repository: 'go-sdk',
