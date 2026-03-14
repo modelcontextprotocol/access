@@ -161,6 +161,12 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'c# sdk maintainers (synced)' },
   },
   {
+    id: ROLE_IDS.CSHARP_SDK_ADMIN,
+    description: 'C# SDK repository admins',
+    github: { team: 'csharp-sdk-admin', parent: ROLE_IDS.CSHARP_SDK },
+    // GitHub only - for repo admin access
+  },
+  {
     id: ROLE_IDS.GO_SDK,
     description: 'The Go SDK Team',
     github: { team: 'go-sdk', parent: ROLE_IDS.SDK_MAINTAINERS },

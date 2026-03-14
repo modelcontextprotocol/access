@@ -29,6 +29,7 @@ export const ROLE_IDS = {
   // ===================
   SDK_MAINTAINERS: 'sdk-maintainers',
   CSHARP_SDK: 'csharp-sdk',
+  CSHARP_SDK_ADMIN: 'csharp-sdk-admin',
   GO_SDK: 'go-sdk',
   JAVA_SDK: 'java-sdk',
   KOTLIN_SDK: 'kotlin-sdk',
