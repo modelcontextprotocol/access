@@ -63,6 +63,7 @@ export const ROLE_IDS = {
   GATEWAYS_IG: 'gateways-ig',
   PRIMITIVE_GROUPING_IG: 'primitive-grouping-ig',
   SKILLS_OVER_MCP_IG: 'skills-over-mcp-ig',
+  TOOL_ANNOTATIONS_IG: 'tool-annotations-ig',
 
   // ===================
   // WG/IG Facilitators (Discord only)
