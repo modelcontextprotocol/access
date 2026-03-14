@@ -447,7 +447,8 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'mattzcarey',
-    memberOf: [ROLE_IDS.TYPESCRIPT_SDK],
+    discord: '224878268275359744',
+    memberOf: [ROLE_IDS.TYPESCRIPT_SDK, ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'maxisbey',
@@ -588,6 +589,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS, ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
+    github: 'rreichel3',
+    discord: '1458485333757788273',
+    memberOf: [ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
+  },
+  {
     github: 'sambhav',
     email: 'sambhavs.email@gmail.com',
     firstName: 'Sambhav',
@@ -603,6 +609,7 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [
       ROLE_IDS.PRIMITIVE_GROUPING_IG,
       ROLE_IDS.SKILLS_OVER_MCP_IG,
+      ROLE_IDS.TOOL_ANNOTATIONS_IG,
       ROLE_IDS.WG_IG_FACILITATORS,
     ],
   },
