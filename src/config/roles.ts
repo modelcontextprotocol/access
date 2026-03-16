@@ -328,7 +328,7 @@ export const ROLES: readonly Role[] = [
     id: ROLE_IDS.SKILLS_OVER_MCP_IG,
     description: 'Skills Over MCP Interest Group',
     github: { team: 'skills-over-mcp-ig', parent: ROLE_IDS.INTEREST_GROUPS },
-    // No Discord role yet
+    discord: { role: 'skills over mcp interest group (synced)' },
   },
   {
     id: ROLE_IDS.TOOL_ANNOTATIONS_IG,
