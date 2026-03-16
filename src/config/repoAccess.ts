@@ -320,6 +320,14 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
+    repository: 'experimental-ext-tool-annotations',
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'moderators', permission: 'triage' },
+      { team: 'tool-annotations-ig', permission: 'admin' },
+    ],
+  },
+  {
     repository: 'maintainer-docs',
     teams: [
       { team: 'lead-maintainers', permission: 'maintain' },
