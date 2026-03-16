@@ -227,6 +227,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'erain',
+    discord: '797226095874539539',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
@@ -292,6 +293,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'JAORMX',
+    discord: '1185152774674055193',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
@@ -348,6 +350,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'kaxil',
+    discord: '757355088946921474',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
@@ -357,6 +360,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'keithagroves',
+    discord: '321019863260987392',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
@@ -624,6 +628,11 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'stephentoub',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
+  },
+  {
+    github: 'sunishsheth2009',
+    discord: '1414713222224941097',
+    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
   },
   {
     github: 'tadasant',
