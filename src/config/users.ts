@@ -611,6 +611,12 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
+    github: 'soyuka',
+    email: 'soyuka@gmail.com',
+    discord: '249323948842418186',
+    memberOf: [ROLE_IDS.PHP_SDK],
+  },
+  {
     github: 'stallent',
     discord: '1137898074086314136',
     memberOf: [ROLE_IDS.SWIFT_SDK],
