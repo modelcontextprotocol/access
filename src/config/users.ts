@@ -570,7 +570,12 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Alexander',
     googleEmailPrefix: 'pja',
     existingGWSUser: true,
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
+    memberOf: [
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.SKILLS_OVER_MCP_IG,
+      ROLE_IDS.TRANSPORT_WG,
+    ],
   },
   {
     github: 'pronskiy',
