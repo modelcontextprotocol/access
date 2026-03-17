@@ -330,6 +330,12 @@ export const ROLES: readonly Role[] = [
     github: { team: 'skills-over-mcp-ig', parent: ROLE_IDS.INTEREST_GROUPS },
     discord: { role: 'skills over mcp interest group (synced)' },
   },
+  {
+    id: ROLE_IDS.TOOL_ANNOTATIONS_IG,
+    description: 'Tool Annotations Interest Group',
+    github: { team: 'tool-annotations-ig', parent: ROLE_IDS.INTEREST_GROUPS },
+    discord: { role: 'tool annotations interest group (synced)' },
+  },
 
   // ===================
   // WG/IG Facilitators (Discord only)
