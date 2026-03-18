@@ -481,7 +481,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'nickcoai',
     discord: '1153783469860732968',
-    skipGoogleUserProvisioning: true,
+    firstName: 'Nick',
+    lastName: 'Cooper',
+    googleEmailPrefix: 'nickc',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.SERVER_IDENTITY_WG],
   },
   {
