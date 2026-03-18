@@ -481,7 +481,6 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'nickcoai',
     discord: '1153783469860732968',
-    email: 'nickc@openai.com',
     firstName: 'Nick',
     lastName: 'Cooper',
     googleEmailPrefix: 'nickc',
