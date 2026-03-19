@@ -15,5 +15,5 @@ preview: login ## Preview infrastructure changes
 refresh: login ## Refresh state to match reality
 	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi refresh --yes --stack prod
 
-up: login ## Deploy infrastructure
-	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi up --yes --stack prod
+up: login ## Deploy infrastructure (with refresh to detect drift, e.g. expired org invites)
+	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi up --refresh --yes --stack prod
