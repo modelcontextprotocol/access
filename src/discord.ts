@@ -34,7 +34,7 @@ async function discordFetch<T>(
   token: string,
   endpoint: string,
   options: RequestInit = {},
-  maxRetries = 5
+  maxRetries = 10
 ): Promise<T> {
   let lastError: Error | undefined;
 
