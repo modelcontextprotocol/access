@@ -50,7 +50,10 @@ async function discordFetch<T>(
 
     if (response.status === 429) {
       const body = (await response.json()) as DiscordRateLimitResponse;
-      const retryAfterMs = Math.ceil(body.retry_after * 1000) + Math.random() * 250;
+      // Linearly increasing jitter de-syncs the thundering herd when many
+      // resources refresh in parallel and all receive the same retry_after.
+      const jitterMs = Math.random() * 1000 * (attempt + 1);
+      const retryAfterMs = Math.ceil(body.retry_after * 1000) + jitterMs;
       lastError = new Error(
         `Discord API rate limited on ${endpoint} (retry_after=${body.retry_after}s, global=${body.global})`
       );
