@@ -186,7 +186,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     repository: 'csharp-sdk',
     teams: [
       { team: 'csharp-sdk-admin', permission: 'admin' },
-      { team: 'csharp-sdk', permission: 'push' },
+      { team: 'csharp-sdk', permission: 'maintain' },
     ],
     users: [{ username: 'PederHP', permission: 'triage' }],
   },
