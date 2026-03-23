@@ -30,6 +30,16 @@ function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+// Cloudflare 5xx and edge-level 429s return plain-text bodies ("upstream connect
+// error...", "error code: 1015") that crash a naive response.json().
+function tryParseJson<T>(text: string): T | undefined {
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    return undefined;
+  }
+}
+
 async function discordFetch<T>(
   token: string,
   endpoint: string,
@@ -49,13 +59,15 @@ async function discordFetch<T>(
     });
 
     if (response.status === 429) {
-      const body = (await response.json()) as DiscordRateLimitResponse;
+      const text = await response.text();
+      const body = tryParseJson<DiscordRateLimitResponse>(text);
+      const retryAfterSec = body?.retry_after ?? 1;
       // Linearly increasing jitter de-syncs the thundering herd when many
       // resources refresh in parallel and all receive the same retry_after.
       const jitterMs = Math.random() * 1000 * (attempt + 1);
-      const retryAfterMs = Math.ceil(body.retry_after * 1000) + jitterMs;
+      const retryAfterMs = Math.ceil(retryAfterSec * 1000) + jitterMs;
       lastError = new Error(
-        `Discord API rate limited on ${endpoint} (retry_after=${body.retry_after}s, global=${body.global})`
+        `Discord API rate limited on ${endpoint} (retry_after=${retryAfterSec}s, global=${body?.global ?? false})`
       );
       if (attempt < maxRetries) {
         await sleep(retryAfterMs);
@@ -64,9 +76,24 @@ async function discordFetch<T>(
       throw lastError;
     }
 
+    if (response.status >= 500 && response.status < 600) {
+      const text = await response.text();
+      lastError = new Error(`Discord API ${response.status} on ${endpoint}: ${text.slice(0, 200)}`);
+      if (attempt < maxRetries) {
+        await sleep(2 ** attempt * 500 + Math.random() * 1000);
+        continue;
+      }
+      throw lastError;
+    }
+
     if (!response.ok) {
-      const error = (await response.json()) as DiscordApiError;
-      throw new Error(`Discord API error: ${error.message} (code: ${error.code})`);
+      const text = await response.text();
+      const error = tryParseJson<DiscordApiError>(text);
+      throw new Error(
+        error
+          ? `Discord API error: ${error.message} (code: ${error.code})`
+          : `Discord API ${response.status} on ${endpoint}: ${text.slice(0, 200)}`
+      );
     }
 
     // Handle 204 No Content
