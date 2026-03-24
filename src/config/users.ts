@@ -675,6 +675,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
+    github: 'tobinsouth',
+    discord: '865072069779521556',
+    memberOf: [ROLE_IDS.REFERENCE_SERVERS_MAINTAINERS],
+  },
+  {
     github: 'toby',
     email: 'toby@modelcontextprotocol.io',
     discord: '560155411777323048',
