@@ -238,6 +238,12 @@ export const ROLES: readonly Role[] = [
     github: { team: 'typescript-sdk-auth', parent: ROLE_IDS.TYPESCRIPT_SDK },
     // GitHub only - for CODEOWNERS
   },
+  {
+    id: ROLE_IDS.TYPESCRIPT_SDK_COLLABORATORS,
+    description: 'TypeScript SDK collaborators',
+    github: { team: 'typescript-sdk-collaborators', parent: ROLE_IDS.TYPESCRIPT_SDK },
+    // GitHub only
+  },
 
   // ===================
   // Working Groups

@@ -580,6 +580,10 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'poteat',
+    memberOf: [ROLE_IDS.TYPESCRIPT_SDK_COLLABORATORS],
+  },
+  {
     github: 'pronskiy',
     memberOf: [ROLE_IDS.PHP_SDK],
   },

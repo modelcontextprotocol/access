@@ -42,6 +42,7 @@ export const ROLE_IDS = {
   SWIFT_SDK: 'swift-sdk',
   TYPESCRIPT_SDK: 'typescript-sdk',
   TYPESCRIPT_SDK_AUTH: 'typescript-sdk-auth', // GitHub only (CODEOWNERS)
+  TYPESCRIPT_SDK_COLLABORATORS: 'typescript-sdk-collaborators', // GitHub only
 
   // ===================
   // Working Groups
