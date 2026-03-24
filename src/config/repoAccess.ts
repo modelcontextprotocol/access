@@ -230,6 +230,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     teams: [
       { team: 'typescript-sdk', permission: 'admin' },
       { team: 'typescript-sdk-auth', permission: 'admin' },
+      { team: 'typescript-sdk-collaborators', permission: 'push' },
     ],
   },
   {
