@@ -159,6 +159,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   {
     repository: 'servers',
     teams: [
+      { team: 'reference-servers-maintainers', permission: 'admin' },
       { team: 'auth-maintainers', permission: 'push' },
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'csharp-sdk', permission: 'push' },

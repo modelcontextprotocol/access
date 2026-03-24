@@ -127,8 +127,8 @@ export const ROLES: readonly Role[] = [
   {
     id: ROLE_IDS.REFERENCE_SERVERS_MAINTAINERS,
     description: 'Reference servers maintainers',
+    github: { team: 'reference-servers-maintainers' },
     discord: { role: 'reference servers maintainers (synced)' },
-    // Discord only for now
   },
   {
     id: ROLE_IDS.REGISTRY_MAINTAINERS,
