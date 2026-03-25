@@ -52,6 +52,7 @@ export const ROLE_IDS = {
   SECURITY_WG: 'security-wg',
   SERVER_IDENTITY_WG: 'server-identity-wg',
   TRANSPORT_WG: 'transport-wg',
+  TRIGGERS_EVENTS_WG: 'triggers-events-wg',
   MCP_APPS_WG: 'mcp-apps-wg',
 
   // ===================
