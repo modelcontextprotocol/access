@@ -310,11 +310,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
-    github: 'jerome3o-anthropic',
-    discord: '222246825397059585',
-    memberOf: [ROLE_IDS.MODERATORS],
-  },
-  {
     github: 'joan-anthropic',
     discord: '1398403578892128437',
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
@@ -436,10 +431,6 @@ export const MEMBERS: readonly Member[] = [
     github: 'macoughl',
     discord: '740279257548193803',
     memberOf: [ROLE_IDS.COMMUNITY_MANAGERS],
-  },
-  {
-    github: 'maheshmurag',
-    memberOf: [ROLE_IDS.MODERATORS],
   },
   {
     github: 'markpollack',
