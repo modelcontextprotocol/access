@@ -93,6 +93,7 @@ export const ROLES: readonly Role[] = [
     description: 'Community moderators',
     github: { team: 'moderators', parent: ROLE_IDS.STEERING_COMMITTEE },
     discord: { role: 'community moderators (synced)' },
+    google: { group: 'moderators', provisionUser: true },
   },
 
   // ===================
