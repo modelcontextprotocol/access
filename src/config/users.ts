@@ -272,6 +272,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'halter73',
+    discord: '340718902096953344',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
