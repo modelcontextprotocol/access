@@ -107,6 +107,11 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'clareliguori',
+    discord: '1109135863843143700',
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.TRIGGERS_EVENTS_WG],
+  },
+  {
     github: 'cliffhall',
     email: 'cliff@futurescale.com',
     discord: '501498061965754380',
