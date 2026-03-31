@@ -702,6 +702,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.JAVA_SDK],
   },
   {
+    github: 'yarolegovich',
+    discord: '393296640141950977',
+    memberOf: [ROLE_IDS.GO_SDK],
+  },
+  {
     email: 'adamj@anthropic.com',
     memberOf: [ROLE_IDS.CATCH_ALL],
   },
