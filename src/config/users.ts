@@ -276,6 +276,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
+    github: 'guglielmo-san',
+    discord: '1432786987072622613',
+    memberOf: [ROLE_IDS.GO_SDK],
+  },
+  {
     github: 'halter73',
     discord: '340718902096953344',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
@@ -706,6 +711,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'tzolov',
     discord: '1097924660055777290',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.JAVA_SDK],
+  },
+  {
+    github: 'yarolegovich',
+    discord: '393296640141950977',
+    memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     email: 'adamj@anthropic.com',
