@@ -108,8 +108,12 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'clareliguori',
+    email: 'liguori@amazon.com',
     discord: '1109135863843143700',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.TRIGGERS_EVENTS_WG],
+    firstName: 'Clare',
+    lastName: 'Liguori',
+    googleEmailPrefix: 'clare',
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRIGGERS_EVENTS_WG],
   },
   {
     github: 'cliffhall',
@@ -156,6 +160,7 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [
       ROLE_IDS.AUTH_MAINTAINERS,
       ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.LEAD_MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.CSHARP_SDK_ADMIN,
       ROLE_IDS.ADMINISTRATORS,
@@ -407,6 +412,7 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [
       ROLE_IDS.AUTH_MAINTAINERS,
       ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.LEAD_MAINTAINERS,
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.CSHARP_SDK_ADMIN,
       ROLE_IDS.ADMINISTRATORS,
