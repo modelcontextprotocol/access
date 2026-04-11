@@ -330,6 +330,14 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
+    repository: 'experimental-ext-triggers-events',
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'moderators', permission: 'maintain' },
+      { team: 'triggers-events-wg', permission: 'admin' },
+    ],
+  },
+  {
     repository: 'maintainer-docs',
     teams: [
       { team: 'lead-maintainers', permission: 'maintain' },
