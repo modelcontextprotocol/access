@@ -291,6 +291,12 @@ export const ROLES: readonly Role[] = [
     github: { team: 'mcp-apps-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'mcp apps working group (synced)' },
   },
+  {
+    id: ROLE_IDS.SERVER_CARD_WG,
+    description: 'Server Card Working Group',
+    github: { team: 'server-card-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'server card working group (synced)' },
+  },
 
   // ===================
   // Interest Groups
