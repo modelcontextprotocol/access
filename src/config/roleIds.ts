@@ -55,6 +55,7 @@ export const ROLE_IDS = {
   TRIGGERS_EVENTS_WG: 'triggers-events-wg',
   MCP_APPS_WG: 'mcp-apps-wg',
   SERVER_CARD_WG: 'server-card-wg',
+  INTERCEPTORS_WG: 'interceptors-wg',
 
   // ===================
   // Interest Groups
