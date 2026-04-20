@@ -20,31 +20,93 @@ interface DiscordApiError {
   message: string;
 }
 
+interface DiscordRateLimitResponse {
+  message: string;
+  retry_after: number;
+  global: boolean;
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+// Cloudflare 5xx and edge-level 429s return plain-text bodies ("upstream connect
+// error...", "error code: 1015") that crash a naive response.json().
+function tryParseJson<T>(text: string): T | undefined {
+  try {
+    return JSON.parse(text) as T;
+  } catch {
+    return undefined;
+  }
+}
+
 async function discordFetch<T>(
   token: string,
   endpoint: string,
-  options: RequestInit = {}
+  options: RequestInit = {},
+  maxRetries = 10
 ): Promise<T> {
-  const response = await fetch(`${DISCORD_API_BASE}${endpoint}`, {
-    ...options,
-    headers: {
-      Authorization: `Bot ${token}`,
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
+  let lastError: Error | undefined;
 
-  if (!response.ok) {
-    const error = (await response.json()) as DiscordApiError;
-    throw new Error(`Discord API error: ${error.message} (code: ${error.code})`);
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const response = await fetch(`${DISCORD_API_BASE}${endpoint}`, {
+      ...options,
+      headers: {
+        Authorization: `Bot ${token}`,
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+
+    if (response.status === 429) {
+      const text = await response.text();
+      const body = tryParseJson<DiscordRateLimitResponse>(text);
+      const retryAfterSec = body?.retry_after ?? 1;
+      // Linearly increasing jitter de-syncs the thundering herd when many
+      // resources refresh in parallel and all receive the same retry_after.
+      const jitterMs = Math.random() * 1000 * (attempt + 1);
+      const retryAfterMs = Math.ceil(retryAfterSec * 1000) + jitterMs;
+      lastError = new Error(
+        `Discord API rate limited on ${endpoint} (retry_after=${retryAfterSec}s, global=${body?.global ?? false})`
+      );
+      if (attempt < maxRetries) {
+        await sleep(retryAfterMs);
+        continue;
+      }
+      throw lastError;
+    }
+
+    if (response.status >= 500 && response.status < 600) {
+      const text = await response.text();
+      lastError = new Error(`Discord API ${response.status} on ${endpoint}: ${text.slice(0, 200)}`);
+      if (attempt < maxRetries) {
+        await sleep(2 ** attempt * 500 + Math.random() * 1000);
+        continue;
+      }
+      throw lastError;
+    }
+
+    if (!response.ok) {
+      const text = await response.text();
+      const error = tryParseJson<DiscordApiError>(text);
+      throw new Error(
+        error
+          ? `Discord API error: ${error.message} (code: ${error.code})`
+          : `Discord API ${response.status} on ${endpoint}: ${text.slice(0, 200)}`
+      );
+    }
+
+    // Handle 204 No Content
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
+    return response.json() as Promise<T>;
   }
 
-  // Handle 204 No Content
-  if (response.status === 204) {
-    return undefined as T;
-  }
-
-  return response.json() as Promise<T>;
+  throw (
+    lastError ?? new Error(`Discord API request to ${endpoint} failed after ${maxRetries} retries`)
+  );
 }
 
 // Discord API response types
@@ -122,8 +184,8 @@ const discordRoleProvider: pulumi.dynamic.ResourceProvider = {
           roleId: role.id,
         },
       };
-    } catch {
-      throw new Error(`Failed to read role ${id}`);
+    } catch (error) {
+      throw new Error(`Failed to read role ${id}: ${error}`);
     }
   },
 
@@ -303,7 +365,7 @@ const discordMemberRoleSyncProvider: pulumi.dynamic.ResourceProvider = {
           },
         };
       }
-      throw new Error(`Failed to read member roles for ${id}`);
+      throw new Error(`Failed to read member roles for ${id}: ${error}`);
     }
 
     const currentRoles = new Set(member.roles);

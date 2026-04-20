@@ -29,6 +29,7 @@ export const ROLE_IDS = {
   // ===================
   SDK_MAINTAINERS: 'sdk-maintainers',
   CSHARP_SDK: 'csharp-sdk',
+  CSHARP_SDK_ADMIN: 'csharp-sdk-admin',
   GO_SDK: 'go-sdk',
   JAVA_SDK: 'java-sdk',
   KOTLIN_SDK: 'kotlin-sdk',
@@ -41,16 +42,19 @@ export const ROLE_IDS = {
   SWIFT_SDK: 'swift-sdk',
   TYPESCRIPT_SDK: 'typescript-sdk',
   TYPESCRIPT_SDK_AUTH: 'typescript-sdk-auth', // GitHub only (CODEOWNERS)
+  TYPESCRIPT_SDK_COLLABORATORS: 'typescript-sdk-collaborators', // GitHub only
 
   // ===================
   // Working Groups
   // ===================
   WORKING_GROUPS: 'working-groups',
-  AUTH_WG: 'auth-wg',
+  AUTH_MAINTAINERS: 'auth-maintainers',
   SECURITY_WG: 'security-wg',
   SERVER_IDENTITY_WG: 'server-identity-wg',
   TRANSPORT_WG: 'transport-wg',
+  TRIGGERS_EVENTS_WG: 'triggers-events-wg',
   MCP_APPS_WG: 'mcp-apps-wg',
+  SERVER_CARD_WG: 'server-card-wg',
 
   // ===================
   // Interest Groups
@@ -61,6 +65,9 @@ export const ROLE_IDS = {
   CLIENT_IMPLEMENTOR_IG: 'client-implementor-ig',
   FINANCIAL_SERVICES_IG: 'financial-services-ig',
   GATEWAYS_IG: 'gateways-ig',
+  PRIMITIVE_GROUPING_IG: 'primitive-grouping-ig',
+  SKILLS_OVER_MCP_IG: 'skills-over-mcp-ig',
+  TOOL_ANNOTATIONS_IG: 'tool-annotations-ig',
 
   // ===================
   // WG/IG Facilitators (Discord only)

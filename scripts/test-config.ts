@@ -82,6 +82,51 @@ test('TYPESCRIPT_SDK_AUTH role exists (GitHub-only)', () => {
   return role !== undefined && role.github !== undefined && role.discord === undefined;
 });
 
+// Test Google Workspace user provisioning
+test('Roles with provisionUser exist', () => {
+  const provisionRoles = ROLES.filter((r) => r.google?.provisionUser);
+  return provisionRoles.length > 0;
+});
+
+test('Members with googleEmailPrefix have firstName and lastName', () =>
+  MEMBERS.every((m) => {
+    if (!m.googleEmailPrefix) return true;
+    return !!m.firstName && !!m.lastName;
+  }));
+
+test('googleEmailPrefix values are unique', () => {
+  const prefixes = MEMBERS.filter((m) => m.googleEmailPrefix).map((m) => m.googleEmailPrefix);
+  return prefixes.length === new Set(prefixes).size;
+});
+
+test('skipGoogleUserProvisioning is only used in provisionUser roles and without fields', () => {
+  const provisionRoleIds = new Set(ROLES.filter((r) => r.google?.provisionUser).map((r) => r.id));
+  return MEMBERS.every((member) => {
+    const inProvisionRole = member.memberOf.some((id) => provisionRoleIds.has(id));
+    if (!inProvisionRole) return !member.skipGoogleUserProvisioning;
+
+    const hasProvisioningFields = !!(
+      member.firstName &&
+      member.lastName &&
+      member.googleEmailPrefix
+    );
+    return !(hasProvisioningFields && member.skipGoogleUserProvisioning);
+  });
+});
+
+test('Some members in provisionUser roles have Google user fields', () => {
+  const membersInProvisionRoles = MEMBERS.filter((m) =>
+    m.memberOf.some((id) => {
+      const role = roleLookup.get(id);
+      return role?.google?.provisionUser === true;
+    })
+  );
+  const provisioned = membersInProvisionRoles.filter(
+    (m) => m.firstName && m.lastName && m.googleEmailPrefix
+  );
+  return membersInProvisionRoles.length > 0 && provisioned.length > 0;
+});
+
 // Summary
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed > 0 ? 1 : 0);

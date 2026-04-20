@@ -15,5 +15,9 @@ preview: login ## Preview infrastructure changes
 refresh: login ## Refresh state to match reality
 	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi refresh --yes --stack prod
 
-up: login ## Deploy infrastructure
+up: login ## Deploy infrastructure (with refresh to detect drift, e.g. expired org invites)
+	# Dynamic providers serialize their implementation into state. Run a plain
+	# `up` first so any provider-code changes are captured, then refresh with the
+	# freshly serialized `read()`. Otherwise refresh runs stale code and fails.
 	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi up --yes --stack prod
+	PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi up --refresh --yes --stack prod

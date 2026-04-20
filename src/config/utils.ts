@@ -15,6 +15,16 @@ export interface Member {
   discord?: string;
   /** Roles this member belongs to */
   memberOf: readonly RoleId[];
+  /** First name (required for Google Workspace user provisioning) */
+  firstName?: string;
+  /** Last name (required for Google Workspace user provisioning) */
+  lastName?: string;
+  /** Google Workspace email prefix (e.g., 'david' -> david@modelcontextprotocol.io) */
+  googleEmailPrefix?: string;
+  /** If true, this user already exists in Google Workspace and should be imported into Pulumi state */
+  existingGWSUser?: boolean;
+  /** Explicitly skip automatic GWS user provisioning for provisionUser roles */
+  skipGoogleUserProvisioning?: boolean;
 }
 
 /**

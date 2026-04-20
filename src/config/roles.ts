@@ -26,6 +26,8 @@ export interface GoogleConfig {
   group: string;
   /** If true, accepts emails from anyone including external users */
   isEmailGroup?: boolean;
+  /** If true, members of this role get a Google Workspace user account */
+  provisionUser?: boolean;
 }
 
 /**
@@ -77,19 +79,21 @@ export const ROLES: readonly Role[] = [
     description: 'Lead core maintainers',
     github: { team: 'lead-maintainers', parent: ROLE_IDS.STEERING_COMMITTEE },
     discord: { role: 'lead maintainers (synced)' },
-    // Discord only for now - could add GitHub if needed
+    google: { group: 'lead-maintainers', provisionUser: true },
   },
   {
     id: ROLE_IDS.CORE_MAINTAINERS,
     description: 'Core maintainers',
     github: { team: 'core-maintainers', parent: ROLE_IDS.STEERING_COMMITTEE },
     discord: { role: 'core maintainers (synced)' },
+    google: { group: 'core-maintainers', provisionUser: true },
   },
   {
     id: ROLE_IDS.MODERATORS,
     description: 'Community moderators',
     github: { team: 'moderators', parent: ROLE_IDS.STEERING_COMMITTEE },
     discord: { role: 'community moderators (synced)' },
+    google: { group: 'moderators', provisionUser: true },
   },
 
   // ===================
@@ -99,7 +103,9 @@ export const ROLES: readonly Role[] = [
     id: ROLE_IDS.MAINTAINERS,
     description: 'General maintainers',
     discord: { role: 'maintainers (synced)' },
-    // Discord only - general maintainer role
+    // GWS user accounts are opt-in: maintainers add firstName/lastName/googleEmailPrefix
+    // to their entry in users.ts via PR to get an @modelcontextprotocol.io account
+    google: { group: 'maintainers', provisionUser: true },
   },
   {
     id: ROLE_IDS.DOCS_MAINTAINERS,
@@ -122,15 +128,15 @@ export const ROLES: readonly Role[] = [
   {
     id: ROLE_IDS.REFERENCE_SERVERS_MAINTAINERS,
     description: 'Reference servers maintainers',
+    github: { team: 'reference-servers-maintainers' },
     discord: { role: 'reference servers maintainers (synced)' },
-    // Discord only for now
   },
   {
     id: ROLE_IDS.REGISTRY_MAINTAINERS,
     description: 'Official registry builders and maintainers',
     github: { team: 'registry-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'registry maintainers (synced)' },
-    google: { group: 'registry-wg' },
+    google: { group: 'registry-wg', provisionUser: true },
   },
   {
     id: ROLE_IDS.USE_MCP_MAINTAINERS,
@@ -154,6 +160,12 @@ export const ROLES: readonly Role[] = [
     description: 'Official C# SDK maintainers',
     github: { team: 'csharp-sdk', parent: ROLE_IDS.SDK_MAINTAINERS },
     discord: { role: 'c# sdk maintainers (synced)' },
+  },
+  {
+    id: ROLE_IDS.CSHARP_SDK_ADMIN,
+    description: 'C# SDK repository admins',
+    github: { team: 'csharp-sdk-admin', parent: ROLE_IDS.CSHARP_SDK },
+    // GitHub only - for repo admin access
   },
   {
     id: ROLE_IDS.GO_SDK,
@@ -227,6 +239,12 @@ export const ROLES: readonly Role[] = [
     github: { team: 'typescript-sdk-auth', parent: ROLE_IDS.TYPESCRIPT_SDK },
     // GitHub only - for CODEOWNERS
   },
+  {
+    id: ROLE_IDS.TYPESCRIPT_SDK_COLLABORATORS,
+    description: 'TypeScript SDK collaborators',
+    github: { team: 'typescript-sdk-collaborators', parent: ROLE_IDS.TYPESCRIPT_SDK },
+    // GitHub only
+  },
 
   // ===================
   // Working Groups
@@ -238,9 +256,9 @@ export const ROLES: readonly Role[] = [
     // No discord - organizational container
   },
   {
-    id: ROLE_IDS.AUTH_WG,
-    description: 'Authentication Working Group',
-    github: { team: 'auth-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    id: ROLE_IDS.AUTH_MAINTAINERS,
+    description: 'Auth Maintainers',
+    github: { team: 'auth-maintainers', parent: ROLE_IDS.WORKING_GROUPS },
     // See AUTH_IG for Discord role
   },
   {
@@ -262,10 +280,22 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'transports working group (synced)' },
   },
   {
+    id: ROLE_IDS.TRIGGERS_EVENTS_WG,
+    description: 'Triggers & Events Working Group',
+    github: { team: 'triggers-events-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'triggers & events working group (synced)' },
+  },
+  {
     id: ROLE_IDS.MCP_APPS_WG,
     description: 'MCP Apps Working Group',
     github: { team: 'mcp-apps-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'mcp apps working group (synced)' },
+  },
+  {
+    id: ROLE_IDS.SERVER_CARD_WG,
+    description: 'Server Card Working Group',
+    github: { team: 'server-card-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'server card working group (synced)' },
   },
 
   // ===================
@@ -287,7 +317,7 @@ export const ROLES: readonly Role[] = [
     id: ROLE_IDS.AUTH_IG,
     description: 'Auth Interest Group',
     discord: { role: 'auth interest group (synced)' },
-    // Discord only - separate from AUTH_WG which is GitHub
+    // Discord only - separate from AUTH_MAINTAINERS which is GitHub
   },
   {
     id: ROLE_IDS.CLIENT_IMPLEMENTOR_IG,
@@ -306,6 +336,24 @@ export const ROLES: readonly Role[] = [
     description: 'Gateways Interest Group',
     // No GitHub role yet
     discord: { role: 'gateways interest group (synced)' },
+  },
+  {
+    id: ROLE_IDS.PRIMITIVE_GROUPING_IG,
+    description: 'Primitive Grouping Interest Group',
+    github: { team: 'primitive-grouping-ig', parent: ROLE_IDS.INTEREST_GROUPS },
+    discord: { role: 'primitive grouping interest group (synced)' },
+  },
+  {
+    id: ROLE_IDS.SKILLS_OVER_MCP_IG,
+    description: 'Skills Over MCP Interest Group',
+    github: { team: 'skills-over-mcp-ig', parent: ROLE_IDS.INTEREST_GROUPS },
+    discord: { role: 'skills over mcp interest group (synced)' },
+  },
+  {
+    id: ROLE_IDS.TOOL_ANNOTATIONS_IG,
+    description: 'Tool Annotations Interest Group',
+    github: { team: 'tool-annotations-ig', parent: ROLE_IDS.INTEREST_GROUPS },
+    discord: { role: 'tool annotations interest group (synced)' },
   },
 
   // ===================
