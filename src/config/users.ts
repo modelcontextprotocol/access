@@ -155,6 +155,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
+    github: 'degiorgio',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
     github: 'dend',
     skipGoogleUserProvisioning: true,
     memberOf: [
@@ -568,6 +572,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.FINANCIAL_SERVICES_IG,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.SKILLS_OVER_MCP_IG,
+      ROLE_IDS.INTERCEPTORS_WG,
     ],
   },
   {
@@ -625,7 +630,7 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Kothari',
     googleEmailPrefix: 'sambhav',
     discord: '840109459212206090',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.FINANCIAL_SERVICES_IG],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.FINANCIAL_SERVICES_IG, ROLE_IDS.INTERCEPTORS_WG],
   },
   {
     github: 'SamMorrowDrums',
