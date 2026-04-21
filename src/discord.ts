@@ -378,14 +378,17 @@ const discordMemberRoleSyncProvider: pulumi.dynamic.ResourceProvider = {
       Array.from(currentRoles).some((r) => managedRoles.has(r) && !expectedRoles.has(r));
 
     if (outOfSync) {
-      // Return current state but note it needs update
+      // Self-heal: apply the expected roles now. Without this, refresh would
+      // only observe drift, and since inputs are unchanged Pulumi would never
+      // trigger update() — leaving members who joined after create() stuck.
+      const { addedRoles, removedRoles, memberNotFound } = await syncMemberRoles(props);
       return {
         id,
         props: {
           ...props,
-          addedRoles: [],
-          removedRoles: [],
-          memberNotFound: false,
+          addedRoles,
+          removedRoles,
+          memberNotFound,
         },
       };
     }
