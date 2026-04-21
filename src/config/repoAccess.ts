@@ -338,6 +338,14 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
+    repository: 'experimental-ext-interceptors',
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'moderators', permission: 'triage' },
+      { team: 'interceptors-wg', permission: 'admin' },
+    ],
+  },
+  {
     repository: 'maintainer-docs',
     teams: [
       { team: 'lead-maintainers', permission: 'maintain' },

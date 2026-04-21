@@ -297,6 +297,12 @@ export const ROLES: readonly Role[] = [
     github: { team: 'server-card-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'server card working group (synced)' },
   },
+  {
+    id: ROLE_IDS.INTERCEPTORS_WG,
+    description: 'Interceptors Working Group',
+    github: { team: 'interceptors-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'interceptors working group (synced)' },
+  },
 
   // ===================
   // Interest Groups
