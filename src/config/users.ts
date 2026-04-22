@@ -156,6 +156,10 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'degiorgio',
+    email: 'degiorgiokurt@outlook.com',
+    firstName: 'Kurt',
+    lastName: 'Degiorgio',
+    discord: '602175181133316105',
     memberOf: [ROLE_IDS.INTERCEPTORS_WG],
   },
   {
