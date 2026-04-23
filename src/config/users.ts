@@ -335,6 +335,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
+    github: 'jeongukjae',
+    discord: '334348926658412564',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
     github: 'joan-anthropic',
     discord: '1398403578892128437',
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
@@ -748,13 +753,5 @@ export const MEMBERS: readonly Member[] = [
   {
     email: 'davideramian@anthropic.com',
     memberOf: [ROLE_IDS.ANTITRUST],
-  },
-  {
-    github: 'jeongukjae',
-    email: 'jeongukjae@github.com',
-    firstName: 'Uk-Jae',
-    lastName: 'Jeong',
-    discord: '334348926658412564',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
   },
 ] as const;
