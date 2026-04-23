@@ -430,6 +430,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.CSHARP_SDK_ADMIN,
       ROLE_IDS.ADMINISTRATORS,
+      ROLE_IDS.FILE_UPLOADS_WG,
       ROLE_IDS.GO_SDK,
       ROLE_IDS.FINANCIAL_SERVICES_IG,
       ROLE_IDS.MODERATORS,
@@ -501,7 +502,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Nick',
     lastName: 'Cooper',
     googleEmailPrefix: 'nickc',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.SERVER_IDENTITY_WG],
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.FILE_UPLOADS_WG, ROLE_IDS.SERVER_IDENTITY_WG],
   },
   {
     github: 'nicolas-grekas',
@@ -516,6 +517,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'ochafik',
     discord: '1004897332069925024',
     memberOf: [
+      ROLE_IDS.FILE_UPLOADS_WG,
       ROLE_IDS.MCP_APPS_SDK,
       ROLE_IDS.PYTHON_SDK,
       ROLE_IDS.PYTHON_SDK_AUTH,

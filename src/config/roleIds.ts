@@ -56,6 +56,7 @@ export const ROLE_IDS = {
   MCP_APPS_WG: 'mcp-apps-wg',
   SERVER_CARD_WG: 'server-card-wg',
   INTERCEPTORS_WG: 'interceptors-wg',
+  FILE_UPLOADS_WG: 'file-uploads-wg',
 
   // ===================
   // Interest Groups
