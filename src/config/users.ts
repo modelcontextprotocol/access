@@ -85,6 +85,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
+    github: 'caseychow-oai',
+    memberOf: [ROLE_IDS.FILE_UPLOADS_WG],
+  },
+  {
     github: 'chemicL',
     discord: '1346243721271971923',
     memberOf: [ROLE_IDS.JAVA_SDK],
