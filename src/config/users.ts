@@ -339,6 +339,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SECURITY_WG],
   },
   {
+    github: 'jeongukjae',
+    discord: '334348926658412564',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
     github: 'joan-anthropic',
     discord: '1398403578892128437',
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
