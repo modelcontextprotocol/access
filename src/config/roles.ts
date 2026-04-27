@@ -303,6 +303,12 @@ export const ROLES: readonly Role[] = [
     github: { team: 'interceptors-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'interceptors working group (synced)' },
   },
+  {
+    id: ROLE_IDS.FILE_UPLOADS_WG,
+    description: 'File Uploads Working Group',
+    github: { team: 'file-uploads-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'file uploads working group (synced)' },
+  },
 
   // ===================
   // Interest Groups
