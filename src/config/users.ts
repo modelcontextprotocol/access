@@ -281,7 +281,15 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'felixweinberger',
     discord: '1377138523492057212',
-    memberOf: [ROLE_IDS.PYTHON_SDK, ROLE_IDS.SECURITY_WG, ROLE_IDS.TYPESCRIPT_SDK],
+    firstName: 'Felix',
+    lastName: 'Weinberger',
+    googleEmailPrefix: 'felix',
+    memberOf: [
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.PYTHON_SDK,
+      ROLE_IDS.SECURITY_WG,
+      ROLE_IDS.TYPESCRIPT_SDK,
+    ],
   },
   {
     github: 'findleyr',
@@ -484,7 +492,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'maxisbey',
     discord: '1404871241738748058',
-    memberOf: [ROLE_IDS.PYTHON_SDK],
+    firstName: 'Max',
+    lastName: 'Isbey',
+    googleEmailPrefix: 'max',
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.PYTHON_SDK],
   },
   {
     github: 'michaelneale',
