@@ -1,9 +1,25 @@
+import * as pulumi from '@pulumi/pulumi';
 import * as github from '@pulumi/github';
 import { ROLES, type Role, buildRoleLookup } from './config/roles';
 import { REPOSITORY_ACCESS } from './config/repoAccess';
+import { ORG_ROLE_ASSIGNMENTS } from './config/orgRoles';
+import { ORG_SETTINGS } from './config/orgSettings';
 import { MEMBERS } from './config/users';
 import { sortRolesByGitHubDependency } from './config/utils';
 import type { RoleId } from './config/roleIds';
+
+const githubConfig = new pulumi.Config('github');
+
+// The provider's Create for this resource is a PATCH on the existing org, so
+// no import is needed; first apply writes the values below directly.
+new github.OrganizationSettings(
+  'org-settings',
+  {
+    ...ORG_SETTINGS,
+    billingEmail: githubConfig.requireSecret('billingEmail'),
+  },
+  { additionalSecretOutputs: ['billingEmail'] }
+);
 
 const roleLookup = buildRoleLookup();
 // Teams keyed by GitHub team name (matches repoAccess.ts references)
@@ -47,6 +63,26 @@ MEMBERS.forEach((member) => {
       username: member.github!,
       role: 'member',
     });
+  });
+});
+
+// Assign organization-level roles to teams (grants access across all repos)
+const orgRoles = github.getOrganizationRolesOutput();
+ORG_ROLE_ASSIGNMENTS.forEach((assignment) => {
+  const team = teams[assignment.team];
+  if (!team) {
+    throw new Error(
+      `orgRoles.ts references team '${assignment.team}' which is not managed in roles.ts`
+    );
+  }
+  const roleId = orgRoles.roles.apply((roles) => {
+    const match = roles.find((r) => r.name === assignment.role);
+    if (!match) throw new Error(`Organization role '${assignment.role}' not found`);
+    return match.roleId;
+  });
+  new github.OrganizationRoleTeam(`orgrole-${assignment.team}-${assignment.role}`, {
+    teamSlug: team.slug,
+    roleId,
   });
 });
 
