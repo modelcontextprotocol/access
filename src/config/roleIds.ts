@@ -57,6 +57,7 @@ export const ROLE_IDS = {
   SERVER_CARD_WG: 'server-card-wg',
   INTERCEPTORS_WG: 'interceptors-wg',
   FILE_UPLOADS_WG: 'file-uploads-wg',
+  AGENTS_WG: 'agents-wg',
 
   // ===================
   // Interest Groups
