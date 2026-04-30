@@ -72,5 +72,5 @@ jobs:
           pulumi login gs://mcp-access-prod-pulumi-state
           pulumi config set discord:guildId "$DISCORD_GUILD_ID" --stack prod
           pulumi config set discord:botToken "$DISCORD_BOT_TOKEN" --secret --stack prod
-          pulumi config set github:billingEmail "$ORG_BILLING_EMAIL" --secret --stack prod
+          pulumi config set githubBillingEmail "$ORG_BILLING_EMAIL" --secret --stack prod
           make up

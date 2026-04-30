@@ -79,7 +79,7 @@ jobs:
             CONFIG_FLAGS="$CONFIG_FLAGS --config discord:botToken=$DISCORD_BOT_TOKEN"
           fi
           if [ -n "$ORG_BILLING_EMAIL" ]; then
-            PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt pulumi config set github:billingEmail "$ORG_BILLING_EMAIL" --secret --stack prod
+            CONFIG_FLAGS="$CONFIG_FLAGS --config githubBillingEmail=$ORG_BILLING_EMAIL"
           fi
 
           # Run preview and capture output

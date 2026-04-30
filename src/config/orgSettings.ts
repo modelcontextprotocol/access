@@ -6,7 +6,7 @@
 
 // billingEmail is required by the provider but intentionally omitted here so it
 // is not committed to a public repo. It is read from Pulumi config in github.ts:
-//   pulumi config set --secret github:billingEmail <email>
+//   pulumi config set --secret githubBillingEmail <email>
 export const ORG_SETTINGS = {
   name: 'Model Context Protocol',
   description:

@@ -8,7 +8,7 @@ import { MEMBERS } from './config/users';
 import { sortRolesByGitHubDependency } from './config/utils';
 import type { RoleId } from './config/roleIds';
 
-const githubConfig = new pulumi.Config('github');
+const config = new pulumi.Config();
 
 // The provider's Create for this resource is a PATCH on the existing org, so
 // no import is needed; first apply writes the values below directly.
@@ -16,7 +16,7 @@ new github.OrganizationSettings(
   'org-settings',
   {
     ...ORG_SETTINGS,
-    billingEmail: githubConfig.requireSecret('billingEmail'),
+    billingEmail: config.requireSecret('githubBillingEmail'),
   },
   { additionalSecretOutputs: ['billingEmail'] }
 );
