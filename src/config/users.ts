@@ -420,10 +420,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.RUBY_SDK],
   },
   {
-    github: 'kpavlov',
-    memberOf: [ROLE_IDS.KOTLIN_SDK],
-  },
-  {
     github: 'kurtisvg',
     discord: '1158458388917780590',
     skipGoogleUserProvisioning: true,
