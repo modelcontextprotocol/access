@@ -631,8 +631,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'pwwpche',
     discord: '1226238847013228604',
-    skipGoogleUserProvisioning: true,
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
+    memberOf: [],
   },
   {
     github: 'rdimitrov',
