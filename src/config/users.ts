@@ -422,7 +422,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'kurtisvg',
     discord: '1158458388917780590',
-    skipGoogleUserProvisioning: true,
+    firstName: 'Kurtis',
+    lastName: 'Van Gent',
+    googleEmailPrefix: 'kvg',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
