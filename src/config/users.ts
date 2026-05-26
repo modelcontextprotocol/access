@@ -630,6 +630,13 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.TYPESCRIPT_SDK_COLLABORATORS],
   },
   {
+    github: 'PranavSenthilnathan',
+    email: 'pranas@microsoft.com',
+    firstName: 'Pranav',
+    lastName: 'Senthilnathan',
+    memberOf: [ROLE_IDS.CSHARP_SDK],
+  },
+  {
     github: 'pronskiy',
     memberOf: [ROLE_IDS.PHP_SDK],
   },
