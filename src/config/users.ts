@@ -516,6 +516,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SWIFT_SDK],
   },
   {
+    github: 'nahapetyan-serob',
+    discord: '1505852630692401314',
+    memberOf: [ROLE_IDS.GO_SDK],
+  },
+  {
     github: 'nbarbettini',
     discord: '784552628930478090',
     memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
