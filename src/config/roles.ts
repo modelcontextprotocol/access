@@ -139,6 +139,14 @@ export const ROLES: readonly Role[] = [
     google: { group: 'registry-wg', provisionUser: true },
   },
   {
+    id: ROLE_IDS.REGISTRY_WG_COLLABORATORS,
+    description: 'Registry working group collaborators',
+    github: { team: 'registry-wg-collaborators', parent: ROLE_IDS.REGISTRY_MAINTAINERS },
+    discord: { role: 'registry collaborators (synced)' },
+    // Collaborators get push (not admin) on the registry repo and are not maintainers.
+    // Mirrors the typescript-sdk-collaborators model. No google config = no @modelcontextprotocol.io account.
+  },
+  {
     id: ROLE_IDS.USE_MCP_MAINTAINERS,
     description: 'use-mcp maintainers',
     discord: { role: 'use-mcp maintainers (synced)' },

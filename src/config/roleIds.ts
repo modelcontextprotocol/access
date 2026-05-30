@@ -22,6 +22,7 @@ export const ROLE_IDS = {
   MCPB_MAINTAINERS: 'mcpb-maintainers',
   REFERENCE_SERVERS_MAINTAINERS: 'reference-servers-maintainers',
   REGISTRY_MAINTAINERS: 'registry-maintainers',
+  REGISTRY_WG_COLLABORATORS: 'registry-wg-collaborators',
   USE_MCP_MAINTAINERS: 'use-mcp-maintainers',
 
   // ===================
