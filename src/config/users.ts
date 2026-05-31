@@ -754,6 +754,17 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.REFERENCE_SERVERS_MAINTAINERS],
   },
   {
+    github: 'toby',
+    email: 'toby@modelcontextprotocol.io',
+    discord: '560155411777323048',
+    firstName: 'Toby',
+    lastName: 'Padilla',
+    googleEmailPrefix: 'toby',
+    existingGWSUser: true,
+    // Emeritus maintainer of the Registry
+    memberOf: [],
+  },
+  {
     github: 'topherbullock',
     discord: '1059910719124013168',
     memberOf: [ROLE_IDS.RUBY_SDK],
