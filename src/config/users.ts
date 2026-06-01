@@ -646,7 +646,7 @@ export const MEMBERS: readonly Member[] = [
     discord: '1379733751315173376',
     firstName: 'Preeti',
     lastName: 'Dewani',
-    memberOf: [ROLE_IDS.REGISTRY_WG_COLLABORATORS],
+    memberOf: [ROLE_IDS.REGISTRY_COLLABORATORS],
   },
   {
     github: 'pronskiy',
