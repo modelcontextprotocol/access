@@ -139,6 +139,11 @@ export const ROLES: readonly Role[] = [
     google: { group: 'registry-wg', provisionUser: true },
   },
   {
+    id: ROLE_IDS.REGISTRY_COLLABORATORS,
+    description: 'Registry working group collaborators',
+    github: { team: 'registry-collaborators', parent: ROLE_IDS.REGISTRY_MAINTAINERS },
+  },
+  {
     id: ROLE_IDS.USE_MCP_MAINTAINERS,
     description: 'use-mcp maintainers',
     discord: { role: 'use-mcp maintainers (synced)' },

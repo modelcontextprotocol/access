@@ -198,7 +198,7 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Jones',
     googleEmailPrefix: 'adam',
     existingGWSUser: true,
-    memberOf: [ROLE_IDS.MCPB_MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
+    memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'dsp',
@@ -642,6 +642,13 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
+    github: 'pree-dew',
+    discord: '1379733751315173376',
+    firstName: 'Preeti',
+    lastName: 'Dewani',
+    memberOf: [ROLE_IDS.REGISTRY_COLLABORATORS],
+  },
+  {
     github: 'pronskiy',
     memberOf: [ROLE_IDS.PHP_SDK],
   },
@@ -754,7 +761,8 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Padilla',
     googleEmailPrefix: 'toby',
     existingGWSUser: true,
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
+    // Emeritus maintainer of the Registry
+    memberOf: [],
   },
   {
     github: 'topherbullock',

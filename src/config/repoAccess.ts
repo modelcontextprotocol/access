@@ -250,7 +250,10 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'registry',
-    teams: [{ team: 'registry-wg', permission: 'admin' }],
+    teams: [
+      { team: 'registry-wg', permission: 'admin' },
+      { team: 'registry-collaborators', permission: 'push' },
+    ],
   },
   {
     repository: 'static',
