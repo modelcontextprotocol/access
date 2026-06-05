@@ -139,6 +139,11 @@ export const ROLES: readonly Role[] = [
     google: { group: 'registry-wg', provisionUser: true },
   },
   {
+    id: ROLE_IDS.REGISTRY_COLLABORATORS,
+    description: 'Registry working group collaborators',
+    github: { team: 'registry-collaborators', parent: ROLE_IDS.REGISTRY_MAINTAINERS },
+  },
+  {
     id: ROLE_IDS.USE_MCP_MAINTAINERS,
     description: 'use-mcp maintainers',
     discord: { role: 'use-mcp maintainers (synced)' },
@@ -308,6 +313,11 @@ export const ROLES: readonly Role[] = [
     description: 'File Uploads Working Group',
     github: { team: 'file-uploads-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'file uploads working group (synced)' },
+  },
+  {
+    id: ROLE_IDS.AGENTS_WG,
+    description: 'Agents Working Group',
+    github: { team: 'agents-wg', parent: ROLE_IDS.WORKING_GROUPS },
   },
 
   // ===================

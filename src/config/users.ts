@@ -82,7 +82,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Caitie',
     lastName: 'McCaffrey',
     googleEmailPrefix: 'caitie',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG, ROLE_IDS.AGENTS_WG],
   },
   {
     github: 'caseychow-oai',
@@ -198,7 +198,7 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Jones',
     googleEmailPrefix: 'adam',
     existingGWSUser: true,
-    memberOf: [ROLE_IDS.MCPB_MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
+    memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'dsp',
@@ -233,6 +233,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.SERVER_CARD_WG,
+      ROLE_IDS.AGENTS_WG,
     ],
   },
   {
@@ -419,13 +420,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.RUBY_SDK],
   },
   {
-    github: 'kpavlov',
-    memberOf: [ROLE_IDS.KOTLIN_SDK],
-  },
-  {
     github: 'kurtisvg',
     discord: '1158458388917780590',
-    skipGoogleUserProvisioning: true,
+    firstName: 'Kurtis',
+    lastName: 'Van Gent',
+    googleEmailPrefix: 'kvg',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
   },
   {
@@ -464,7 +463,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Luca',
     lastName: 'Chang',
     googleEmailPrefix: 'luca',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.AGENTS_IG, ROLE_IDS.WORKING_GROUPS],
+    memberOf: [
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.AGENTS_IG,
+      ROLE_IDS.AGENTS_WG,
+      ROLE_IDS.WORKING_GROUPS,
+    ],
   },
   {
     github: 'maciej-kisiel',
@@ -510,6 +514,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'movetz',
     discord: '1427569183427919906',
     memberOf: [ROLE_IDS.SWIFT_SDK],
+  },
+  {
+    github: 'nahapetyan-serob',
+    discord: '1505852630692401314',
+    memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'nbarbettini',
@@ -618,11 +627,26 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.SKILLS_OVER_MCP_IG,
       ROLE_IDS.TRANSPORT_WG,
       ROLE_IDS.TRIGGERS_EVENTS_WG,
+      ROLE_IDS.AGENTS_WG,
     ],
   },
   {
     github: 'poteat',
     memberOf: [ROLE_IDS.TYPESCRIPT_SDK_COLLABORATORS],
+  },
+  {
+    github: 'PranavSenthilnathan',
+    email: 'pranas@microsoft.com',
+    firstName: 'Pranav',
+    lastName: 'Senthilnathan',
+    memberOf: [ROLE_IDS.CSHARP_SDK],
+  },
+  {
+    github: 'pree-dew',
+    discord: '1379733751315173376',
+    firstName: 'Preeti',
+    lastName: 'Dewani',
+    memberOf: [ROLE_IDS.REGISTRY_COLLABORATORS],
   },
   {
     github: 'pronskiy',
@@ -631,8 +655,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'pwwpche',
     discord: '1226238847013228604',
-    skipGoogleUserProvisioning: true,
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
+    memberOf: [],
   },
   {
     github: 'rdimitrov',
@@ -738,7 +761,8 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Padilla',
     googleEmailPrefix: 'toby',
     existingGWSUser: true,
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
+    // Emeritus maintainer of the Registry
+    memberOf: [],
   },
   {
     github: 'topherbullock',

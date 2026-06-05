@@ -22,6 +22,7 @@ export const ROLE_IDS = {
   MCPB_MAINTAINERS: 'mcpb-maintainers',
   REFERENCE_SERVERS_MAINTAINERS: 'reference-servers-maintainers',
   REGISTRY_MAINTAINERS: 'registry-maintainers',
+  REGISTRY_COLLABORATORS: 'registry-collaborators', // GitHub only
   USE_MCP_MAINTAINERS: 'use-mcp-maintainers',
 
   // ===================
@@ -57,6 +58,7 @@ export const ROLE_IDS = {
   SERVER_CARD_WG: 'server-card-wg',
   INTERCEPTORS_WG: 'interceptors-wg',
   FILE_UPLOADS_WG: 'file-uploads-wg',
+  AGENTS_WG: 'agents-wg',
 
   // ===================
   // Interest Groups

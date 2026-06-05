@@ -250,7 +250,10 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'registry',
-    teams: [{ team: 'registry-wg', permission: 'admin' }],
+    teams: [
+      { team: 'registry-wg', permission: 'admin' },
+      { team: 'registry-collaborators', permission: 'push' },
+    ],
   },
   {
     repository: 'static',
@@ -306,6 +309,15 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
+    repository: 'example-remote-server',
+    teams: [
+      { team: 'core-maintainers', permission: 'push' },
+      { team: 'moderators', permission: 'maintain' },
+      { team: 'mcp-apps-wg', permission: 'push' },
+      { team: 'mcp-apps-sdk', permission: 'admin' },
+    ],
+  },
+  {
     repository: 'experimental-ext-grouping',
     teams: [
       { team: 'core-maintainers', permission: 'admin' },
@@ -343,6 +355,14 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'moderators', permission: 'triage' },
       { team: 'interceptors-wg', permission: 'admin' },
+    ],
+  },
+  {
+    repository: 'experimental-ext-tasks',
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'moderators', permission: 'maintain' },
+      { team: 'agents-wg', permission: 'admin' },
     ],
   },
   {
