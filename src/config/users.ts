@@ -679,7 +679,12 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Kothari',
     googleEmailPrefix: 'sambhav',
     discord: '840109459212206090',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.FINANCIAL_SERVICES_IG, ROLE_IDS.INTERCEPTORS_WG],
+    memberOf: [
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.FINANCIAL_SERVICES_IG,
+      ROLE_IDS.INTERCEPTORS_WG,
+      ROLE_IDS.SKILLS_OVER_MCP_IG,
+    ],
   },
   {
     github: 'SamMorrowDrums',
