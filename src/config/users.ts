@@ -499,7 +499,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Max',
     lastName: 'Isbey',
     googleEmailPrefix: 'max',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.PYTHON_SDK],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.PYTHON_SDK, ROLE_IDS.TYPESCRIPT_SDK_COLLABORATORS],
   },
   {
     github: 'michaelneale',
