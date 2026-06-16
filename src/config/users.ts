@@ -56,6 +56,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.PYTHON_SDK,
+      ROLE_IDS.TRANSPORT_WG,
       ROLE_IDS.TYPESCRIPT_SDK,
     ],
   },
@@ -269,6 +270,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.MODERATORS,
+      ROLE_IDS.TRANSPORT_WG,
     ],
   },
   {
@@ -371,6 +373,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MODERATORS,
       ROLE_IDS.RUBY_SDK,
       ROLE_IDS.MCP_APPS_SDK,
+      ROLE_IDS.TRANSPORT_WG,
     ],
   },
   {
@@ -481,6 +484,12 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.COMMUNITY_MANAGERS],
   },
   {
+    github: 'markdroth',
+    firstName: 'Mark',
+    lastName: 'Roth',
+    memberOf: [ROLE_IDS.TRANSPORT_WG],
+  },
+  {
     github: 'markpollack',
     memberOf: [ROLE_IDS.JAVA_SDK],
   },
@@ -508,7 +517,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'mikekistler',
     discord: '915345005982408754',
-    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
+    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN, ROLE_IDS.TRANSPORT_WG],
   },
   {
     github: 'movetz',
