@@ -1,6 +1,9 @@
 node_modules/
 bin/
 *.log
+.devenv/
+.devenv.flake.nix
+devenv.lock
 
 # Pulumi
 .pulumi/
