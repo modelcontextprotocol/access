@@ -138,6 +138,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MODERATORS,
       ROLE_IDS.SKILLS_OVER_MCP_IG,
       ROLE_IDS.WORKING_GROUPS,
+      ROLE_IDS.APPEALS,
     ],
   },
   {
@@ -235,6 +236,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MODERATORS,
       ROLE_IDS.SERVER_CARD_WG,
       ROLE_IDS.AGENTS_WG,
+      ROLE_IDS.APPEALS,
     ],
   },
   {
@@ -271,6 +273,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.TRANSPORT_WG,
+      ROLE_IDS.APPEALS,
     ],
   },
   {
@@ -374,6 +377,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.RUBY_SDK,
       ROLE_IDS.MCP_APPS_SDK,
       ROLE_IDS.TRANSPORT_WG,
+      ROLE_IDS.APPEALS,
     ],
   },
   {
@@ -458,6 +462,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.SECURITY_WG,
       ROLE_IDS.TRANSPORT_WG,
       ROLE_IDS.TYPESCRIPT_SDK,
+      ROLE_IDS.APPEALS,
     ],
   },
   {
@@ -583,6 +588,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.REFERENCE_SERVERS_MAINTAINERS,
       ROLE_IDS.SKILLS_OVER_MCP_IG,
       ROLE_IDS.WORKING_GROUPS,
+      ROLE_IDS.APPEALS,
     ],
   },
   {
@@ -618,6 +624,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MODERATORS,
       ROLE_IDS.SKILLS_OVER_MCP_IG,
       ROLE_IDS.INTERCEPTORS_WG,
+      ROLE_IDS.APPEALS,
     ],
   },
   {
@@ -753,6 +760,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.REGISTRY_MAINTAINERS,
       ROLE_IDS.ADMINISTRATORS,
       ROLE_IDS.SERVER_CARD_WG,
+      ROLE_IDS.APPEALS,
     ],
   },
   {
