@@ -366,7 +366,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
-    repository: 'experimental-ext-tasks',
+    repository: 'ext-tasks',
     teams: [
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'moderators', permission: 'maintain' },
