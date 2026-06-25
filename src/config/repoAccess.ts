@@ -213,6 +213,10 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'python-sdk', permission: 'admin' },
       { team: 'python-sdk-auth', permission: 'admin' },
     ],
+    users: [
+      { username: 'ddworken', permission: 'admin' },
+      { username: 'OctavianGuzu', permission: 'admin' },
+    ],
   },
   {
     repository: 'ruby-sdk',
@@ -232,6 +236,10 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'typescript-sdk', permission: 'admin' },
       { team: 'typescript-sdk-auth', permission: 'admin' },
       { team: 'typescript-sdk-collaborators', permission: 'push' },
+    ],
+    users: [
+      { username: 'ddworken', permission: 'admin' },
+      { username: 'OctavianGuzu', permission: 'admin' },
     ],
   },
   {
@@ -358,7 +366,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
-    repository: 'experimental-ext-tasks',
+    repository: 'ext-tasks',
     teams: [
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'moderators', permission: 'maintain' },
