@@ -161,6 +161,13 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
+    github: 'davidortinau',
+    firstName: 'David',
+    lastName: 'Ortinau',
+    discord: '572162392876646401',
+    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
+  },
+  {
     github: 'degiorgio',
     email: 'degiorgiokurt@outlook.com',
     firstName: 'Kurt',
