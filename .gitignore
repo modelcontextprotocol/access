@@ -1,15 +1,14 @@
-node_modules/
-bin/
-*.log
-.devenv/
-.devenv.flake.nix
-devenv.lock
+# Test Complete ignore files: https://support.smartbear.com/viewarticle/68002/
 
-# Pulumi
-.pulumi/
-Pulumi.*.yaml.bak
-sdks
+# Tester-specific Settings
+*.tcCFGExtender
+*.tcLS
 
-# Secrets
-passphrase.prod.txt
-sa-key.json
+# Type library declarations
+*.tlb
+
+# Log files
+*.tcLogs
+
+# Backup files
+*.bak
