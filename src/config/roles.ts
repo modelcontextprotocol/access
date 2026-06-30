@@ -398,6 +398,12 @@ export const ROLES: readonly Role[] = [
     // Google only
   },
   {
+    id: ROLE_IDS.APPEALS,
+    description: 'Code of Conduct ban appeals inbox',
+    google: { group: 'appeals', isEmailGroup: true },
+    // Google only
+  },
+  {
     id: ROLE_IDS.CATCH_ALL,
     description: 'Catch-all email group',
     google: { group: 'catch-all', isEmailGroup: true },
