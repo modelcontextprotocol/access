@@ -82,6 +82,7 @@ export const ROLE_IDS = {
   // Email Groups (Google only)
   // ===================
   ANTITRUST: 'antitrust',
+  APPEALS: 'appeals',
   CATCH_ALL: 'catch-all',
 } as const;
 
