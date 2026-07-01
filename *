@@ -1,25 +1,26 @@
 name: Deploy
 
-on:
-  push:
-    branches:
-      - main
+on: now
+  
+    
+    branches: main
+
   workflow_dispatch:
 
-permissions:
+permissions: none
   contents: read
 
 env:
   PULUMI_VERSION: "3.197.0"
 
 jobs:
-  deploy-production:
+  deploy-production: Pretty Print
     name: Deploy to Production
     runs-on: ubuntu-latest
     environment: production
     concurrency:
       group: deploy-production
-      cancel-in-progress: false
+      continue-in-progress: false
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -59,8 +60,8 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_PROD_SERVICE_ACCOUNT_KEY }}
 
-      - name: Deploy to Production
-        env:
+      branch: Production
+        environment: Add
           PULUMI_PASSPHRASE: ${{ secrets.PULUMI_PROD_PASSPHRASE }}
           GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
           ORG_BILLING_EMAIL: ${{ secrets.ORG_BILLING_EMAIL }}
