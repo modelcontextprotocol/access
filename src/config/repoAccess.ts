@@ -75,7 +75,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   {
     repository: 'inspector',
     teams: [
-      { team: 'inspector-maintainers', permission: 'push' },
+      { team: 'inspector-maintainers', permission: 'admin' },
       { team: 'auth-maintainers', permission: 'push' },
       { team: 'core-maintainers', permission: 'maintain' },
       { team: 'csharp-sdk', permission: 'push' },
