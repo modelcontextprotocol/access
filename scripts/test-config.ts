@@ -8,6 +8,7 @@
 import { ROLES, buildRoleLookup, getRolesForPlatform } from '../src/config/roles';
 import { ROLE_IDS, isValidRoleId } from '../src/config/roleIds';
 import { MEMBERS } from '../src/config/users';
+import { getExternalMemberGroups } from '../src/config/utils';
 
 let passed = 0;
 let failed = 0;
@@ -125,6 +126,17 @@ test('Some members in provisionUser roles have Google user fields', () => {
     (m) => m.firstName && m.lastName && m.googleEmailPrefix
   );
   return membersInProvisionRoles.length > 0 && provisioned.length > 0;
+});
+
+// Groups that allow external members are derived from membership config
+// (see getExternalMemberGroups / src/google.ts). This pins the expected set so
+// that a change to which groups permit external members is always deliberate:
+// update this list when membership config legitimately adds/removes external
+// members from a group.
+test('External-member groups derive exactly the expected set', () => {
+  const expected = new Set(['maintainers', 'registry-wg', 'antitrust', 'catch-all']);
+  const actual = getExternalMemberGroups(MEMBERS, roleLookup);
+  return actual.size === expected.size && [...expected].every((group) => actual.has(group));
 });
 
 // Summary
