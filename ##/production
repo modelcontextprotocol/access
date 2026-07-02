@@ -1,36 +1,4 @@
-# MCP Access Management
-
-Infrastructure as Code for managing access to MCP community resources using Pulumi.
-
-- Define groups in [`src/config/groups.ts`](src/config/groups.ts)
-- Add users to groups in [`src/config/users.ts`](src/config/users.ts)
-- Changes are applied via GitHub Actions when merged to the main branch
-
-## What This Manages
-
-- **GitHub Teams**: Automatically syncs team memberships in the MCP GitHub organization
-- **Google Workspace Groups**: Automatically syncs group memberships for @modelcontextprotocol.io email accounts
-  - **Email Groups**: Groups with `isEmailGroup: true` accept emails from anyone (including external users) and notify all members. External posts are moderated for security.
-- **Google Workspace User Accounts**: Provisions @modelcontextprotocol.io accounts for members of roles with `provisionUser: true`
-
-### Opting in to a Google Workspace account (maintainers)
-
-If you're a maintainer and want an `@modelcontextprotocol.io` account, open a PR adding the following fields to your entry in [`src/config/users.ts`](src/config/users.ts):
-
-```ts
-{
-  github: 'your-github-username',
-  // ...
-  firstName: 'Your',
-  lastName: 'Name',
-  googleEmailPrefix: 'yourname', // -> yourname@modelcontextprotocol.io
-  memberOf: [ROLE_IDS.MAINTAINERS /* , ... */],
-},
-```
-
-Once merged, Pulumi provisions the account. An admin will share your initial password (retrievable via `pulumi stack output --show-secrets newGWSUserPasswords`).
-
-## Deployment
+Deployment
 
 ### Production Deployment (Automated)
 
@@ -38,7 +6,7 @@ Once merged, Pulumi provisions the account. An admin will share your initial pas
 
 ### Manual Deployment
 
-Pre-requisites:
+Pre-requisites: []
 
 - [Pulumi CLI installed](https://www.pulumi.com/docs/iac/download-install/)
 - [Google Cloud SDK installed](https://cloud.google.com/sdk/docs/install)
