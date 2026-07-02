@@ -76,4 +76,20 @@ jobs:
           pulumi config set discord:guildId "$DISCORD_GUILD_ID" --stack prod
           pulumi config set discord:botToken "$DISCORD_BOT_TOKEN" --secret --stack prod
           pulumi config set githubBillingEmail "$ORG_BILLING_EMAIL" --secret --stack prod
+          # TEMP (#133): two GroupMember records (external-email members of the
+          # maintainers group) are recorded in state with an empty member ID
+          # ("groups/04f1mdlm38smb30/members/"), so every deploy plans a replace
+          # whose create step 409s ("Member already exists") against the live
+          # membership and aborts the whole update. Repair the state by dropping
+          # the broken records and re-importing the live memberships by member
+          # email (the Directory API accepts an email as the member key; the
+          # provider then stores the numeric member ID). --protect=false keeps
+          # the imported records deletable, like every other GroupMember.
+          # The five other records that were corrupted alongside these two were
+          # already healed by the (otherwise failed) 2026-07-02 deploy run and
+          # need no action here. Remove this block after one successful deploy.
+          pulumi state delete 'urn:pulumi:prod::mcp-access::googleworkspace:index/groupMember:GroupMember::bob.dickinson@gmail.com-maintainers' --stack prod --yes || true
+          pulumi state delete 'urn:pulumi:prod::mcp-access::googleworkspace:index/groupMember:GroupMember::chugh.tapan@gmail.com-maintainers' --stack prod --yes || true
+          pulumi import googleworkspace:index/groupMember:GroupMember 'bob.dickinson@gmail.com-maintainers' 'groups/04f1mdlm38smb30/members/bob.dickinson@gmail.com' --stack prod --yes --protect=false || true
+          pulumi import googleworkspace:index/groupMember:GroupMember 'chugh.tapan@gmail.com-maintainers' 'groups/04f1mdlm38smb30/members/chugh.tapan@gmail.com' --stack prod --yes --protect=false || true
           make up
