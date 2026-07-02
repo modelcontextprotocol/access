@@ -21,6 +21,14 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.AUTH_MAINTAINERS, ROLE_IDS.MAINTAINERS],
   },
   {
+    github: 'ajribeiro',
+    firstName: 'AJ',
+    lastName: 'Ribeiro',
+    googleEmailPrefix: 'ajr',
+    existingGWSUser: true,
+    memberOf: [],
+  },
+  {
     github: 'alexhancock',
     discord: '1325885093343924316',
     memberOf: [ROLE_IDS.RUST_SDK],
@@ -566,6 +574,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'ochafik',
     discord: '1004897332069925024',
+    firstName: 'Olivier',
+    lastName: 'Chafik',
+    googleEmailPrefix: 'ochafik',
+    existingGWSUser: true,
     memberOf: [
       ROLE_IDS.FILE_UPLOADS_WG,
       ROLE_IDS.MCP_APPS_SDK,
