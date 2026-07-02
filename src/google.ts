@@ -25,6 +25,13 @@ ROLES.forEach((role: Role) => {
     {
       email: groups[role.google.group].email,
 
+      // Allow external (non-workspace) members. This only *permits* external
+      // membership — who is actually a member is still governed entirely by
+      // config/users.ts. This field must stay declared: when omitted, the
+      // provider defaults it to false on every `pulumi up`, and Google then
+      // silently purges external-email members ~1-2 days later (#133 incident).
+      allowExternalMembers: true,
+
       // Maximise visibility of group. It's visible in GitHub anyway
       whoCanViewMembership: 'ALL_IN_DOMAIN_CAN_VIEW',
 
