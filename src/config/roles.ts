@@ -19,6 +19,14 @@ export interface DiscordConfig {
 }
 
 /**
+ * npm organization team configuration
+ */
+export interface NpmConfig {
+  /** npm team name within the npm org (e.g., 'inspector' -> modelcontextprotocol:inspector) */
+  team: string;
+}
+
+/**
  * Google Workspace group configuration
  */
 export interface GoogleConfig {
@@ -40,6 +48,7 @@ export interface Role {
   github?: GitHubConfig;
   discord?: DiscordConfig;
   google?: GoogleConfig;
+  npm?: NpmConfig;
   /**
    * Roles that are implied for Discord membership.
    * If a user has this role, they automatically get the implied roles' Discord roles too.
@@ -118,6 +127,7 @@ export const ROLES: readonly Role[] = [
     description: 'MCP Inspector maintainers',
     github: { team: 'inspector-maintainers', parent: ROLE_IDS.STEERING_COMMITTEE },
     discord: { role: 'inspector maintainers (synced)' },
+    npm: { team: 'inspector' },
   },
   {
     id: ROLE_IDS.MCPB_MAINTAINERS,

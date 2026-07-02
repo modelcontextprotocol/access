@@ -7,6 +7,7 @@
 
 import { ROLES, buildRoleLookup } from '../src/config/roles';
 import { REPOSITORY_ACCESS } from '../src/config/repoAccess';
+import { NPM_PACKAGE_ACCESS } from '../src/config/npmPackages';
 import { MEMBERS } from '../src/config/users';
 import type { RoleId } from '../src/config/roleIds';
 
@@ -14,8 +15,12 @@ const roleLookup = buildRoleLookup();
 
 // Get all GitHub team names (roles that have GitHub config)
 const githubTeamNames = new Set<string>();
+// Get all npm team names (roles that have npm config)
+const npmTeamNames = new Set<string>();
 // Get all role IDs (for member validation)
 const allRoleIds = new Set<RoleId>();
+
+let hasErrors = false;
 
 for (const role of ROLES) {
   allRoleIds.add(role.id);
@@ -23,9 +28,19 @@ for (const role of ROLES) {
   if (role.github) {
     githubTeamNames.add(role.github.team);
   }
-}
 
-let hasErrors = false;
+  if (role.npm) {
+    if (!/^[a-z0-9][a-z0-9._-]*$/.test(role.npm.team)) {
+      console.error(`ERROR: Role "${role.id}" has invalid npm team name "${role.npm.team}"`);
+      hasErrors = true;
+    }
+    if (npmTeamNames.has(role.npm.team)) {
+      console.error(`ERROR: npm team "${role.npm.team}" is defined by more than one role`);
+      hasErrors = true;
+    }
+    npmTeamNames.add(role.npm.team);
+  }
+}
 
 // Validate team references in REPOSITORY_ACCESS
 console.log('Validating team references in repoAccess.ts...');
@@ -42,9 +57,61 @@ for (const repo of REPOSITORY_ACCESS) {
   }
 }
 
+// Validate npm team references and package names in npmPackages.ts
+console.log('Validating npm package access in npmPackages.ts...');
+{
+  // (team, package) pairs must be unique - duplicates would collide on the
+  // Pulumi resource name at deploy time
+  const seenGrants = new Set<string>();
+
+  for (const pkg of NPM_PACKAGE_ACCESS) {
+    if (!pkg.package.startsWith('@modelcontextprotocol/')) {
+      console.error(
+        `ERROR: npm package "${pkg.package}" is not in the @modelcontextprotocol scope`
+      );
+      hasErrors = true;
+    }
+
+    for (const teamRef of pkg.teams) {
+      if (!npmTeamNames.has(teamRef.team)) {
+        console.error(
+          `ERROR: npm package "${pkg.package}" references npm team "${teamRef.team}" which does not exist in roles.ts`
+        );
+        hasErrors = true;
+      }
+
+      const grantKey = `${teamRef.team}:${pkg.package}`;
+      if (seenGrants.has(grantKey)) {
+        console.error(
+          `ERROR: npm package "${pkg.package}" grants access to team "${teamRef.team}" more than once`
+        );
+        hasErrors = true;
+      }
+      seenGrants.add(grantKey);
+    }
+  }
+
+  // npm usernames must be unique across members
+  const npmUsernames = new Map<string, string>();
+  for (const member of MEMBERS) {
+    if (!member.npm) continue;
+    const memberId = member.github || member.email || 'unknown';
+    const existing = npmUsernames.get(member.npm);
+    if (existing) {
+      console.error(
+        `ERROR: npm username "${member.npm}" is used by both "${existing}" and "${memberId}"`
+      );
+      hasErrors = true;
+    } else {
+      npmUsernames.set(member.npm, memberId);
+    }
+  }
+}
+
 // Validate role references in MEMBERS (memberOf)
 console.log('Validating role references in users.ts...');
 for (const member of MEMBERS) {
+  const seenRoleIds = new Set<RoleId>();
   for (const roleId of member.memberOf) {
     if (!allRoleIds.has(roleId)) {
       console.error(
@@ -52,6 +119,14 @@ for (const member of MEMBERS) {
       );
       hasErrors = true;
     }
+    // Duplicates would collide on Pulumi resource names (github/npm memberships)
+    if (seenRoleIds.has(roleId)) {
+      console.error(
+        `ERROR: Member "${member.github || member.email}" lists role "${roleId}" more than once in memberOf`
+      );
+      hasErrors = true;
+    }
+    seenRoleIds.add(roleId);
   }
 }
 

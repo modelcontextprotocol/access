@@ -13,6 +13,15 @@ export interface Member {
   email?: string;
   /** Discord user ID (snowflake) */
   discord?: string;
+  /**
+   * npm username (for npm org team membership).
+   *
+   * Before merging a PR that adds this field, reviewers should verify that
+   * the npm account is registered with the member's @modelcontextprotocol.io
+   * email and has 2FA enabled. The registry API doesn't expose either, so
+   * this cannot be validated automatically.
+   */
+  npm?: string;
   /** Roles this member belongs to */
   memberOf: readonly RoleId[];
   /** First name (required for Google Workspace user provisioning) */
@@ -78,4 +87,5 @@ export {
   type GitHubConfig,
   type DiscordConfig,
   type GoogleConfig,
+  type NpmConfig,
 } from './roles';

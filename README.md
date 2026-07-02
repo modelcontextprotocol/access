@@ -12,6 +12,30 @@ Infrastructure as Code for managing access to MCP community resources using Pulu
 - **Google Workspace Groups**: Automatically syncs group memberships for @modelcontextprotocol.io email accounts
   - **Email Groups**: Groups with `isEmailGroup: true` accept emails from anyone (including external users) and notify all members. External posts are moderated for security.
 - **Google Workspace User Accounts**: Provisions @modelcontextprotocol.io accounts for members of roles with `provisionUser: true`
+- **npm Teams & Package Access**: Syncs teams in the `modelcontextprotocol` npm org, their memberships, and their package access
+
+### npm access
+
+Roles with an `npm` config in [`src/config/roles.ts`](src/config/roles.ts) get a corresponding npm team. Package access grants for those teams live in [`src/config/npmPackages.ts`](src/config/npmPackages.ts).
+
+To be added to an npm team, add your npm username to your entry in [`src/config/users.ts`](src/config/users.ts):
+
+```ts
+{
+  github: 'your-github-username',
+  npm: 'your-npm-username',
+  memberOf: [ROLE_IDS.INSPECTOR_MAINTAINERS /* , ... */],
+},
+```
+
+You'll be added to the npm org (as a `developer`) and to the npm teams of your roles that have npm config. Removing the username removes you from managed teams, but org membership removal is intentionally manual.
+
+The npm account must be registered with your `@modelcontextprotocol.io` email and have 2FA enabled. Reviewers should confirm this before merging — the registry API doesn't expose account email or 2FA status, so it can't be checked automatically.
+
+Notes:
+
+- The npm integration is only active when the `npm:token` Pulumi config secret is set. The token must be a **granular access token created by an npm org owner** with Organizations read/write permission — org admins receive 403 from the registry when granting team package access (despite npm's docs), and classic tokens require an OTP on every write. Configure with `pulumi config set --secret npm:token <token>` (and rotate before its expiry date).
+- npm's built-in `developers` team (which automatically contains all org members) is not managed here.
 
 ### Opting in to a Google Workspace account (maintainers)
 
