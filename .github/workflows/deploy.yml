@@ -76,4 +76,111 @@ jobs:
           pulumi config set discord:guildId "$DISCORD_GUILD_ID" --stack prod
           pulumi config set discord:botToken "$DISCORD_BOT_TOKEN" --secret --stack prod
           pulumi config set githubBillingEmail "$ORG_BILLING_EMAIL" --secret --stack prod
+          # TEMP (#133): one-time state surgery for seven corrupted GroupMember
+          # records. Root cause chain: between 2026-06-30 and 2026-07-02 the seven
+          # external-email memberships below were removed on the Google side
+          # (actor unknown); the deploy's refresh then dropped their records from
+          # state; the subsequent up re-created them; and the pinned provider
+          # (SamuZad/googleworkspace 0.11.1) has a create-path bug that stores an
+          # empty member ID ("groups/<groupId>/members/") even on successful
+          # creates (fixed upstream in 0.11.2). The broken ID is immutable, so
+          # every deploy since plans a create-before-delete replace whose create
+          # step 409s ("Member already exists") against the live membership and
+          # aborts the whole update. The failed replaces also left DUPLICATE
+          # same-URN entries in state (a live record plus a pending-delete
+          # '"delete": true' leftover) for some of the seven, and
+          # `pulumi state delete <urn>` FAILS on an ambiguous URN — which is why
+          # this block edits an exported copy of the state instead of deleting
+          # per URN.
+          #
+          # Step 1: export the state, drop EVERY entry (including pending-delete
+          # duplicates) whose URN is one of the seven, and re-import. These
+          # commands are deliberately NOT `|| true`-guarded: if the surgery
+          # fails, we want a loud failure, not a silent no-op. If nothing
+          # matches (state already repaired), the import is skipped and the
+          # deploy proceeds — the block is idempotent.
+          GROUPMEMBER_URNS='[
+            "urn:pulumi:prod::mcp-access::googleworkspace:index/groupMember:GroupMember::adamj@anthropic.com-catch-all",
+            "urn:pulumi:prod::mcp-access::googleworkspace:index/groupMember:GroupMember::bob.dickinson@gmail.com-maintainers",
+            "urn:pulumi:prod::mcp-access::googleworkspace:index/groupMember:GroupMember::bob.dickinson@gmail.com-registry-wg",
+            "urn:pulumi:prod::mcp-access::googleworkspace:index/groupMember:GroupMember::chugh.tapan@gmail.com-maintainers",
+            "urn:pulumi:prod::mcp-access::googleworkspace:index/groupMember:GroupMember::davideramian@anthropic.com-antitrust",
+            "urn:pulumi:prod::mcp-access::googleworkspace:index/groupMember:GroupMember::davidsp@anthropic.com-antitrust",
+            "urn:pulumi:prod::mcp-access::googleworkspace:index/groupMember:GroupMember::mattsamuels@anthropic.com-antitrust"
+          ]'
+          pulumi stack export --stack prod --file /tmp/state.json
+          jq --argjson urns "$GROUPMEMBER_URNS" \
+            '.deployment.resources |= map(select(.urn as $u | ($urns | index($u)) | not))' \
+            /tmp/state.json > /tmp/state-repaired.json
+          before=$(jq '.deployment.resources | length' /tmp/state.json)
+          after=$(jq '.deployment.resources | length' /tmp/state-repaired.json)
+          echo "State surgery: removing $((before - after)) corrupted GroupMember entries"
+          if [ "$before" -eq "$after" ]; then
+            echo "No matching entries in state (already repaired); skipping import"
+          else
+            pulumi stack import --stack prod --file /tmp/state-repaired.json
+          fi
+          # Step 2: re-import the live memberships by member email (the
+          # Directory API accepts an email as the member key, and the provider
+          # then stores the real member ID). `|| true` is deliberate here: if a
+          # membership is not currently live, its import fails harmlessly and
+          # the subsequent up creates it, restoring access. Note that on the
+          # 0.11.1 provider such a fallback create re-corrupts the record's
+          # member ID — the "Verify GroupMember state healed" step after the
+          # deploy catches that instead of letting a green run masquerade as
+          # healed. --protect=false keeps the imported records deletable, like
+          # every other GroupMember.
+          #
+          # REMOVAL CRITERION: remove this block (and the verification step
+          # below) only after the "Verify GroupMember state healed" step has
+          # passed on a deploy — a green `make up` alone does NOT prove the
+          # records are healed.
+          pulumi import googleworkspace:index/groupMember:GroupMember 'adamj@anthropic.com-catch-all' 'groups/00upglbi31qapnv/members/adamj@anthropic.com' --stack prod --yes --protect=false || true
+          pulumi import googleworkspace:index/groupMember:GroupMember 'bob.dickinson@gmail.com-maintainers' 'groups/04f1mdlm38smb30/members/bob.dickinson@gmail.com' --stack prod --yes --protect=false || true
+          pulumi import googleworkspace:index/groupMember:GroupMember 'bob.dickinson@gmail.com-registry-wg' 'groups/040ew0vw3g472qb/members/bob.dickinson@gmail.com' --stack prod --yes --protect=false || true
+          pulumi import googleworkspace:index/groupMember:GroupMember 'chugh.tapan@gmail.com-maintainers' 'groups/04f1mdlm38smb30/members/chugh.tapan@gmail.com' --stack prod --yes --protect=false || true
+          pulumi import googleworkspace:index/groupMember:GroupMember 'davideramian@anthropic.com-antitrust' 'groups/03jtnz0s4hi6gld/members/davideramian@anthropic.com' --stack prod --yes --protect=false || true
+          pulumi import googleworkspace:index/groupMember:GroupMember 'davidsp@anthropic.com-antitrust' 'groups/03jtnz0s4hi6gld/members/davidsp@anthropic.com' --stack prod --yes --protect=false || true
+          pulumi import googleworkspace:index/groupMember:GroupMember 'mattsamuels@anthropic.com-antitrust' 'groups/03jtnz0s4hi6gld/members/mattsamuels@anthropic.com' --stack prod --yes --protect=false || true
           make up
+
+      # TEMP (#133): a green deploy alone does NOT prove the GroupMember records
+      # are healed — the pinned provider (0.11.1) writes an empty member ID even
+      # on successful creates, so the fallback create path in the repair block
+      # above can silently re-corrupt state while the run stays green. This step
+      # makes that visible: it fails loudly if any GroupMember record still has
+      # an empty member ID or a duplicate URN. Remove the TEMP repair block in
+      # the deploy step, and this step, only after this step has PASSED on a
+      # deploy — not merely after a green run.
+      - name: "Verify GroupMember state healed (TEMP, #133)"
+        env:
+          PULUMI_PASSPHRASE: ${{ secrets.PULUMI_PROD_PASSPHRASE }}
+        run: |
+          echo "$PULUMI_PASSPHRASE" > passphrase.prod.txt
+          export PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt
+          pulumi login gs://mcp-access-prod-pulumi-state
+          pulumi stack export --stack prod --file /tmp/state-verify.json
+          empty_ids=$(jq -r '[.deployment.resources[]
+              | select(.type == "googleworkspace:index/groupMember:GroupMember")
+              | select((.id // "") | endswith("/members/"))
+              | .urn] | .[]' /tmp/state-verify.json)
+          dup_urns=$(jq -r '[.deployment.resources[]
+              | select(.type == "googleworkspace:index/groupMember:GroupMember")
+              | .urn] | group_by(.) | map(select(length > 1) | .[0]) | .[]' /tmp/state-verify.json)
+          status=0
+          if [ -n "$empty_ids" ]; then
+            echo "::error::GroupMember records still have an empty member ID (state NOT healed):"
+            echo "$empty_ids"
+            status=1
+          fi
+          if [ -n "$dup_urns" ]; then
+            echo "::error::Duplicate GroupMember URNs remain in state (pending-delete leftovers):"
+            echo "$dup_urns"
+            status=1
+          fi
+          if [ "$status" -ne 0 ]; then
+            echo "::error::Deploy succeeded but the state repair did NOT stick. Do not remove the TEMP repair block; see #133."
+            exit 1
+          fi
+          echo "All GroupMember records have real member IDs and unique URNs; state is healed."
+          echo "The TEMP repair block (and this step) can now be removed."
