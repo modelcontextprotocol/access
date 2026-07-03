@@ -11,6 +11,7 @@ export const ORG_SETTINGS = {
   name: 'Model Context Protocol',
   description:
     'An open protocol that enables seamless integration between LLM applications and external data sources and tools.',
+  blog: 'https://modelcontextprotocol.io',
   defaultRepositoryPermission: 'none',
   hasOrganizationProjects: true,
   hasRepositoryProjects: true,
