@@ -5,6 +5,7 @@ import * as random from '@pulumi/random';
 import { ROLES, type Role, buildRoleLookup } from './config/roles';
 import { MEMBERS } from './config/users';
 import type { RoleId } from './config/roleIds';
+import { resolveGoogleMemberEmail } from './config/utils';
 
 const roleLookup = buildRoleLookup();
 // Groups keyed by Google group name
@@ -24,6 +25,15 @@ ROLES.forEach((role: Role) => {
     role.google.group,
     {
       email: groups[role.google.group].email,
+
+      // Permit external (non-workspace) members only on groups whose role
+      // explicitly opts in via allowExternalMembers in config/roles.ts.
+      // Who is actually a member is still governed entirely by config/users.ts;
+      // validate-config enforces that every external member's role opts in.
+      // This field must stay DECLARED: when omitted, the provider defaults it
+      // to false on every `pulumi up`, and Google then silently purges
+      // external-email members ~1-2 days later (#133 incident).
+      allowExternalMembers: role.google.allowExternalMembers ?? false,
 
       // Maximise visibility of group. It's visible in GitHub anyway
       whoCanViewMembership: 'ALL_IN_DOMAIN_CAN_VIEW',
@@ -154,12 +164,11 @@ MEMBERS.forEach((member) => {
 // Create group memberships for users
 MEMBERS.forEach((member) => {
   // Prefer the provisioned GWS email over the personal email for group memberships
-  const gwsEmail = member.googleEmailPrefix
-    ? `${member.googleEmailPrefix}@modelcontextprotocol.io`
-    : undefined;
-  const memberEmail = gwsEmail || member.email;
+  const memberEmail = resolveGoogleMemberEmail(member);
   if (!memberEmail) return;
-  const provisionedUser = gwsEmail ? provisionedUsersByEmail[gwsEmail] : undefined;
+  const provisionedUser = member.googleEmailPrefix
+    ? provisionedUsersByEmail[memberEmail]
+    : undefined;
 
   member.memberOf.forEach((roleId: RoleId) => {
     const role = roleLookup.get(roleId);

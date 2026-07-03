@@ -8,6 +8,7 @@
 import { ROLES, buildRoleLookup } from '../src/config/roles';
 import { REPOSITORY_ACCESS } from '../src/config/repoAccess';
 import { MEMBERS } from '../src/config/users';
+import { resolveGoogleMemberEmail } from '../src/config/utils';
 import type { RoleId } from '../src/config/roleIds';
 
 const roleLookup = buildRoleLookup();
@@ -154,6 +155,30 @@ console.log('Validating Google Workspace user provisioning fields...');
       );
       hasErrors = true;
     }
+  }
+}
+
+// Validate that external group members are explicitly permitted.
+// allowExternalMembers is an explicit per-role opt-in (see GoogleConfig in
+// roles.ts): if a group's membership resolves to any non-@modelcontextprotocol.io
+// email but the role does not opt in, `pulumi up` would set the group's
+// ALLOW_EXTERNAL_MEMBERS setting to false and Google would silently purge the
+// external members ~1-2 days later (#133 incident). Fail loudly instead.
+console.log('Validating external group members are explicitly permitted...');
+for (const member of MEMBERS) {
+  const memberEmail = resolveGoogleMemberEmail(member);
+  if (!memberEmail || memberEmail.endsWith('@modelcontextprotocol.io')) continue;
+
+  for (const roleId of member.memberOf) {
+    const role = roleLookup.get(roleId);
+    if (!role?.google || role.google.allowExternalMembers === true) continue;
+
+    console.error(
+      `ERROR: Google group "${role.google.group}" has external member "${memberEmail}" ` +
+        `but its role does not permit external members. If this member is intentional, ` +
+        `add allowExternalMembers: true to the '${role.id}' role's google config in src/config/roles.ts`
+    );
+    hasErrors = true;
   }
 }
 
