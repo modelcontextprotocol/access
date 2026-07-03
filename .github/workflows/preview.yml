@@ -16,8 +16,8 @@ jobs:
   preview:
     name: Preview Changes
     runs-on: ubuntu-latest
-    # Skip preview for fork PRs - they don't have access to secrets
-    if: github.event.pull_request.head.repo.full_name == github.repository
+    # Skip preview for fork PRs and Dependabot - they don't have access to Actions secrets
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
     environment: production
     steps:
       - name: Checkout code
@@ -101,7 +101,7 @@ jobs:
           exit $PREVIEW_EXIT_CODE
 
       - name: Comment on PR
-        if: always()
+        if: always() && steps.preview.conclusion != 'skipped'
         uses: actions/github-script@v7
         with:
           script: |
