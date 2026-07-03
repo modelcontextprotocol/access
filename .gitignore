@@ -8,7 +8,13 @@ devenv.lock
 # Pulumi
 .pulumi/
 Pulumi.*.yaml.bak
-sdks
+# Generated SDKs stay ignored, but keep the stub manifest so Dependabot can
+# resolve the file: dependency (nested negations are required: git cannot
+# re-include a file whose parent directory is excluded)
+sdks/*
+!sdks/googleworkspace/
+sdks/googleworkspace/*
+!sdks/googleworkspace/package.json
 
 # Secrets
 passphrase.prod.txt

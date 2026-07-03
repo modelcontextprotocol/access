@@ -1,0 +1,11 @@
+{
+  "name": "@pulumi/googleworkspace",
+  "version": "0.7.0",
+  "description": "Stub manifest for the @pulumi/googleworkspace SDK, committed so Dependabot can resolve the file: dependency. The full SDK is generated in place by `pulumi install` (see Pulumi.yaml).",
+  "dependencies": {
+    "@pulumi/pulumi": "^3.142.0",
+    "@types/node": "^18",
+    "async-mutex": "^0.5.0",
+    "typescript": "^4.3.5"
+  }
+}
