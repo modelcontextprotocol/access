@@ -5,15 +5,11 @@ import * as random from '@pulumi/random';
 import { ROLES, type Role, buildRoleLookup } from './config/roles';
 import { MEMBERS } from './config/users';
 import type { RoleId } from './config/roleIds';
-import { getExternalMemberGroups, resolveGoogleMemberEmail } from './config/utils';
+import { resolveGoogleMemberEmail } from './config/utils';
 
 const roleLookup = buildRoleLookup();
 // Groups keyed by Google group name
 const groups: Record<string, gworkspace.Group> = {};
-
-// Google group names with at least one external (non-workspace) member,
-// derived purely from membership config (config/users.ts + config/roles.ts).
-const externalMemberGroups = getExternalMemberGroups(MEMBERS, roleLookup);
 
 // Create Google groups for roles that have Google config
 ROLES.forEach((role: Role) => {
@@ -30,13 +26,14 @@ ROLES.forEach((role: Role) => {
     {
       email: groups[role.google.group].email,
 
-      // Permit external (non-workspace) members only on groups whose config
-      // actually contains one — derived from config/users.ts so membership
-      // config stays the single source of truth. This field must stay
-      // DECLARED: when omitted, the provider defaults it to false on every
-      // `pulumi up`, and Google then silently purges external-email members
-      // ~1-2 days later (#133 incident).
-      allowExternalMembers: externalMemberGroups.has(role.google.group),
+      // Permit external (non-workspace) members only on groups whose role
+      // explicitly opts in via allowExternalMembers in config/roles.ts.
+      // Who is actually a member is still governed entirely by config/users.ts;
+      // validate-config enforces that every external member's role opts in.
+      // This field must stay DECLARED: when omitted, the provider defaults it
+      // to false on every `pulumi up`, and Google then silently purges
+      // external-email members ~1-2 days later (#133 incident).
+      allowExternalMembers: role.google.allowExternalMembers ?? false,
 
       // Maximise visibility of group. It's visible in GitHub anyway
       whoCanViewMembership: 'ALL_IN_DOMAIN_CAN_VIEW',
