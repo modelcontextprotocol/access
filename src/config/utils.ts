@@ -28,6 +28,19 @@ export interface Member {
 }
 
 /**
+ * Resolve the email a member joins Google groups with.
+ * Prefers the provisioned GWS email over the personal email. This is the
+ * single source of truth for group-membership emails — src/google.ts uses it
+ * to create memberships, and scripts/validate-config.ts uses it to check that
+ * external members only appear in roles that opt into allowExternalMembers.
+ */
+export function resolveGoogleMemberEmail(member: Member): string | undefined {
+  return member.googleEmailPrefix
+    ? `${member.googleEmailPrefix}@modelcontextprotocol.io`
+    : member.email;
+}
+
+/**
  * Sort roles by GitHub parent dependency (topological sort).
  * Ensures parent teams are created before child teams.
  *

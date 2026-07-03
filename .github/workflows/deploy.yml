@@ -70,9 +70,6 @@ jobs:
           echo "$PULUMI_PASSPHRASE" > passphrase.prod.txt
           export PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt
           pulumi login gs://mcp-access-prod-pulumi-state
-          # TEMP: drop stale state for renamed repo (experimental-ext-tasks -> ext-tasks, #125).
-          # Delete-on-up 404s because the old repo name is gone. Remove after one successful deploy.
-          pulumi state delete 'urn:pulumi:prod::mcp-access::github:index/repositoryCollaborators:RepositoryCollaborators::repo-experimental-ext-tasks' --stack prod --yes || true
           pulumi config set discord:guildId "$DISCORD_GUILD_ID" --stack prod
           pulumi config set discord:botToken "$DISCORD_BOT_TOKEN" --secret --stack prod
           pulumi config set githubBillingEmail "$ORG_BILLING_EMAIL" --secret --stack prod
