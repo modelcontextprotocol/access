@@ -28,6 +28,13 @@ export interface GoogleConfig {
   isEmailGroup?: boolean;
   /** If true, members of this role get a Google Workspace user account */
   provisionUser?: boolean;
+  /**
+   * Opt-in for groups that intentionally include non-@modelcontextprotocol.io
+   * members. Defaults to false. Must stay declared on the GroupSettings
+   * resource: the provider resets an omitted field to false on every apply,
+   * after which Google silently purges external members (#133 incident).
+   */
+  allowExternalMembers?: boolean;
 }
 
 /**
@@ -105,7 +112,7 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'maintainers (synced)' },
     // GWS user accounts are opt-in: maintainers add firstName/lastName/googleEmailPrefix
     // to their entry in users.ts via PR to get an @modelcontextprotocol.io account
-    google: { group: 'maintainers', provisionUser: true },
+    google: { group: 'maintainers', provisionUser: true, allowExternalMembers: true },
   },
   {
     id: ROLE_IDS.DOCS_MAINTAINERS,
@@ -136,7 +143,7 @@ export const ROLES: readonly Role[] = [
     description: 'Official registry builders and maintainers',
     github: { team: 'registry-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'registry maintainers (synced)' },
-    google: { group: 'registry-wg', provisionUser: true },
+    google: { group: 'registry-wg', provisionUser: true, allowExternalMembers: true },
   },
   {
     id: ROLE_IDS.REGISTRY_COLLABORATORS,
@@ -394,7 +401,7 @@ export const ROLES: readonly Role[] = [
   {
     id: ROLE_IDS.ANTITRUST,
     description: 'Antitrust compliance contacts',
-    google: { group: 'antitrust', isEmailGroup: true },
+    google: { group: 'antitrust', isEmailGroup: true, allowExternalMembers: true },
     // Google only
   },
   {
@@ -406,7 +413,7 @@ export const ROLES: readonly Role[] = [
   {
     id: ROLE_IDS.CATCH_ALL,
     description: 'Catch-all email group',
-    google: { group: 'catch-all', isEmailGroup: true },
+    google: { group: 'catch-all', isEmailGroup: true, allowExternalMembers: true },
     // Google only
   },
 ] as const;
