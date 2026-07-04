@@ -260,6 +260,8 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'eiriktsarpalis',
+    firstName: 'Eirik',
+    lastName: 'Tsarpalis',
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
@@ -271,10 +273,6 @@ export const MEMBERS: readonly Member[] = [
     github: 'erain',
     discord: '797226095874539539',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
-  },
-  {
-    github: 'ericstj',
-    memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
     github: 'evalstate',
@@ -325,6 +323,8 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'halter73',
     discord: '340718902096953344',
+    firstName: 'Stephen',
+    lastName: 'Halter',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
@@ -361,6 +361,8 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jeffhandley',
+    firstName: 'Jeff',
+    lastName: 'Handley',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
@@ -397,6 +399,8 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jozkee',
+    firstName: 'David',
+    lastName: 'Cantu',
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
@@ -533,11 +537,6 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'michaelneale',
     memberOf: [ROLE_IDS.RUST_SDK],
-  },
-  {
-    github: 'mikekistler',
-    discord: '915345005982408754',
-    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN, ROLE_IDS.TRANSPORT_WG],
   },
   {
     github: 'movetz',
@@ -755,6 +754,8 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'stephentoub',
+    firstName: 'Stephen',
+    lastName: 'Toub',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
@@ -784,6 +785,8 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'tarekgh',
+    firstName: 'Tarek',
+    lastName: 'Mahmoud Sayed',
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
