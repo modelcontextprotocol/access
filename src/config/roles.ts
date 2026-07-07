@@ -109,6 +109,8 @@ export const ROLES: readonly Role[] = [
   {
     id: ROLE_IDS.MAINTAINERS,
     description: 'General maintainers',
+    // No parent team: must not inherit steering-committee repo permissions
+    github: { team: 'maintainers' },
     discord: { role: 'maintainers (synced)' },
     // GWS user accounts are opt-in: maintainers add firstName/lastName/googleEmailPrefix
     // to their entry in users.ts via PR to get an @modelcontextprotocol.io account
