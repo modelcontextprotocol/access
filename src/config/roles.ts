@@ -102,6 +102,12 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'community moderators (synced)' },
     google: { group: 'moderators', provisionUser: true },
   },
+  {
+    id: ROLE_IDS.SECURITY_MANAGERS,
+    description: 'Organization security managers (security_manager org role via orgRoles.ts)',
+    github: { team: 'security-managers' },
+    // GitHub only - grants org-wide visibility into security alerts and draft advisories
+  },
 
   // ===================
   // Maintainer Groups

@@ -10,6 +10,7 @@ export const ROLE_IDS = {
   CORE_MAINTAINERS: 'core-maintainers',
   LEAD_MAINTAINERS: 'lead-maintainers',
   MODERATORS: 'moderators',
+  SECURITY_MANAGERS: 'security-managers', // GitHub only (org security_manager role)
   ADMINISTRATORS: 'administrators', // Discord only
   COMMUNITY_MANAGERS: 'community-managers', // Discord only
 
