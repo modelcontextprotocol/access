@@ -367,7 +367,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jenn-newton',
-    memberOf: [ROLE_IDS.SECURITY_WG],
+    memberOf: [ROLE_IDS.SECURITY_MANAGERS, ROLE_IDS.SECURITY_WG],
   },
   {
     github: 'jeongukjae',
