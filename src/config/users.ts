@@ -31,6 +31,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'alexhancock',
     discord: '1325885093343924316',
+    firstName: 'Alex',
+    lastName: 'Hancock',
+    googleEmailPrefix: 'alexhancock',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
