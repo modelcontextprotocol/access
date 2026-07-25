@@ -462,6 +462,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'liady',
     discord: '383565833768665088',
+    firstName: 'Liad',
+    lastName: 'Yosef',
+    googleEmailPrefix: 'liad',
     memberOf: [ROLE_IDS.WORKING_GROUPS, ROLE_IDS.MCP_APPS_WG, ROLE_IDS.MCP_APPS_SDK],
   },
   {
