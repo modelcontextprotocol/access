@@ -11,11 +11,11 @@ Infrastructure as Code for managing access to MCP community resources using Pulu
 - **GitHub Teams**: Automatically syncs team memberships in the MCP GitHub organization
 - **Google Workspace Groups**: Automatically syncs group memberships for @modelcontextprotocol.io email accounts
   - **Email Groups**: Groups with `isEmailGroup: true` accept emails from anyone (including external users) and notify all members. External posts are moderated for security.
-- **Google Workspace User Accounts**: Provisions @modelcontextprotocol.io accounts for members of roles with `provisionUser: true`
+- **Google Workspace User Accounts**: Provisions @modelcontextprotocol.io accounts for members of roles with `provisionUser: true` (directly, or via a role nested under one through `github.parent` — e.g. SDK teams under `sdk-maintainers`, working groups under `working-groups`)
 
 ### Opting in to a Google Workspace account (maintainers)
 
-If you're a maintainer and want an `@modelcontextprotocol.io` account, open a PR adding the following fields to your entry in [`src/config/users.ts`](src/config/users.ts):
+If you're a maintainer — explicitly or implicitly (SDK maintainers, working group members, etc.) — and want an `@modelcontextprotocol.io` account, open a PR adding the following fields to your entry in [`src/config/users.ts`](src/config/users.ts):
 
 ```ts
 {

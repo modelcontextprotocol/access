@@ -8,6 +8,7 @@
 import { ROLES, buildRoleLookup, getRolesForPlatform } from '../src/config/roles';
 import { ROLE_IDS, isValidRoleId } from '../src/config/roleIds';
 import { MEMBERS } from '../src/config/users';
+import { hasProvisionUserRole } from '../src/config/utils';
 
 let passed = 0;
 let failed = 0;
@@ -84,7 +85,7 @@ test('TYPESCRIPT_SDK_AUTH role exists (GitHub-only)', () => {
 
 // Test Google Workspace user provisioning
 test('Roles with provisionUser exist', () => {
-  const provisionRoles = ROLES.filter((r) => r.google?.provisionUser);
+  const provisionRoles = ROLES.filter((r) => r.provisionUser);
   return provisionRoles.length > 0;
 });
 
@@ -100,9 +101,8 @@ test('googleEmailPrefix values are unique', () => {
 });
 
 test('skipGoogleUserProvisioning is only used in provisionUser roles and without fields', () => {
-  const provisionRoleIds = new Set(ROLES.filter((r) => r.google?.provisionUser).map((r) => r.id));
   return MEMBERS.every((member) => {
-    const inProvisionRole = member.memberOf.some((id) => provisionRoleIds.has(id));
+    const inProvisionRole = hasProvisionUserRole(member.memberOf, roleLookup);
     if (!inProvisionRole) return !member.skipGoogleUserProvisioning;
 
     const hasProvisioningFields = !!(
@@ -116,10 +116,7 @@ test('skipGoogleUserProvisioning is only used in provisionUser roles and without
 
 test('Some members in provisionUser roles have Google user fields', () => {
   const membersInProvisionRoles = MEMBERS.filter((m) =>
-    m.memberOf.some((id) => {
-      const role = roleLookup.get(id);
-      return role?.google?.provisionUser === true;
-    })
+    hasProvisionUserRole(m.memberOf, roleLookup)
   );
   const provisioned = membersInProvisionRoles.filter(
     (m) => m.firstName && m.lastName && m.googleEmailPrefix

@@ -5,7 +5,7 @@ import * as random from '@pulumi/random';
 import { ROLES, type Role, buildRoleLookup } from './config/roles';
 import { MEMBERS } from './config/users';
 import type { RoleId } from './config/roleIds';
-import { resolveGoogleMemberEmail } from './config/utils';
+import { hasProvisionUserRole, resolveGoogleMemberEmail } from './config/utils';
 
 const roleLookup = buildRoleLookup();
 // Groups keyed by Google group name
@@ -86,10 +86,7 @@ MEMBERS.forEach((member) => {
   )
     return;
 
-  const needsUser = member.memberOf.some((roleId: RoleId) => {
-    const role = roleLookup.get(roleId);
-    return role?.google?.provisionUser === true;
-  });
+  const needsUser = hasProvisionUserRole(member.memberOf, roleLookup);
   if (!needsUser) return;
 
   const primaryEmail = `${member.googleEmailPrefix}@modelcontextprotocol.io`;

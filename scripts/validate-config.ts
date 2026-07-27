@@ -8,7 +8,7 @@
 import { ROLES, buildRoleLookup } from '../src/config/roles';
 import { REPOSITORY_ACCESS } from '../src/config/repoAccess';
 import { MEMBERS } from '../src/config/users';
-import { resolveGoogleMemberEmail } from '../src/config/utils';
+import { hasProvisionUserRole, resolveGoogleMemberEmail } from '../src/config/utils';
 import type { RoleId } from '../src/config/roleIds';
 
 const roleLookup = buildRoleLookup();
@@ -131,16 +131,27 @@ console.log('Validating Google Workspace user provisioning fields...');
     }
 
     // Members in provisionUser roles without all three fields won't get a GWS account
-    const inProvisionUserRole = member.memberOf.some((roleId: RoleId) => {
-      const role = roleLookup.get(roleId);
-      return role?.google?.provisionUser === true;
-    });
+    const inProvisionUserRole = hasProvisionUserRole(member.memberOf, roleLookup);
 
     const hasProvisioningFields = !!(
       member.googleEmailPrefix &&
       member.firstName &&
       member.lastName
     );
+
+    // A googleEmailPrefix on a non-eligible member is a silent no-op in
+    // src/google.ts — no account gets created and nothing reports it.
+    // Fail loudly instead (members whose account already exists in GWS are
+    // exempt; those accounts are not managed by Pulumi).
+    if (member.googleEmailPrefix && !inProvisionUserRole && !member.existingGWSUser) {
+      console.error(
+        `ERROR: Member "${memberId}" has googleEmailPrefix but none of their roles ` +
+          `(or parent roles) has provisionUser, so no GWS account would be created. ` +
+          `Add provisionUser: true to an appropriate role in src/config/roles.ts or ` +
+          `remove the provisioning fields.`
+      );
+      hasErrors = true;
+    }
 
     if (member.skipGoogleUserProvisioning && !inProvisionUserRole) {
       console.error(
