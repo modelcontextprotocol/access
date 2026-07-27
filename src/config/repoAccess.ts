@@ -99,6 +99,10 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
+    repository: 'conformance',
+    users: [{ username: 'felixweinberger', permission: 'admin' }],
+  },
+  {
     repository: 'modelcontextprotocol',
     teams: [
       { team: 'auth-maintainers', permission: 'push' },
