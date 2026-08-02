@@ -172,6 +172,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'daleseo',
     discord: '267646459187298305',
+    firstName: 'Dale',
+    lastName: 'Seo',
+    googleEmailPrefix: 'dale.seo',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
