@@ -875,4 +875,11 @@ export const MEMBERS: readonly Member[] = [
     email: 'davideramian@anthropic.com',
     memberOf: [ROLE_IDS.ANTITRUST],
   },
+  {
+    email: 'claude@modelcontextprotocol.io',
+    firstName: 'Claude',
+    lastName: 'AI',
+    googleEmailPrefix: 'claude',
+    memberOf: [ROLE_IDS.SERVICE_ACCOUNTS],
+  },
 ] as const;
