@@ -84,11 +84,7 @@ export const MEMBERS: readonly Member[] = [
     email: 'bob.dickinson@gmail.com',
     discord: '1175893001202045139',
     skipGoogleUserProvisioning: true,
-    memberOf: [
-      ROLE_IDS.MAINTAINERS,
-      ROLE_IDS.INSPECTOR_MAINTAINERS,
-      ROLE_IDS.REGISTRY_MAINTAINERS,
-    ],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
     github: 'bolinfest',
