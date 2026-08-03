@@ -24,6 +24,11 @@ export const MEMBERS: readonly Member[] = [
     googleEmailPrefix: 'aaronpk',
   },
   {
+    github: 'aditya-scio',
+    discord: '1196052678925631498',
+    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
+  },
+  {
     github: 'ajribeiro',
     firstName: 'AJ',
     lastName: 'Ribeiro',
@@ -83,7 +88,6 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.INSPECTOR_MAINTAINERS,
       ROLE_IDS.REGISTRY_MAINTAINERS,
-      ROLE_IDS.SKILLS_OVER_MCP_IG,
     ],
   },
   {
