@@ -112,6 +112,9 @@ export const MEMBERS: readonly Member[] = [
     github: 'chr-hertel',
     email: 'mail@christopher-hertel.de',
     discord: '633566986827464704',
+    firstName: 'Christopher',
+    lastName: 'Hertel',
+    googleEmailPrefix: 'chris',
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
