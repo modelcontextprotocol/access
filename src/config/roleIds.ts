@@ -80,6 +80,11 @@ export const ROLE_IDS = {
   WG_IG_FACILITATORS: 'wg-ig-facilitators',
 
   // ===================
+  // Service Accounts (GWS user only, no platform roles)
+  // ===================
+  SERVICE_ACCOUNTS: 'service-accounts',
+
+  // ===================
   // Email Groups (Google only)
   // ===================
   ANTITRUST: 'antitrust',

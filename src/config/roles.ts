@@ -423,6 +423,16 @@ export const ROLES: readonly Role[] = [
   },
 
   // ===================
+  // Service Accounts (GWS user only, no platform roles)
+  // ===================
+  {
+    id: ROLE_IDS.SERVICE_ACCOUNTS,
+    description: 'Service accounts with a Google Workspace user only (no GitHub or Discord)',
+    provisionUser: true,
+    // No github/discord/google config - exists solely to provision GWS user accounts
+  },
+
+  // ===================
   // Email Groups (Google only)
   // ===================
   {

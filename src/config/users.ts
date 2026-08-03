@@ -112,12 +112,18 @@ export const MEMBERS: readonly Member[] = [
     github: 'chr-hertel',
     email: 'mail@christopher-hertel.de',
     discord: '633566986827464704',
+    firstName: 'Christopher',
+    lastName: 'Hertel',
+    googleEmailPrefix: 'chris',
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'chughtapan',
     email: 'chugh.tapan@gmail.com',
     discord: '941245973357793340',
+    firstName: 'Tapan',
+    lastName: 'Chugh',
+    googleEmailPrefix: 'tapanc',
     memberOf: [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.INTEREST_GROUPS,
@@ -172,6 +178,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'daleseo',
     discord: '267646459187298305',
+    firstName: 'Dale',
+    lastName: 'Seo',
+    googleEmailPrefix: 'dale.seo',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
@@ -862,5 +871,12 @@ export const MEMBERS: readonly Member[] = [
   {
     email: 'davideramian@anthropic.com',
     memberOf: [ROLE_IDS.ANTITRUST],
+  },
+  {
+    email: 'claude@modelcontextprotocol.io',
+    firstName: 'Claude',
+    lastName: 'AI',
+    googleEmailPrefix: 'claude',
+    memberOf: [ROLE_IDS.SERVICE_ACCOUNTS],
   },
 ] as const;
