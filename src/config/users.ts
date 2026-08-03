@@ -121,6 +121,9 @@ export const MEMBERS: readonly Member[] = [
     github: 'chughtapan',
     email: 'chugh.tapan@gmail.com',
     discord: '941245973357793340',
+    firstName: 'Tapan',
+    lastName: 'Chugh',
+    googleEmailPrefix: 'tapanc',
     memberOf: [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.INTEREST_GROUPS,
