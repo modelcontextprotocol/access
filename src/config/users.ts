@@ -439,6 +439,9 @@ export const MEMBERS: readonly Member[] = [
     github: 'Kehrlann',
     discord: '1112624611901837373',
     memberOf: [ROLE_IDS.JAVA_SDK],
+    firstName: 'Daniel',
+    lastName: 'Garnier-Moiroux',
+    googleEmailPrefix: 'daniel',
   },
   {
     github: 'keithagroves',
