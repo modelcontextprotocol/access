@@ -7,8 +7,8 @@ export const MEMBERS: readonly Member[] = [
     discord: '1360717264051241071',
     firstName: 'Nick',
     lastName: 'Aldridge',
-    googleEmailPrefix: 'nick',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS],
+    // Emeritus core maintainer
+    memberOf: [],
   },
   {
     github: 'a-akimov',
