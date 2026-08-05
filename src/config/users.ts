@@ -7,6 +7,10 @@ export const MEMBERS: readonly Member[] = [
     discord: '1360717264051241071',
     firstName: 'Nick',
     lastName: 'Aldridge',
+    googleEmailPrefix: 'nick',
+    // Account predates emeritus status and is kept; must be removed from
+    // Pulumi state (not destroyed) before this flag change is deployed
+    existingGWSUser: true,
     // Emeritus core maintainer
     memberOf: [],
   },
