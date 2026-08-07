@@ -393,7 +393,11 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jeongukjae',
+    email: 'jeongukjae@gmail.com',
     discord: '334348926658412564',
+    firstName: 'Ukjae',
+    lastName: 'Jeong',
+    googleEmailPrefix: 'jeongukjae',
     memberOf: [ROLE_IDS.INTERCEPTORS_WG],
   },
   {
