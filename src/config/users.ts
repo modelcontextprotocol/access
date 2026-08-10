@@ -87,7 +87,9 @@ export const MEMBERS: readonly Member[] = [
     github: 'BobDickinson',
     email: 'bob.dickinson@gmail.com',
     discord: '1175893001202045139',
-    skipGoogleUserProvisioning: true,
+    firstName: 'Bob',
+    lastName: 'Dickinson',
+    googleEmailPrefix: 'bob.dickinson',
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
