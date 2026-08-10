@@ -559,6 +559,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'mattzcarey',
     discord: '224878268275359744',
+    firstName: 'Matt',
+    lastName: 'Carey',
+    googleEmailPrefix: 'matt',
     memberOf: [ROLE_IDS.TYPESCRIPT_SDK, ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
