@@ -72,6 +72,15 @@ async function registryGet(path: string): Promise<{ status: number; body: unknow
   throw lastError;
 }
 
+/**
+ * Escape a package name for use as a registry URL path segment. Follows the
+ * npm CLI's convention for scoped packages: keep the leading '@' literal and
+ * percent-encode every '/'.
+ */
+function escapePackageName(packageName: string): string {
+  return packageName.replace(/\//g, '%2F');
+}
+
 function diffSets(
   expected: readonly string[],
   actual: readonly string[]
@@ -156,7 +165,7 @@ async function checkPackage(packageName: string): Promise<void> {
   const isExplicit = NPM_PACKAGES.some((p) => p.package === packageName);
 
   // 1) Maintainers, from the public package document
-  const { status, body } = await registryGet(`/${packageName.replace('/', '%2F')}`);
+  const { status, body } = await registryGet(`/${escapePackageName(packageName)}`);
   if (status !== 200 || typeof body !== 'object' || body === null) {
     warnings.push(`Could not read package document for ${packageName} (HTTP ${status}).`);
     return;
@@ -207,7 +216,7 @@ async function checkPackage(packageName: string): Promise<void> {
   // 3) Declared trusted-publisher configuration (explicit packages only)
   if (expected.trustedPublisher) {
     const want = expected.trustedPublisher;
-    const trust = await registryGet(`/-/package/${packageName.replace('/', '%2F')}/trust`);
+    const trust = await registryGet(`/-/package/${escapePackageName(packageName)}/trust`);
     if (trust.status === 401 || trust.status === 403) {
       warnings.push(
         `Cannot read trusted-publisher config for ${packageName} (HTTP ${trust.status}); ` +
