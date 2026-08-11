@@ -7,6 +7,12 @@
 
 import { ROLES, buildRoleLookup } from '../src/config/roles';
 import { REPOSITORY_ACCESS } from '../src/config/repoAccess';
+import {
+  NPM_PACKAGES,
+  PYPI_PROJECTS,
+  UNMAPPED_NPM_USERS,
+  UNMAPPED_PYPI_USERS,
+} from '../src/config/packageAccess';
 import { MEMBERS } from '../src/config/users';
 import { hasProvisionUserRole, resolveGoogleMemberEmail } from '../src/config/utils';
 import type { RoleId } from '../src/config/roleIds';
@@ -190,6 +196,111 @@ for (const member of MEMBERS) {
         `add allowExternalMembers: true to the '${role.id}' role's google config in src/config/roles.ts`
     );
     hasErrors = true;
+  }
+}
+
+// Validate npm/PyPI identities and packageAccess.ts references
+console.log('Validating package registry references in packageAccess.ts...');
+{
+  // npm/pypi usernames must be unique across members
+  const npmUsers = new Map<string, string>();
+  const pypiUsers = new Map<string, string>();
+  for (const member of MEMBERS) {
+    const memberId = member.github || member.email || 'unknown';
+    for (const [field, seen] of [
+      ['npm', npmUsers],
+      ['pypi', pypiUsers],
+    ] as const) {
+      const username = member[field];
+      if (!username) continue;
+      const existing = seen.get(username);
+      if (existing) {
+        console.error(
+          `ERROR: ${field} username "${username}" is used by both "${existing}" and "${memberId}"`
+        );
+        hasErrors = true;
+      } else {
+        seen.set(username, memberId);
+      }
+    }
+  }
+
+  // Unmapped lists must not overlap with mapped members (stale entries)
+  for (const username of UNMAPPED_NPM_USERS) {
+    if (npmUsers.has(username)) {
+      console.error(
+        `ERROR: npm username "${username}" is in UNMAPPED_NPM_USERS but is already mapped ` +
+          `to member "${npmUsers.get(username)}" — remove it from the unmapped list`
+      );
+      hasErrors = true;
+    }
+  }
+  for (const username of UNMAPPED_PYPI_USERS) {
+    if (pypiUsers.has(username)) {
+      console.error(
+        `ERROR: PyPI username "${username}" is in UNMAPPED_PYPI_USERS but is already mapped ` +
+          `to member "${pypiUsers.get(username)}" — remove it from the unmapped list`
+      );
+      hasErrors = true;
+    }
+  }
+
+  // Every npm maintainer referenced by a package must be a known account
+  const knownNpm = new Set([...npmUsers.keys(), ...UNMAPPED_NPM_USERS]);
+  const npmPackageNames = new Set<string>();
+  for (const pkg of NPM_PACKAGES) {
+    if (npmPackageNames.has(pkg.package)) {
+      console.error(`ERROR: Package "${pkg.package}" is declared twice in packageAccess.ts`);
+      hasErrors = true;
+    }
+    npmPackageNames.add(pkg.package);
+
+    if (!pkg.package.startsWith('@modelcontextprotocol/')) {
+      console.error(`ERROR: Package "${pkg.package}" is not in the @modelcontextprotocol scope`);
+      hasErrors = true;
+    }
+    for (const username of pkg.maintainers) {
+      if (!knownNpm.has(username)) {
+        console.error(
+          `ERROR: Package "${pkg.package}" references npm user "${username}" which is not ` +
+            `declared on any member in users.ts (npm field) or in UNMAPPED_NPM_USERS`
+        );
+        hasErrors = true;
+      }
+    }
+    if (
+      pkg.trustedPublisher &&
+      !pkg.trustedPublisher.repository.startsWith('modelcontextprotocol/')
+    ) {
+      console.error(
+        `ERROR: Package "${pkg.package}" declares trusted publisher repository ` +
+          `"${pkg.trustedPublisher.repository}" outside the modelcontextprotocol GitHub org`
+      );
+      hasErrors = true;
+    }
+  }
+
+  // Every PyPI account referenced by a project must be a known account
+  const knownPypi = new Set([...pypiUsers.keys(), ...UNMAPPED_PYPI_USERS]);
+  const pypiProjectNames = new Set<string>();
+  for (const project of PYPI_PROJECTS) {
+    if (pypiProjectNames.has(project.project)) {
+      console.error(
+        `ERROR: PyPI project "${project.project}" is declared twice in packageAccess.ts`
+      );
+      hasErrors = true;
+    }
+    pypiProjectNames.add(project.project);
+
+    for (const username of project.accounts) {
+      if (!knownPypi.has(username)) {
+        console.error(
+          `ERROR: PyPI project "${project.project}" references PyPI user "${username}" which is not ` +
+            `declared on any member in users.ts (pypi field) or in UNMAPPED_PYPI_USERS`
+        );
+        hasErrors = true;
+      }
+    }
   }
 }
 
