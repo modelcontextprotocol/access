@@ -2,7 +2,7 @@
 
 Infrastructure as Code for managing access to MCP community resources using Pulumi.
 
-- Define groups in [`src/config/groups.ts`](src/config/groups.ts)
+- Define groups in [`src/config/roles.ts`](src/config/roles.ts)
 - Add users to groups in [`src/config/users.ts`](src/config/users.ts)
 - Changes are applied via GitHub Actions when merged to the main branch
 
