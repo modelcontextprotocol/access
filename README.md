@@ -12,6 +12,7 @@ Infrastructure as Code for managing access to MCP community resources using Pulu
 - **Google Workspace Groups**: Automatically syncs group memberships for @modelcontextprotocol.io email accounts
   - **Email Groups**: Groups with `isEmailGroup: true` accept emails from anyone (including external users) and notify all members. External posts are moderated for security.
 - **Google Workspace User Accounts**: Provisions @modelcontextprotocol.io accounts for members of roles with `provisionUser: true` (directly, or via a role nested under one through `github.parent` — e.g. SDK teams under `sdk-maintainers`, working groups under `working-groups`)
+- **npm & PyPI Package Publishing Access** (declared, not applied): Expected registry access is declared in [`src/config/packageAccess.ts`](src/config/packageAccess.ts) and drift against the live npm registry is detected by CI — but changes are applied manually by a maintainer. See [npm & PyPI Package Publishing Access](#npm--pypi-package-publishing-access) below for why and how.
 
 ### Opting in to a Google Workspace account (maintainers)
 
@@ -29,6 +30,34 @@ If you're a maintainer — explicitly or implicitly (SDK maintainers, working gr
 ```
 
 Once merged, Pulumi provisions the account. An admin will share your initial password (retrievable via `pulumi stack output --show-secrets newGWSUserPasswords`).
+
+## npm & PyPI Package Publishing Access
+
+Publishing access to the `modelcontextprotocol` npm organization and to the MCP PyPI projects is **config-as-code with human-applied changes** — deliberately outside the Pulumi resource graph:
+
+- **npm** has an official management API ([api-docs.npmjs.com](https://api-docs.npmjs.com/)), but since August 2026 every governance mutation (org/team membership, maintainer add/remove, trusted-publisher config, token management) requires an **interactive 2FA challenge** — tokens, even with "bypass 2FA", get `403`. Reads still work headless with a granular access token, so drift is detected automatically and remediated manually.
+- **PyPI** has **no management API at all**: collaborators, trusted publishers, and organizations are web-UI only, and maintainer invites must be accepted by email. The PyPI section of the config is declared state for audit purposes plus the manual procedures below.
+
+What lives where:
+
+- [`src/config/packageAccess.ts`](src/config/packageAccess.ts) — expected npm org membership (derived from members' `npm` field in `users.ts`), per-package maintainers and trusted publishers for the key packages, a default policy for the rest of the org's packages, and declared PyPI project rosters.
+- [`scripts/check-package-drift.ts`](scripts/check-package-drift.ts) — read-only npm drift check: `NPM_TOKEN=<token> npm run check-package-drift`. Prints a drift report and a remediation plan of `npm` CLI commands; exits nonzero on drift, and skips gracefully when `NPM_TOKEN` is unset.
+- [`.github/workflows/package-drift.yml`](.github/workflows/package-drift.yml) — runs the check weekly and on demand, using the optional `NPM_READ_TOKEN` secret (a read-only npm granular access token with organization read access; note write-capable npm tokens expire after at most 90 days, so keep this one read-only).
+
+### Applying npm changes (runbook)
+
+1. Edit `src/config/packageAccess.ts` / `users.ts` to the desired state and merge the PR.
+2. Run the drift check locally with a read-only token: `NPM_TOKEN=<token> npm run check-package-drift`.
+3. Review the printed remediation plan — especially any removal commands.
+4. As an npm org owner, execute the plan in **one interactive session**: log in with `npm login`, trigger a 2FA prompt (e.g. run the first command), and choose **"Don't ask again for 5 minutes"** on the npmjs.com challenge. npm's own bulk guidance is to script the commands with a `sleep 2` between calls — roughly 80 operations fit in one approval window.
+5. Re-run the drift check to confirm it exits clean.
+
+### PyPI procedures (manual, web UI only)
+
+- **Add a maintainer**: Manage project → Collaborators → invite by PyPI username with the Maintainer (upload only) or Owner role. The invitee must accept the invitation email before the role takes effect. Afterwards, record the account in `packageAccess.ts` and on the member's `pypi` field.
+- **Trusted publisher**: Manage project → Publishing → add the GitHub repository + workflow (multiple publishers per project are allowed). Prefer trusted publishing over project-scoped API tokens.
+- **Recommended follow-up**: apply for a free [PyPI community organization](https://docs.pypi.org/organization-accounts/) so projects are org-owned and access is managed via teams rather than per-project role edits.
+- **Naming constraint**: the PyPI project name `modelcontextprotocol` is registered by an unrelated third party, so MCP's Python packages live under `mcp*` names. Any future consolidation under that name would require a [PEP 541](https://peps.python.org/pep-0541/) name-transfer request or simply keeping the `mcp*` naming.
 
 ## Deployment
 

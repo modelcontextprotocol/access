@@ -150,6 +150,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'cliffhall',
     email: 'cliff@futurescale.com',
     discord: '501498061965754380',
+    npm: 'cliffhall',
     firstName: 'Cliff',
     lastName: 'Hall',
     googleEmailPrefix: 'cliff',
@@ -240,6 +241,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'dsp',
+    pypi: 'dsp',
     skipGoogleUserProvisioning: true,
     memberOf: [
       ROLE_IDS.AUTH_MAINTAINERS,
@@ -260,6 +262,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'dsp-ant',
     email: 'david@modelcontextprotocol.io',
     discord: '166107790262272000',
+    npm: 'thedsp',
     firstName: 'David',
     lastName: 'Soria Parra',
     googleEmailPrefix: 'david',
@@ -321,6 +324,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'felixweinberger',
     discord: '1377138523492057212',
+    npm: 'fweinberger',
     firstName: 'Felix',
     lastName: 'Weinberger',
     googleEmailPrefix: 'felix',
@@ -434,6 +438,8 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'jspahrsummers',
     email: 'justin@modelcontextprotocol.io',
+    npm: 'jspahrsummers',
+    pypi: 'jspahrsummers',
     firstName: 'Justin',
     lastName: 'Spahr-Summers',
     googleEmailPrefix: 'justin',
@@ -469,6 +475,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'Kludex',
     discord: '247021664624312322',
+    pypi: 'Kludex',
     firstName: 'Marcelo',
     lastName: 'Trylesinski',
     googleEmailPrefix: 'marcelo',
@@ -569,6 +576,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'maxisbey',
     discord: '1404871241738748058',
+    pypi: 'maxisbey',
     firstName: 'Max',
     lastName: 'Isbey',
     googleEmailPrefix: 'max',
@@ -618,6 +626,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'ochafik',
     discord: '1004897332069925024',
+    npm: 'ochafik-ant',
     firstName: 'Olivier',
     lastName: 'Chafik',
     googleEmailPrefix: 'ochafik',
@@ -661,6 +670,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'pcarleton',
     discord: '1354465170969067852',
+    npm: 'pcarleton',
     firstName: 'Paul',
     lastName: 'Carleton',
     googleEmailPrefix: 'paul',
