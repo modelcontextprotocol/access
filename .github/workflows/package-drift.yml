@@ -1,0 +1,41 @@
+name: Package Drift
+
+# Read-only drift detection for npm package publishing access, comparing the
+# live registry against src/config/packageAccess.ts. Mutations are applied by
+# a human via the generated remediation plan (npm requires an interactive 2FA
+# challenge for all governance writes); PyPI has no API and is not checked.
+#
+# Requires the NPM_READ_TOKEN secret: a read-only npm granular access token
+# with organization read access to "modelcontextprotocol". When the secret is
+# absent the check prints a skip notice and passes (same optional-credential
+# pattern as the Discord integration).
+
+on:
+  schedule:
+    - cron: '0 14 * * 1' # Mondays 14:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  npm-drift:
+    name: npm package access drift
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check npm package access drift
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_READ_TOKEN }}
+        run: npm run check-package-drift
