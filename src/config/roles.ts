@@ -299,17 +299,16 @@ export const ROLES: readonly Role[] = [
     // See AUTH_IG for Discord role
   },
   {
-    id: ROLE_IDS.SECURITY_WG,
-    description: 'Security Working Group',
-    github: { team: 'security-wg', parent: ROLE_IDS.WORKING_GROUPS },
-    // See interest group for Discord role
+    id: ROLE_IDS.AUTH_TOOL_SCOPES_WG,
+    description: 'Auth Tool Scopes Working Group',
+    github: { team: 'auth-wg-tool-scopes', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'auth tool scopes working group (synced)' },
   },
   {
-    id: ROLE_IDS.SERVER_IDENTITY_WG,
-    description: 'Server Identity Working Group',
-    discord: { role: 'server identity working group (synced)' },
-    // Discord only for now - no github.parent link to WORKING_GROUPS, so flag directly
-    provisionUser: true,
+    id: ROLE_IDS.AUTH_FINE_GRAINED_AUTHZ_WG,
+    description: 'Auth Fine-Grained Authorization Working Group',
+    github: { team: 'auth-wg-fine-grained-authz', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'auth fine-grained authorization working group (synced)' },
   },
   {
     id: ROLE_IDS.TRANSPORT_WG,
@@ -351,6 +350,13 @@ export const ROLES: readonly Role[] = [
     id: ROLE_IDS.AGENTS_WG,
     description: 'Agents Working Group',
     github: { team: 'agents-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'agents working group (synced)' },
+  },
+  {
+    id: ROLE_IDS.SKILLS_OVER_MCP_WG,
+    description: 'Skills Over MCP Working Group',
+    github: { team: 'skills-over-mcp-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'skills over mcp working group (synced)' },
   },
 
   // ===================
@@ -363,12 +369,6 @@ export const ROLES: readonly Role[] = [
     // No discord - organizational container
   },
   {
-    id: ROLE_IDS.AGENTS_IG,
-    description: 'Agents Interest Group',
-    discord: { role: 'agents interest group (synced)' },
-    // Discord only
-  },
-  {
     id: ROLE_IDS.AUTH_IG,
     description: 'Auth Interest Group',
     discord: { role: 'auth interest group (synced)' },
@@ -378,6 +378,12 @@ export const ROLES: readonly Role[] = [
     id: ROLE_IDS.CLIENT_IMPLEMENTOR_IG,
     description: 'Client Implementor Interest Group',
     discord: { role: 'client implementor interest group (synced)' },
+    // Discord only
+  },
+  {
+    id: ROLE_IDS.ENTERPRISE_MANAGED_AUTHORIZATION_IG,
+    description: 'Enterprise-Managed Authorization Interest Group',
+    discord: { role: 'enterprise-managed authorization interest group (synced)' },
     // Discord only
   },
   {
@@ -399,10 +405,10 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'primitive grouping interest group (synced)' },
   },
   {
-    id: ROLE_IDS.SKILLS_OVER_MCP_IG,
-    description: 'Skills Over MCP Interest Group',
-    github: { team: 'skills-over-mcp-ig', parent: ROLE_IDS.INTEREST_GROUPS },
-    discord: { role: 'skills over mcp interest group (synced)' },
+    id: ROLE_IDS.SECURITY_IG,
+    description: 'Security Interest Group',
+    github: { team: 'security-ig', parent: ROLE_IDS.INTEREST_GROUPS },
+    // No synced Discord role yet, see the #security-ig channel
   },
   {
     id: ROLE_IDS.TOOL_ANNOTATIONS_IG,
