@@ -13,6 +13,20 @@ export interface Member {
   email?: string;
   /** Discord user ID (snowflake) */
   discord?: string;
+  /**
+   * npm username (npmjs.com). Only set when the mapping to this member has
+   * been verified (e.g. the npm account's registry email matches this member,
+   * or the username is identical and the person is a known maintainer).
+   * Referenced by src/config/packageAccess.ts and
+   * scripts/check-package-drift.ts; not managed by Pulumi.
+   */
+  npm?: string;
+  /**
+   * PyPI username (pypi.org). Only set when the mapping to this member has
+   * been verified. Declared for audit purposes only — PyPI has no management
+   * API, so this is never automated (see packageAccess.ts).
+   */
+  pypi?: string;
   /** Roles this member belongs to */
   memberOf: readonly RoleId[];
   /** First name (required for Google Workspace user provisioning) */
