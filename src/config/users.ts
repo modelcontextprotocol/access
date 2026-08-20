@@ -280,6 +280,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MODERATORS,
       ROLE_IDS.SERVER_CARD_WG,
       ROLE_IDS.AGENTS_WG,
+      ROLE_IDS.CORE_PRIMITIVE_WG,
       ROLE_IDS.APPEALS,
     ],
   },
@@ -497,7 +498,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Kurtis',
     lastName: 'Van Gent',
     googleEmailPrefix: 'kvg',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG],
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.CORE_PRIMITIVE_WG, ROLE_IDS.TRANSPORT_WG],
   },
   {
     github: 'liady',
