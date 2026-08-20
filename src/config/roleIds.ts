@@ -61,6 +61,7 @@ export const ROLE_IDS = {
   FILE_UPLOADS_WG: 'file-uploads-wg',
   AGENTS_WG: 'agents-wg',
   SKILLS_OVER_MCP_WG: 'skills-over-mcp-wg',
+  FILESYSTEMS_WG: 'filesystems-wg',
   CORE_PRIMITIVE_WG: 'core-primitive-wg',
 
   // ===================

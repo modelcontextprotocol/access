@@ -359,6 +359,12 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'skills over mcp working group (synced)' },
   },
   {
+    id: ROLE_IDS.FILESYSTEMS_WG,
+    description: 'Filesystems Working Group',
+    github: { team: 'filesystems-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'filesystems working group (synced)' },
+  },
+  {
     id: ROLE_IDS.CORE_PRIMITIVE_WG,
     description: 'Core Primitive Working Group',
     github: { team: 'core-primitive-wg', parent: ROLE_IDS.WORKING_GROUPS },
