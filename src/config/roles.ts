@@ -364,6 +364,12 @@ export const ROLES: readonly Role[] = [
     github: { team: 'filesystems-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'filesystems working group (synced)' },
   },
+  {
+    id: ROLE_IDS.CORE_PRIMITIVE_WG,
+    description: 'Core Primitive Working Group',
+    github: { team: 'core-primitive-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'core primitive working group (synced)' },
+  },
 
   // ===================
   // Interest Groups
