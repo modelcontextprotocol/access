@@ -18,6 +18,7 @@ export const ROLE_IDS = {
   // Maintainer Groups
   // ===================
   MAINTAINERS: 'maintainers',
+  CONFORMANCE_AUTH: 'conformance-auth', // GitHub only (CODEOWNERS)
   DOCS_MAINTAINERS: 'docs-maintainers',
   INSPECTOR_MAINTAINERS: 'inspector-maintainers',
   MCPB_MAINTAINERS: 'mcpb-maintainers',

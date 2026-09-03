@@ -100,6 +100,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'conformance',
+    teams: [{ team: 'conformance-auth', permission: 'push' }],
     users: [{ username: 'felixweinberger', permission: 'admin' }],
   },
   {

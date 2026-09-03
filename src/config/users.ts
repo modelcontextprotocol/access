@@ -682,6 +682,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.ADMINISTRATORS,
       ROLE_IDS.MODERATORS,
+      ROLE_IDS.CONFORMANCE_AUTH,
       ROLE_IDS.PYTHON_SDK,
       ROLE_IDS.PYTHON_SDK_AUTH,
       ROLE_IDS.TYPESCRIPT_SDK,
@@ -855,6 +856,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'tiginamaria',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
+  },
+  {
+    github: 'tnorimat',
+    memberOf: [ROLE_IDS.CONFORMANCE_AUTH],
   },
   {
     github: 'tobinsouth',

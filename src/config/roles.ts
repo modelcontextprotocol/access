@@ -130,6 +130,12 @@ export const ROLES: readonly Role[] = [
     provisionUser: true,
   },
   {
+    id: ROLE_IDS.CONFORMANCE_AUTH,
+    description: 'Conformance authorization-server code owners',
+    github: { team: 'conformance-auth' },
+    // GitHub only - for CODEOWNERS in the conformance repo
+  },
+  {
     id: ROLE_IDS.DOCS_MAINTAINERS,
     description: 'MCP docs maintainers',
     github: { team: 'docs-maintainers', parent: ROLE_IDS.STEERING_COMMITTEE },
