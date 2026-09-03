@@ -196,6 +196,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
+    github: 'DanielTemesgen',
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
+  },
+  {
     github: 'davidortinau',
     firstName: 'David',
     lastName: 'Ortinau',
@@ -587,6 +591,10 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.SECURITY_MANAGERS,
       ROLE_IDS.TYPESCRIPT_SDK_COLLABORATORS,
     ],
+  },
+  {
+    github: 'michaelcheah',
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
   },
   {
     github: 'michaelneale',
