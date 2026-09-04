@@ -13,6 +13,20 @@ export interface Member {
   email?: string;
   /** Discord user ID (snowflake) */
   discord?: string;
+  /**
+   * npm username (npmjs.com). Only set when the mapping to this member has
+   * been verified (e.g. the npm account's registry email matches this member,
+   * or the username is identical and the person is a known maintainer).
+   * Referenced by src/config/packageAccess.ts and
+   * scripts/check-package-drift.ts; not managed by Pulumi.
+   */
+  npm?: string;
+  /**
+   * PyPI username (pypi.org). Only set when the mapping to this member has
+   * been verified. Declared for audit purposes only — PyPI has no management
+   * API, so this is never automated (see packageAccess.ts).
+   */
+  pypi?: string;
   /** Roles this member belongs to */
   memberOf: readonly RoleId[];
   /** First name (required for Google Workspace user provisioning) */
@@ -38,6 +52,34 @@ export function resolveGoogleMemberEmail(member: Member): string | undefined {
   return member.googleEmailPrefix
     ? `${member.googleEmailPrefix}@modelcontextprotocol.io`
     : member.email;
+}
+
+/**
+ * Whether a member with the given roles is eligible for a Google Workspace
+ * user account. A member qualifies when any of their roles — or any role
+ * reached by walking github.parent chains upward (child team members are
+ * members of the parent team on GitHub) — has provisionUser set.
+ * Used by src/google.ts to provision accounts and by the validation scripts.
+ */
+export function hasProvisionUserRole(
+  roleIds: readonly RoleId[],
+  roleLookup: Map<RoleId, Role>
+): boolean {
+  const seen = new Set<RoleId>();
+  const toProcess = [...roleIds];
+
+  while (toProcess.length > 0) {
+    const roleId = toProcess.pop()!;
+    if (seen.has(roleId)) continue;
+    seen.add(roleId);
+
+    const role = roleLookup.get(roleId);
+    if (!role) continue;
+    if (role.provisionUser === true) return true;
+    if (role.github?.parent) toProcess.push(role.github.parent);
+  }
+
+  return false;
 }
 
 /**

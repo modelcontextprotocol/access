@@ -10,6 +10,7 @@ export const ROLE_IDS = {
   CORE_MAINTAINERS: 'core-maintainers',
   LEAD_MAINTAINERS: 'lead-maintainers',
   MODERATORS: 'moderators',
+  SECURITY_MANAGERS: 'security-managers', // GitHub only (org security_manager role)
   ADMINISTRATORS: 'administrators', // Discord only
   COMMUNITY_MANAGERS: 'community-managers', // Discord only
 
@@ -17,6 +18,7 @@ export const ROLE_IDS = {
   // Maintainer Groups
   // ===================
   MAINTAINERS: 'maintainers',
+  CONFORMANCE_AUTH: 'conformance-auth', // GitHub only (CODEOWNERS)
   DOCS_MAINTAINERS: 'docs-maintainers',
   INSPECTOR_MAINTAINERS: 'inspector-maintainers',
   MCPB_MAINTAINERS: 'mcpb-maintainers',
@@ -50,8 +52,8 @@ export const ROLE_IDS = {
   // ===================
   WORKING_GROUPS: 'working-groups',
   AUTH_MAINTAINERS: 'auth-maintainers',
-  SECURITY_WG: 'security-wg',
-  SERVER_IDENTITY_WG: 'server-identity-wg',
+  AUTH_TOOL_SCOPES_WG: 'auth-wg-tool-scopes',
+  AUTH_FINE_GRAINED_AUTHZ_WG: 'auth-wg-fine-grained-authz',
   TRANSPORT_WG: 'transport-wg',
   TRIGGERS_EVENTS_WG: 'triggers-events-wg',
   MCP_APPS_WG: 'mcp-apps-wg',
@@ -59,24 +61,31 @@ export const ROLE_IDS = {
   INTERCEPTORS_WG: 'interceptors-wg',
   FILE_UPLOADS_WG: 'file-uploads-wg',
   AGENTS_WG: 'agents-wg',
+  SKILLS_OVER_MCP_WG: 'skills-over-mcp-wg',
+  CORE_PRIMITIVE_WG: 'core-primitive-wg',
 
   // ===================
   // Interest Groups
   // ===================
   INTEREST_GROUPS: 'interest-groups',
-  AGENTS_IG: 'agents-ig',
   AUTH_IG: 'auth-ig',
   CLIENT_IMPLEMENTOR_IG: 'client-implementor-ig',
+  ENTERPRISE_MANAGED_AUTHORIZATION_IG: 'enterprise-managed-authorization-ig',
   FINANCIAL_SERVICES_IG: 'financial-services-ig',
   GATEWAYS_IG: 'gateways-ig',
   PRIMITIVE_GROUPING_IG: 'primitive-grouping-ig',
-  SKILLS_OVER_MCP_IG: 'skills-over-mcp-ig',
+  SECURITY_IG: 'security-ig',
   TOOL_ANNOTATIONS_IG: 'tool-annotations-ig',
 
   // ===================
   // WG/IG Facilitators (Discord only)
   // ===================
   WG_IG_FACILITATORS: 'wg-ig-facilitators',
+
+  // ===================
+  // Service Accounts (GWS user only, no platform roles)
+  // ===================
+  SERVICE_ACCOUNTS: 'service-accounts',
 
   // ===================
   // Email Groups (Google only)

@@ -8,6 +8,15 @@
 import { ROLES, buildRoleLookup, getRolesForPlatform } from '../src/config/roles';
 import { ROLE_IDS, isValidRoleId } from '../src/config/roleIds';
 import { MEMBERS } from '../src/config/users';
+import { hasProvisionUserRole } from '../src/config/utils';
+import {
+  NPM_ORG,
+  NPM_PACKAGES,
+  PYPI_PROJECTS,
+  getExpectedNpmOrgMembers,
+  getNpmPackageAccess,
+  NPM_DEFAULT_POLICY,
+} from '../src/config/packageAccess';
 
 let passed = 0;
 let failed = 0;
@@ -84,7 +93,7 @@ test('TYPESCRIPT_SDK_AUTH role exists (GitHub-only)', () => {
 
 // Test Google Workspace user provisioning
 test('Roles with provisionUser exist', () => {
-  const provisionRoles = ROLES.filter((r) => r.google?.provisionUser);
+  const provisionRoles = ROLES.filter((r) => r.provisionUser);
   return provisionRoles.length > 0;
 });
 
@@ -100,9 +109,8 @@ test('googleEmailPrefix values are unique', () => {
 });
 
 test('skipGoogleUserProvisioning is only used in provisionUser roles and without fields', () => {
-  const provisionRoleIds = new Set(ROLES.filter((r) => r.google?.provisionUser).map((r) => r.id));
   return MEMBERS.every((member) => {
-    const inProvisionRole = member.memberOf.some((id) => provisionRoleIds.has(id));
+    const inProvisionRole = hasProvisionUserRole(member.memberOf, roleLookup);
     if (!inProvisionRole) return !member.skipGoogleUserProvisioning;
 
     const hasProvisioningFields = !!(
@@ -116,15 +124,52 @@ test('skipGoogleUserProvisioning is only used in provisionUser roles and without
 
 test('Some members in provisionUser roles have Google user fields', () => {
   const membersInProvisionRoles = MEMBERS.filter((m) =>
-    m.memberOf.some((id) => {
-      const role = roleLookup.get(id);
-      return role?.google?.provisionUser === true;
-    })
+    hasProvisionUserRole(m.memberOf, roleLookup)
   );
   const provisioned = membersInProvisionRoles.filter(
     (m) => m.firstName && m.lastName && m.googleEmailPrefix
   );
   return membersInProvisionRoles.length > 0 && provisioned.length > 0;
+});
+
+// Test package registry access config
+test('NPM_ORG is modelcontextprotocol', () => NPM_ORG === 'modelcontextprotocol');
+test('NPM_PACKAGES is not empty and all packages are org-scoped', () =>
+  NPM_PACKAGES.length > 0 && NPM_PACKAGES.every((p) => p.package.startsWith(`@${NPM_ORG}/`)));
+test('All NPM_PACKAGES have at least one maintainer', () =>
+  NPM_PACKAGES.every((p) => p.maintainers.length > 0));
+test('npm usernames on members are unique', () => {
+  const usernames = MEMBERS.filter((m) => m.npm).map((m) => m.npm);
+  return usernames.length === new Set(usernames).size;
+});
+test('pypi usernames on members are unique', () => {
+  const usernames = MEMBERS.filter((m) => m.pypi).map((m) => m.pypi);
+  return usernames.length === new Set(usernames).size;
+});
+test('Expected npm org membership is non-empty, sorted, and unique', () => {
+  const orgMembers = getExpectedNpmOrgMembers();
+  const sorted = [...orgMembers].sort((a, b) => a.localeCompare(b));
+  return (
+    orgMembers.length > 0 &&
+    orgMembers.length === new Set(orgMembers).size &&
+    orgMembers.every((username, i) => username === sorted[i])
+  );
+});
+test('getNpmPackageAccess falls back to the default policy', () => {
+  const access = getNpmPackageAccess(`@${NPM_ORG}/some-undeclared-package`);
+  return access.maintainers === NPM_DEFAULT_POLICY.maintainers && !access.trustedPublisher;
+});
+test('getNpmPackageAccess returns explicit entries', () => {
+  const access = getNpmPackageAccess(`@${NPM_ORG}/sdk`);
+  return !!access.trustedPublisher;
+});
+test('PYPI_PROJECTS includes the mcp project with accounts', () => {
+  const mcp = PYPI_PROJECTS.find((p) => p.project === 'mcp');
+  return !!mcp && mcp.accounts.length > 0;
+});
+test('PyPI project names are unique', () => {
+  const names = PYPI_PROJECTS.map((p) => p.project);
+  return names.length === new Set(names).size;
 });
 
 // Summary
