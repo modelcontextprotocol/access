@@ -490,7 +490,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'koic',
     discord: '880937364208361483',
-    memberOf: [ROLE_IDS.RUBY_SDK],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.RUBY_SDK],
   },
   {
     github: 'kurtisvg',
