@@ -196,6 +196,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
+    github: 'DanielTemesgen',
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
+  },
+  {
     github: 'davidortinau',
     firstName: 'David',
     lastName: 'Ortinau',
@@ -589,6 +593,10 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'michaelcheah',
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
+  },
+  {
     github: 'michaelneale',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
@@ -655,6 +663,7 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [
       ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.FILESYSTEMS_WG,
       ROLE_IDS.INSPECTOR_MAINTAINERS,
       ROLE_IDS.INTERCEPTORS_WG,
       ROLE_IDS.MAINTAINERS,
@@ -780,6 +789,7 @@ export const MEMBERS: readonly Member[] = [
     discord: '840109459212206090',
     memberOf: [
       ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.FILESYSTEMS_WG,
       ROLE_IDS.FINANCIAL_SERVICES_IG,
       ROLE_IDS.INTERCEPTORS_WG,
       ROLE_IDS.SKILLS_OVER_MCP_WG,
