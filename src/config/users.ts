@@ -864,6 +864,12 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
+
+    github: 'tobi-oye',
+    discord: '791307404293177354',
+    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
+  },
+  {
     github: 'tnorimat',
     memberOf: [ROLE_IDS.CONFORMANCE_AUTH],
   },
