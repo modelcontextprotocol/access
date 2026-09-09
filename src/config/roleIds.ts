@@ -18,6 +18,7 @@ export const ROLE_IDS = {
   // Maintainer Groups
   // ===================
   MAINTAINERS: 'maintainers',
+  CONFORMANCE_AUTH: 'conformance-auth', // GitHub only (CODEOWNERS)
   DOCS_MAINTAINERS: 'docs-maintainers',
   INSPECTOR_MAINTAINERS: 'inspector-maintainers',
   MCPB_MAINTAINERS: 'mcpb-maintainers',
@@ -61,6 +62,7 @@ export const ROLE_IDS = {
   FILE_UPLOADS_WG: 'file-uploads-wg',
   AGENTS_WG: 'agents-wg',
   SKILLS_OVER_MCP_WG: 'skills-over-mcp-wg',
+  FILESYSTEMS_WG: 'filesystems-wg',
   CORE_PRIMITIVE_WG: 'core-primitive-wg',
 
   // ===================

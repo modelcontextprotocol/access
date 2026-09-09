@@ -123,11 +123,19 @@ export const ROLES: readonly Role[] = [
   {
     id: ROLE_IDS.MAINTAINERS,
     description: 'General maintainers',
+    // No parent team: must not inherit steering-committee repo permissions
+    github: { team: 'maintainers' },
     discord: { role: 'maintainers (synced)' },
     // GWS user accounts are opt-in: maintainers add firstName/lastName/googleEmailPrefix
     // to their entry in users.ts via PR to get an @modelcontextprotocol.io account
     google: { group: 'maintainers', allowExternalMembers: true },
     provisionUser: true,
+  },
+  {
+    id: ROLE_IDS.CONFORMANCE_AUTH,
+    description: 'Conformance authorization-server code owners',
+    github: { team: 'conformance-auth' },
+    // GitHub only - for CODEOWNERS in the conformance repo
   },
   {
     id: ROLE_IDS.DOCS_MAINTAINERS,
@@ -357,6 +365,12 @@ export const ROLES: readonly Role[] = [
     description: 'Skills Over MCP Working Group',
     github: { team: 'skills-over-mcp-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'skills over mcp working group (synced)' },
+  },
+  {
+    id: ROLE_IDS.FILESYSTEMS_WG,
+    description: 'Filesystems Working Group',
+    github: { team: 'filesystems-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'filesystems working group (synced)' },
   },
   {
     id: ROLE_IDS.CORE_PRIMITIVE_WG,

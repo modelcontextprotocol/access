@@ -196,6 +196,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
+    github: 'DanielTemesgen',
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
+  },
+  {
     github: 'davidortinau',
     firstName: 'David',
     lastName: 'Ortinau',
@@ -490,7 +494,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'koic',
     discord: '880937364208361483',
-    memberOf: [ROLE_IDS.RUBY_SDK],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.RUBY_SDK],
   },
   {
     github: 'kurtisvg',
@@ -589,6 +593,10 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'michaelcheah',
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
+  },
+  {
     github: 'michaelneale',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
@@ -655,6 +663,7 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [
       ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.DOCS_MAINTAINERS,
+      ROLE_IDS.FILESYSTEMS_WG,
       ROLE_IDS.INSPECTOR_MAINTAINERS,
       ROLE_IDS.INTERCEPTORS_WG,
       ROLE_IDS.MAINTAINERS,
@@ -682,6 +691,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.ADMINISTRATORS,
       ROLE_IDS.MODERATORS,
+      ROLE_IDS.CONFORMANCE_AUTH,
       ROLE_IDS.PYTHON_SDK,
       ROLE_IDS.PYTHON_SDK_AUTH,
       ROLE_IDS.TYPESCRIPT_SDK,
@@ -779,6 +789,7 @@ export const MEMBERS: readonly Member[] = [
     discord: '840109459212206090',
     memberOf: [
       ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.FILESYSTEMS_WG,
       ROLE_IDS.FINANCIAL_SERVICES_IG,
       ROLE_IDS.INTERCEPTORS_WG,
       ROLE_IDS.SKILLS_OVER_MCP_WG,
@@ -855,6 +866,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'tiginamaria',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
+  },
+  {
+    github: 'tnorimat',
+    memberOf: [ROLE_IDS.CONFORMANCE_AUTH],
   },
   {
     github: 'tobinsouth',

@@ -100,6 +100,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'conformance',
+    teams: [{ team: 'conformance-auth', permission: 'push' }],
     users: [{ username: 'felixweinberger', permission: 'admin' }],
   },
   {
@@ -114,6 +115,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'interest-groups', permission: 'triage' },
       { team: 'java-sdk', permission: 'triage' },
       { team: 'kotlin-sdk', permission: 'triage' },
+      { team: 'maintainers', permission: 'push' },
       { team: 'moderators', permission: 'maintain' },
       { team: 'php-sdk', permission: 'triage' },
       { team: 'python-sdk', permission: 'triage' },
@@ -383,6 +385,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'lead-maintainers', permission: 'maintain' },
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'steering-committee', permission: 'maintain' },
+      { team: 'maintainers', permission: 'pull' },
     ],
     users: [{ username: 'sambhav', permission: 'admin' }],
   },
