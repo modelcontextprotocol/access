@@ -757,10 +757,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.REGISTRY_COLLABORATORS],
   },
   {
-    github: 'pronskiy',
-    memberOf: [ROLE_IDS.PHP_SDK],
-  },
-  {
     github: 'pwwpche',
     discord: '1226238847013228604',
     memberOf: [],
