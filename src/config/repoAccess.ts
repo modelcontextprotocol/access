@@ -340,7 +340,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
-    repository: 'experimental-ext-skills',
+    repository: 'ext-skills',
     teams: [
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'moderators', permission: 'maintain' },
