@@ -212,6 +212,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Kurt',
     lastName: 'Degiorgio',
     discord: '602175181133316105',
+    googleEmailPrefix: 'kdegiorgio',
     memberOf: [ROLE_IDS.INTERCEPTORS_WG],
   },
   {
