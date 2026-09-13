@@ -200,7 +200,7 @@ export const MEMBERS: readonly Member[] = [
     discord: '1537229954272600064',
     firstName: 'Daniel',
     lastName: 'Temesgen',
-    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'davidortinau',
@@ -531,6 +531,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.CSHARP_SDK_ADMIN,
       ROLE_IDS.ADMINISTRATORS,
       ROLE_IDS.FILE_UPLOADS_WG,
+      ROLE_IDS.FILESYSTEMS_WG,
       ROLE_IDS.GO_SDK,
       ROLE_IDS.FINANCIAL_SERVICES_IG,
       ROLE_IDS.MODERATORS,
