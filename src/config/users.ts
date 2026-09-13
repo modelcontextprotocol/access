@@ -418,7 +418,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Ukjae',
     lastName: 'Jeong',
     googleEmailPrefix: 'jeongukjae',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'joan-anthropic',
