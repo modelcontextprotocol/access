@@ -934,4 +934,40 @@ export const MEMBERS: readonly Member[] = [
     googleEmailPrefix: 'claude',
     memberOf: [ROLE_IDS.SERVICE_ACCOUNTS],
   },
+  {
+    github: 'monikaicampbell',
+    discord: '1545020658730401813',
+    firstName: 'Monika',
+    lastName: 'Campbell',
+    googleEmailPrefix: 'monika',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
+    github: 'imfing',
+    firstName: 'Xin',
+    lastName: 'Fu',
+    googleEmailPrefix: 'xin',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
+    github: 'nitsanh',
+    firstName: 'Nitsan',
+    lastName: 'Hasson',
+    googleEmailPrefix: 'nitsan',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
+    github: 'pradyut',
+    firstName: 'Pradyut',
+    lastName: 'Pokuri',
+    googleEmailPrefix: 'pradyut2386',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
+    github: 'stevenrchen',
+    firstName: 'Steven',
+    lastName: 'Chen',
+    googleEmailPrefix: 'chenruiyang',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  }
 ] as const;
