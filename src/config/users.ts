@@ -621,7 +621,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'nbarbettini',
     discord: '784552628930478090',
-    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'nickcoai',
@@ -873,7 +873,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'tnorimat',
-    memberOf: [ROLE_IDS.CONFORMANCE_AUTH],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.CONFORMANCE_AUTH],
   },
   {
     github: 'tobi-oye',
