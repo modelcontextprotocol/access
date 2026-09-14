@@ -816,6 +816,11 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'sarahnovotny',
+    discord: '705092472082137109',
+    memberOf: [ROLE_IDS.MAINTAINERS],
+  },
+  {
     github: 'sdubov',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
