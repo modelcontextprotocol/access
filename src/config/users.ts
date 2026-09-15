@@ -425,7 +425,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Ukjae',
     lastName: 'Jeong',
     googleEmailPrefix: 'jeongukjae',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'joan-anthropic',
@@ -636,7 +636,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'nbarbettini',
     discord: '784552628930478090',
-    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'nickcoai',
@@ -845,6 +845,11 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'sarahnovotny',
+    discord: '705092472082137109',
+    memberOf: [ROLE_IDS.MAINTAINERS],
+  },
+  {
     github: 'sdubov',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
@@ -909,7 +914,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'tnorimat',
-    memberOf: [ROLE_IDS.CONFORMANCE_AUTH],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.CONFORMANCE_AUTH],
   },
   {
     github: 'tobi-oye',
