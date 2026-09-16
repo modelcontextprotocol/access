@@ -388,6 +388,13 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.PYTHON_SDK, ROLE_IDS.TYPESCRIPT_SDK],
   },
   {
+    github: 'imfing',
+    firstName: 'Xin',
+    lastName: 'Fu',
+    googleEmailPrefix: 'xin',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
     github: 'jamadeo',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
@@ -609,6 +616,14 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
+    github: 'monikaicampbell',
+    discord: '1545020658730401813',
+    firstName: 'Monika',
+    lastName: 'Campbell',
+    googleEmailPrefix: 'monika',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
     github: 'movetz',
     discord: '1427569183427919906',
     memberOf: [ROLE_IDS.SWIFT_SDK],
@@ -634,6 +649,13 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'nicolas-grekas',
     memberOf: [ROLE_IDS.PHP_SDK],
+  },
+  {
+    github: 'nitsanh',
+    firstName: 'Nitsan',
+    lastName: 'Hasson',
+    googleEmailPrefix: 'nitsan',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
   },
   {
     github: 'Nyholm',
@@ -751,6 +773,13 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.TYPESCRIPT_SDK_COLLABORATORS],
   },
   {
+    github: 'pradyut',
+    firstName: 'Pradyut',
+    lastName: 'Pokuri',
+    googleEmailPrefix: 'pradyut2386',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
     github: 'PranavSenthilnathan',
     email: 'pranas@microsoft.com',
     firstName: 'Pranav',
@@ -840,6 +869,13 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Stephen',
     lastName: 'Toub',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
+  },
+  {
+    github: 'stevenrchen',
+    firstName: 'Steven',
+    lastName: 'Chen',
+    googleEmailPrefix: 'chenruiyang',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
   },
   {
     github: 'sunishsheth2009',
