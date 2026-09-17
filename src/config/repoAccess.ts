@@ -342,6 +342,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   {
     repository: 'ext-skills',
     teams: [
+      { team: 'core-maintainers', permission: 'admin' },
       { team: 'moderators', permission: 'push' },
       { team: 'skills-over-mcp-wg', permission: 'push' },
       { team: 'skills-over-mcp-wg-leads', permission: 'admin' },
