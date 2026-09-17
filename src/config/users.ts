@@ -17,7 +17,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'a-akimov',
     discord: '1365254196621738116',
-    memberOf: [ROLE_IDS.DOCS_MAINTAINERS],
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'aaronpk',
