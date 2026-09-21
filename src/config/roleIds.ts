@@ -65,6 +65,7 @@ export const ROLE_IDS = {
   SKILLS_OVER_MCP_WG_LEADS: 'skills-over-mcp-wg-leads',
   FILESYSTEMS_WG: 'filesystems-wg',
   CORE_PRIMITIVE_WG: 'core-primitive-wg',
+  INFRASTRUCTURE_WG: 'infrastructure-wg',
 
   // ===================
   // Interest Groups

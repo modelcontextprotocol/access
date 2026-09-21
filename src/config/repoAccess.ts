@@ -399,6 +399,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'access',
+    teams: [{ team: 'infrastructure-wg', permission: 'admin' }],
     users: [
       { username: 'felixweinberger', permission: 'admin' },
       { username: 'maxisbey', permission: 'admin' },
@@ -410,8 +411,15 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'voting',
-    teams: [{ team: 'core-maintainers', permission: 'admin' }],
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'infrastructure-wg', permission: 'admin' },
+    ],
     users: [{ username: 'PederHP', permission: 'push' }],
+  },
+  {
+    repository: 'mcp-spec-tpm',
+    teams: [{ team: 'infrastructure-wg', permission: 'admin' }],
   },
 ];
 
