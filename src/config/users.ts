@@ -197,6 +197,9 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'DanielTemesgen',
+    firstName: 'Daniel',
+    lastName: 'Temesgen',
+    googleEmailPrefix: 'danieltemesgen',
     memberOf: [ROLE_IDS.FILESYSTEMS_WG],
   },
   {
