@@ -86,10 +86,28 @@ ORG_ROLE_ASSIGNMENTS.forEach((assignment) => {
   });
 });
 
+// Teams that hold organization-level roles (ORG_ROLE_ASSIGNMENTS above). GitHub's
+// list-repository-teams API now also returns teams whose access comes from an org
+// role, so a refresh reads them as direct collaborators on every repository and the
+// provider then fails trying to delete the non-existent direct association (404).
+// The pinned @pulumi/github 6.12.1 provider predates the upstream fix that skips
+// non-direct teams (https://github.com/integrations/terraform-provider-github/pull/3571),
+// so we tell the provider to ignore these teams on every repository that does not
+// grant them directly in repoAccess.ts. Remove this workaround once we upgrade to a
+// @pulumi/github release that includes that fix.
+const orgRoleTeamNames = [...new Set(ORG_ROLE_ASSIGNMENTS.map((a) => a.team))];
+
 // Configure repository access
 REPOSITORY_ACCESS.forEach((repo) => {
+  const grantedTeams = new Set(repo.teams?.map((t) => t.team));
   new github.RepositoryCollaborators(`repo-${repo.repository}`, {
     repository: repo.repository,
+    // Ignore org-role teams, except where repoAccess.ts grants them directly on
+    // this repository (e.g. lead-maintainers on maintainer-docs) — those grants
+    // must stay managed by Pulumi.
+    ignoreTeams: orgRoleTeamNames
+      .filter((team) => !grantedTeams.has(team))
+      .map((team) => ({ teamId: teams[team].slug })),
     teams: repo.teams?.map((t) => ({
       teamId: teams[t.team]?.id,
       permission: t.permission,

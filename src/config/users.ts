@@ -17,7 +17,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'a-akimov',
     discord: '1365254196621738116',
-    memberOf: [ROLE_IDS.DOCS_MAINTAINERS],
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'aaronpk',
@@ -197,10 +197,11 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'DanielTemesgen',
+    discord: '1537229954272600064',
     firstName: 'Daniel',
     lastName: 'Temesgen',
     googleEmailPrefix: 'danieltemesgen',
-    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'davidortinau',
@@ -215,6 +216,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Kurt',
     lastName: 'Degiorgio',
     discord: '602175181133316105',
+    googleEmailPrefix: 'kdegiorgio',
     memberOf: [ROLE_IDS.INTERCEPTORS_WG],
   },
   {
@@ -262,6 +264,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.GO_SDK,
       ROLE_IDS.FINANCIAL_SERVICES_IG,
+      ROLE_IDS.INFRASTRUCTURE_WG,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.PHP_SDK,
       ROLE_IDS.PYTHON_SDK,
@@ -288,6 +291,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.SERVER_CARD_WG,
       ROLE_IDS.AGENTS_WG,
       ROLE_IDS.CORE_PRIMITIVE_WG,
+      ROLE_IDS.INFRASTRUCTURE_WG,
       ROLE_IDS.APPEALS,
     ],
   },
@@ -387,6 +391,13 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.PYTHON_SDK, ROLE_IDS.TYPESCRIPT_SDK],
   },
   {
+    github: 'imfing',
+    firstName: 'Xin',
+    lastName: 'Fu',
+    googleEmailPrefix: 'xin',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
     github: 'jamadeo',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
@@ -417,7 +428,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Ukjae',
     lastName: 'Jeong',
     googleEmailPrefix: 'jeongukjae',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'joan-anthropic',
@@ -492,7 +503,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Marcelo',
     lastName: 'Trylesinski',
     googleEmailPrefix: 'marcelo',
-    memberOf: [ROLE_IDS.PYTHON_SDK],
+    memberOf: [ROLE_IDS.PYTHON_SDK, ROLE_IDS.SDK_MAINTAINERS],
   },
   {
     github: 'koic',
@@ -530,8 +541,10 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.CSHARP_SDK_ADMIN,
       ROLE_IDS.ADMINISTRATORS,
       ROLE_IDS.FILE_UPLOADS_WG,
+      ROLE_IDS.FILESYSTEMS_WG,
       ROLE_IDS.GO_SDK,
       ROLE_IDS.FINANCIAL_SERVICES_IG,
+      ROLE_IDS.INFRASTRUCTURE_WG,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.PHP_SDK,
       ROLE_IDS.PYTHON_SDK,
@@ -597,11 +610,22 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'michaelcheah',
+    discord: '1547217405837840415',
+    firstName: 'Michael',
+    lastName: 'Cheah',
     memberOf: [ROLE_IDS.FILESYSTEMS_WG],
   },
   {
     github: 'michaelneale',
     memberOf: [ROLE_IDS.RUST_SDK],
+  },
+  {
+    github: 'monikaicampbell',
+    discord: '1545020658730401813',
+    firstName: 'Monika',
+    lastName: 'Campbell',
+    googleEmailPrefix: 'monika',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
   },
   {
     github: 'movetz',
@@ -616,7 +640,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'nbarbettini',
     discord: '784552628930478090',
-    memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'nickcoai',
@@ -629,6 +653,13 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'nicolas-grekas',
     memberOf: [ROLE_IDS.PHP_SDK],
+  },
+  {
+    github: 'nitsanh',
+    firstName: 'Nitsan',
+    lastName: 'Hasson',
+    googleEmailPrefix: 'nitsan',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
   },
   {
     github: 'Nyholm',
@@ -673,6 +704,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MODERATORS,
       ROLE_IDS.REFERENCE_SERVERS_MAINTAINERS,
       ROLE_IDS.SKILLS_OVER_MCP_WG,
+      ROLE_IDS.SKILLS_OVER_MCP_WG_LEADS,
       ROLE_IDS.WORKING_GROUPS,
       ROLE_IDS.APPEALS,
     ],
@@ -736,6 +768,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.SKILLS_OVER_MCP_WG,
+      ROLE_IDS.SKILLS_OVER_MCP_WG_LEADS,
       ROLE_IDS.TRANSPORT_WG,
       ROLE_IDS.TRIGGERS_EVENTS_WG,
       ROLE_IDS.AGENTS_WG,
@@ -746,11 +779,18 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.TYPESCRIPT_SDK_COLLABORATORS],
   },
   {
+    github: 'pradyut',
+    firstName: 'Pradyut',
+    lastName: 'Pokuri',
+    googleEmailPrefix: 'pradyut2386',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
     github: 'PranavSenthilnathan',
     email: 'pranas@microsoft.com',
     firstName: 'Pranav',
     lastName: 'Senthilnathan',
-    memberOf: [ROLE_IDS.CSHARP_SDK],
+    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
     github: 'pree-dew',
@@ -790,8 +830,10 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.FILESYSTEMS_WG,
       ROLE_IDS.FINANCIAL_SERVICES_IG,
+      ROLE_IDS.INFRASTRUCTURE_WG,
       ROLE_IDS.INTERCEPTORS_WG,
       ROLE_IDS.SKILLS_OVER_MCP_WG,
+      ROLE_IDS.SKILLS_OVER_MCP_WG_LEADS,
     ],
   },
   {
@@ -809,6 +851,11 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.TOOL_ANNOTATIONS_IG,
       ROLE_IDS.WG_IG_FACILITATORS,
     ],
+  },
+  {
+    github: 'sarahnovotny',
+    discord: '705092472082137109',
+    memberOf: [ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'sdubov',
@@ -830,6 +877,13 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Stephen',
     lastName: 'Toub',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
+  },
+  {
+    github: 'stevenrchen',
+    firstName: 'Steven',
+    lastName: 'Chen',
+    googleEmailPrefix: 'chenruiyang',
+    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
   },
   {
     github: 'sunishsheth2009',
@@ -860,21 +914,20 @@ export const MEMBERS: readonly Member[] = [
     github: 'tarekgh',
     firstName: 'Tarek',
     lastName: 'Mahmoud Sayed',
-    memberOf: [ROLE_IDS.CSHARP_SDK],
+    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
     github: 'tiginamaria',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
-
-    github: 'tobi-oye',
-    discord: '791307404293177354',
-    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_IG],
+    github: 'tnorimat',
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.CONFORMANCE_AUTH],
   },
   {
-    github: 'tnorimat',
-    memberOf: [ROLE_IDS.CONFORMANCE_AUTH],
+    github: 'tobi-oye',
+    discord: '791307404293177354',
+    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'tobinsouth',

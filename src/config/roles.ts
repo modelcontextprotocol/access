@@ -367,6 +367,11 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'skills over mcp working group (synced)' },
   },
   {
+    id: ROLE_IDS.SKILLS_OVER_MCP_WG_LEADS,
+    description: 'Skills Over MCP Working Group leads',
+    github: { team: 'skills-over-mcp-wg-leads', parent: ROLE_IDS.SKILLS_OVER_MCP_WG },
+  },
+  {
     id: ROLE_IDS.FILESYSTEMS_WG,
     description: 'Filesystems Working Group',
     github: { team: 'filesystems-wg', parent: ROLE_IDS.WORKING_GROUPS },
@@ -377,6 +382,12 @@ export const ROLES: readonly Role[] = [
     description: 'Core Primitive Working Group',
     github: { team: 'core-primitive-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'core primitive working group (synced)' },
+  },
+  {
+    id: ROLE_IDS.INFRASTRUCTURE_WG,
+    description: 'Infrastructure Working Group',
+    github: { team: 'infrastructure-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'infrastructure working group (synced)' },
   },
 
   // ===================
