@@ -200,6 +200,7 @@ export const MEMBERS: readonly Member[] = [
     discord: '1537229954272600064',
     firstName: 'Daniel',
     lastName: 'Temesgen',
+    googleEmailPrefix: 'danieltemesgen',
     memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
