@@ -14,6 +14,7 @@ import {
   UNMAPPED_PYPI_USERS,
 } from '../src/config/packageAccess';
 import { MEMBERS } from '../src/config/users';
+import { ACCESS_POLICIES } from '../src/config/accessPolicies';
 import { hasProvisionUserRole, resolveGoogleMemberEmail } from '../src/config/utils';
 import type { RoleId } from '../src/config/roleIds';
 
@@ -297,6 +298,47 @@ console.log('Validating package registry references in packageAccess.ts...');
         console.error(
           `ERROR: PyPI project "${project.project}" references PyPI user "${username}" which is not ` +
             `declared on any member in users.ts (pypi field) or in UNMAPPED_PYPI_USERS`
+        );
+        hasErrors = true;
+      }
+    }
+  }
+}
+
+// Validate Cloudflare Access policies in accessPolicies.ts
+console.log('Validating Cloudflare Access policies in accessPolicies.ts...');
+{
+  const policyIds = new Set<string>();
+  for (const policy of ACCESS_POLICIES) {
+    if (policyIds.has(policy.id)) {
+      console.error(`ERROR: Access policy "${policy.id}" is declared twice in accessPolicies.ts`);
+      hasErrors = true;
+    }
+    policyIds.add(policy.id);
+
+    if (policy.roles.length === 0) {
+      console.error(`ERROR: Access policy "${policy.id}" has no roles; nobody could sign in`);
+      hasErrors = true;
+    }
+
+    const seenRoles = new Set<RoleId>();
+    for (const roleId of policy.roles) {
+      if (seenRoles.has(roleId)) {
+        console.error(`ERROR: Access policy "${policy.id}" lists role "${roleId}" more than once`);
+        hasErrors = true;
+      }
+      seenRoles.add(roleId);
+
+      const role = roleLookup.get(roleId);
+      if (!role) {
+        console.error(
+          `ERROR: Access policy "${policy.id}" references role "${roleId}" which does not exist in roles.ts`
+        );
+        hasErrors = true;
+      } else if (!role.github) {
+        // Cloudflare Access matches GitHub teams, so a role without one cannot be granted
+        console.error(
+          `ERROR: Access policy "${policy.id}" references role "${roleId}" which has no GitHub team`
         );
         hasErrors = true;
       }

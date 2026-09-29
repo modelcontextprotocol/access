@@ -12,6 +12,7 @@ Infrastructure as Code for managing access to MCP community resources using Pulu
 - **Google Workspace Groups**: Automatically syncs group memberships for @modelcontextprotocol.io email accounts
   - **Email Groups**: Groups with `isEmailGroup: true` accept emails from anyone (including external users) and notify all members. External posts are moderated for security.
 - **Google Workspace User Accounts**: Provisions @modelcontextprotocol.io accounts for members of roles with `provisionUser: true` (directly, or via a role nested under one through `github.parent` — e.g. SDK teams under `sdk-maintainers`, working groups under `working-groups`)
+- **Cloudflare Access (security-room)**: Syncs the Cloudflare Zero Trust Access policy that decides who can sign in to `securityroom.modelcontextprotocol.io` from the roles declared in [`src/config/accessPolicies.ts`](src/config/accessPolicies.ts). See [Cloudflare Access (security-room)](#cloudflare-access-security-room) below.
 - **npm & PyPI Package Publishing Access** (declared, not applied): Expected registry access is declared in [`src/config/packageAccess.ts`](src/config/packageAccess.ts) and drift against the live npm registry is detected by CI — but changes are applied manually by a maintainer. See [npm & PyPI Package Publishing Access](#npm--pypi-package-publishing-access) below for why and how.
 
 ### Opting in to a Google Workspace account (maintainers)
@@ -30,6 +31,24 @@ If you're a maintainer — explicitly or implicitly (SDK maintainers, working gr
 ```
 
 Once merged, Pulumi provisions the account. An admin will share your initial password (retrievable via `pulumi stack output --show-secrets newGWSUserPasswords`).
+
+## Cloudflare Access (security-room)
+
+[securityroom.modelcontextprotocol.io](https://securityroom.modelcontextprotocol.io) is protected by Cloudflare Zero Trust Access with GitHub as the identity provider. The reusable Access policy `Maintainers` that grants sign-in is managed from this repo by [`src/cloudflare.ts`](src/cloudflare.ts), driven by [`src/config/accessPolicies.ts`](src/config/accessPolicies.ts):
+
+- Each entry in `ACCESS_POLICIES` lists the roles (from `roles.ts`) whose GitHub team may sign in. Pulumi renders one `github-organization` include rule per team on the policy. Nothing else about the Access application (domain, identity providers, session settings) is managed here.
+- **Cloudflare matches direct team membership only.** A member of `python-sdk` does not satisfy a rule for its parent team `sdk-maintainers`. That is why the policy allows the `security-team` team (the `SECURITY_TEAM` role: the MCP Security Team of SDK security leads, which has no parent team and grants no repository permissions) alongside `core-maintainers`, `lead-maintainers` and `security-managers`.
+- **To add someone to the MCP Security Team** (and grant sign-in): add `ROLE_IDS.SECURITY_TEAM` to their `memberOf` in [`src/config/users.ts`](src/config/users.ts). **To allow another team**: add its role to the policy's `roles` in `accessPolicies.ts` (validation checks the role exists and has a GitHub team).
+- After access is granted, a user who was previously denied must revoke the "Cloudflare Access" OAuth app under their GitHub settings (Applications → Authorized OAuth Apps) and sign in again, otherwise Cloudflare keeps using the cached team list from their earlier login.
+
+### One-time setup
+
+1. In the Cloudflare dashboard for the **MCP Domain Account**, create a token dedicated to Access policy role management. Give it a descriptive name so it does not read as a generic API token, e.g. `mcp-access: Access policy role management`, and scope it to only **Account → Access: Apps and Policies → Edit** on the MCP Domain Account. Do not reuse this token for anything else.
+2. Add it as the GitHub Actions secret `CLOUDFLARE_ROLE_MANAGEMENT_TOKEN` in the `production` environment (repository settings → Environments → production). The deploy workflow passes it to Pulumi as `cloudflare:roleManagementToken`. Until the secret exists, the Cloudflare module logs "Cloudflare integration disabled: roleManagementToken not configured" and creates nothing, so previews stay green.
+3. The account ID and GitHub identity-provider ID are non-secret and live in [`Pulumi.prod.yaml`](Pulumi.prod.yaml).
+4. **Adopting the existing policy.** Pulumi's `import` resource option only succeeds when the program's inputs match the live resource, so adoption is two deploys:
+   - With `cloudflare:importExistingPolicies: "true"` in `Pulumi.prod.yaml`, the first deploy imports the existing `Maintainers` policy (by its `cloudflarePolicyId`) as-is, ignoring its rule lists.
+   - Then set the flag to `"false"` in a follow-up PR; its preview shows exactly the include-rule changes that the next deploy applies. Leave the flag off from then on.
 
 ## npm & PyPI Package Publishing Access
 
@@ -93,6 +112,9 @@ The following secrets must be configured in GitHub Actions for automated deploym
 - **`PULUMI_PROD_PASSPHRASE`**: Passphrase for encrypting Pulumi state
   - Used to decrypt encrypted values in Pulumi stack configuration
   - Keep this secure - if lost, you cannot decrypt your Pulumi state
+
+- **`CLOUDFLARE_ROLE_MANAGEMENT_TOKEN`** (optional, `production` environment): Cloudflare token dedicated to Access policy role management, scoped only to **Account → Access: Apps and Policies → Edit** on the MCP Domain Account (not a general-purpose API token)
+  - Used to manage the Cloudflare Access policy for `securityroom.modelcontextprotocol.io` (see [Cloudflare Access (security-room)](#cloudflare-access-security-room))
 
 ## Initial Setup
 
