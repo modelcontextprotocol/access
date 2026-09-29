@@ -8,6 +8,6 @@ config:
   # cloudflare:roleManagementToken is set by the deploy workflow from the CLOUDFLARE_ROLE_MANAGEMENT_TOKEN secret.
   cloudflare:accountId: c39d6379ccfdb20a3627eeddffa80ec9
   cloudflare:githubIdentityProviderId: 1e53bc11-a504-4572-92d1-4c8d56fc198b
-  # Adopt the existing dashboard-created policies on the first deploy. Set to "false"
-  # in a follow-up PR once the deploy that imported them has succeeded.
-  cloudflare:importExistingPolicies: "true"
+  # The dashboard-created policy was adopted by the first deploy of #195 and is now
+  # managed from config. Leave this "false" so deploys apply the declared rules.
+  cloudflare:importExistingPolicies: "false"
