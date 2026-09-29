@@ -6,7 +6,7 @@
 //
 // Cloudflare matches DIRECT GitHub team membership only: a member of `python-sdk`
 // does not satisfy a rule for its parent team `sdk-maintainers`. Roles listed here
-// must therefore be teams people are added to directly (see the `security-room` role).
+// must therefore be teams people are added to directly (see the `security-team` role).
 
 import { ROLE_IDS, type RoleId } from './roleIds';
 import { buildRoleLookup } from './roles';
@@ -42,8 +42,8 @@ export const ACCESS_POLICIES: readonly AccessPolicy[] = [
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.LEAD_MAINTAINERS,
       ROLE_IDS.SECURITY_MANAGERS,
-      // Per-SDK security leads are added to this team directly in users.ts
-      ROLE_IDS.SECURITY_ROOM,
+      // MCP Security Team: per-SDK security leads, added to this team directly in users.ts
+      ROLE_IDS.SECURITY_TEAM,
     ],
   },
 ];

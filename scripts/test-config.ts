@@ -174,11 +174,11 @@ test('PyPI project names are unique', () => {
 });
 
 // Test Cloudflare Access policy config
-test('SECURITY_ROOM role exists (GitHub-only, no parent team)', () => {
-  const role = roleLookup.get(ROLE_IDS.SECURITY_ROOM);
+test('SECURITY_TEAM role exists (GitHub-only, no parent team)', () => {
+  const role = roleLookup.get(ROLE_IDS.SECURITY_TEAM);
   return (
     role !== undefined &&
-    role.github?.team === 'security-room' &&
+    role.github?.team === 'security-team' &&
     role.github.parent === undefined &&
     role.discord === undefined &&
     role.google === undefined &&
@@ -197,11 +197,11 @@ test('security-room policy renders the expected include-rule teams in order', ()
   const policy = ACCESS_POLICIES.find((p) => p.id === 'security-room-maintainers');
   if (!policy) return false;
   const teams = getAccessPolicyTeams(policy);
-  const expected = ['core-maintainers', 'lead-maintainers', 'security-managers', 'security-room'];
+  const expected = ['core-maintainers', 'lead-maintainers', 'security-managers', 'security-team'];
   return teams.length === expected.length && teams.every((t, i) => t === expected[i]);
 });
-test('security-room team has members', () =>
-  MEMBERS.some((m) => m.github && m.memberOf.includes(ROLE_IDS.SECURITY_ROOM)));
+test('security-team team has members', () =>
+  MEMBERS.some((m) => m.github && m.memberOf.includes(ROLE_IDS.SECURITY_TEAM)));
 test('getAccessPolicyTeams throws for a role without a GitHub team', () => {
   try {
     getAccessPolicyTeams({
