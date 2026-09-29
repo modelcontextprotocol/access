@@ -17,6 +17,7 @@ import {
   getNpmPackageAccess,
   NPM_DEFAULT_POLICY,
 } from '../src/config/packageAccess';
+import { ACCESS_POLICIES, getAccessPolicyTeams } from '../src/config/accessPolicies';
 
 let passed = 0;
 let failed = 0;
@@ -170,6 +171,49 @@ test('PYPI_PROJECTS includes the mcp project with accounts', () => {
 test('PyPI project names are unique', () => {
   const names = PYPI_PROJECTS.map((p) => p.project);
   return names.length === new Set(names).size;
+});
+
+// Test Cloudflare Access policy config
+test('SECURITY_ROOM role exists (GitHub-only, no parent team)', () => {
+  const role = roleLookup.get(ROLE_IDS.SECURITY_ROOM);
+  return (
+    role !== undefined &&
+    role.github?.team === 'security-room' &&
+    role.github.parent === undefined &&
+    role.discord === undefined &&
+    role.google === undefined &&
+    !role.provisionUser
+  );
+});
+test('ACCESS_POLICIES is not empty with unique ids', () => {
+  const ids = ACCESS_POLICIES.map((p) => p.id);
+  return ids.length > 0 && ids.length === new Set(ids).size;
+});
+test('All access policy roles exist and have GitHub teams', () =>
+  ACCESS_POLICIES.every((p) => p.roles.every((id) => !!roleLookup.get(id)?.github?.team)));
+test('Access policy roles are unique within each policy', () =>
+  ACCESS_POLICIES.every((p) => p.roles.length === new Set(p.roles).size));
+test('security-room policy renders the expected include-rule teams in order', () => {
+  const policy = ACCESS_POLICIES.find((p) => p.id === 'security-room-maintainers');
+  if (!policy) return false;
+  const teams = getAccessPolicyTeams(policy);
+  const expected = ['core-maintainers', 'lead-maintainers', 'security-managers', 'security-room'];
+  return teams.length === expected.length && teams.every((t, i) => t === expected[i]);
+});
+test('security-room team has members', () =>
+  MEMBERS.some((m) => m.github && m.memberOf.includes(ROLE_IDS.SECURITY_ROOM)));
+test('getAccessPolicyTeams throws for a role without a GitHub team', () => {
+  try {
+    getAccessPolicyTeams({
+      id: 'bogus',
+      description: '',
+      cloudflarePolicyName: 'x',
+      roles: [ROLE_IDS.ADMINISTRATORS],
+    });
+    return false;
+  } catch {
+    return true;
+  }
 });
 
 // Summary

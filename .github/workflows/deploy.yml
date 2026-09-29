@@ -66,6 +66,7 @@ jobs:
           ORG_BILLING_EMAIL: ${{ secrets.ORG_BILLING_EMAIL }}
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
           DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           echo "$PULUMI_PASSPHRASE" > passphrase.prod.txt
           export PULUMI_CONFIG_PASSPHRASE_FILE=passphrase.prod.txt
@@ -73,4 +74,8 @@ jobs:
           pulumi config set discord:guildId "$DISCORD_GUILD_ID" --stack prod
           pulumi config set discord:botToken "$DISCORD_BOT_TOKEN" --secret --stack prod
           pulumi config set githubBillingEmail "$ORG_BILLING_EMAIL" --secret --stack prod
+          # Cloudflare Access is optional until the CLOUDFLARE_API_TOKEN secret exists
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
+            pulumi config set cloudflare:apiToken "$CLOUDFLARE_API_TOKEN" --secret --stack prod
+          fi
           make up

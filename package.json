@@ -14,6 +14,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@pulumi/cloudflare": "^6.21.0",
     "@pulumi/github": "^6.11.0",
     "@pulumi/googleworkspace": "file:sdks/googleworkspace",
     "@pulumi/pulumi": "^3.218.0",

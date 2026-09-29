@@ -193,7 +193,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Dale',
     lastName: 'Seo',
     googleEmailPrefix: 'dale.seo',
-    memberOf: [ROLE_IDS.RUST_SDK],
+    memberOf: [ROLE_IDS.RUST_SDK, ROLE_IDS.SECURITY_ROOM],
   },
   {
     github: 'DanielTemesgen',
@@ -349,6 +349,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.PYTHON_SDK,
       ROLE_IDS.SECURITY_IG,
+      ROLE_IDS.SECURITY_ROOM,
       ROLE_IDS.TYPESCRIPT_SDK,
     ],
   },
@@ -360,14 +361,14 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'guglielmo-san',
     discord: '1432786987072622613',
-    memberOf: [ROLE_IDS.GO_SDK],
+    memberOf: [ROLE_IDS.GO_SDK, ROLE_IDS.SECURITY_ROOM],
   },
   {
     github: 'halter73',
     discord: '340718902096953344',
     firstName: 'Stephen',
     lastName: 'Halter',
-    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
+    memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN, ROLE_IDS.SECURITY_ROOM],
   },
   {
     github: 'herczyn',
@@ -491,7 +492,12 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'KKonstantinov',
     discord: '390932438903422987',
-    memberOf: [ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.MAINTAINERS, ROLE_IDS.TYPESCRIPT_SDK],
+    memberOf: [
+      ROLE_IDS.INSPECTOR_MAINTAINERS,
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.SECURITY_ROOM,
+      ROLE_IDS.TYPESCRIPT_SDK,
+    ],
     firstName: 'Konstantin',
     lastName: 'Konstantinov',
     googleEmailPrefix: 'konstantin',
@@ -503,12 +509,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Marcelo',
     lastName: 'Trylesinski',
     googleEmailPrefix: 'marcelo',
-    memberOf: [ROLE_IDS.PYTHON_SDK, ROLE_IDS.SDK_MAINTAINERS],
+    memberOf: [ROLE_IDS.PYTHON_SDK, ROLE_IDS.SDK_MAINTAINERS, ROLE_IDS.SECURITY_ROOM],
   },
   {
     github: 'koic',
     discord: '880937364208361483',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.RUBY_SDK],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.RUBY_SDK, ROLE_IDS.SECURITY_ROOM],
   },
   {
     github: 'kurtisvg',
@@ -592,7 +598,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Matt',
     lastName: 'Carey',
     googleEmailPrefix: 'matt',
-    memberOf: [ROLE_IDS.TYPESCRIPT_SDK, ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [
+      ROLE_IDS.SECURITY_ROOM,
+      ROLE_IDS.TYPESCRIPT_SDK,
+      ROLE_IDS.TOOL_ANNOTATIONS_IG,
+      ROLE_IDS.WG_IG_FACILITATORS,
+    ],
   },
   {
     github: 'maxisbey',
@@ -605,6 +616,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.PYTHON_SDK,
       ROLE_IDS.SECURITY_MANAGERS,
+      ROLE_IDS.SECURITY_ROOM,
       ROLE_IDS.TYPESCRIPT_SDK_COLLABORATORS,
     ],
   },
@@ -958,7 +970,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'yarolegovich',
     discord: '393296640141950977',
-    memberOf: [ROLE_IDS.GO_SDK],
+    memberOf: [ROLE_IDS.GO_SDK, ROLE_IDS.SECURITY_ROOM],
   },
   {
     email: 'adamj@anthropic.com',

@@ -116,6 +116,17 @@ export const ROLES: readonly Role[] = [
     github: { team: 'security-managers' },
     // GitHub only - grants org-wide visibility into security alerts and draft advisories
   },
+  {
+    id: ROLE_IDS.SECURITY_ROOM,
+    description:
+      'Sign-in access to securityroom.modelcontextprotocol.io (MCP SDK security advisory room)',
+    // No parent team: must not inherit steering-committee repo permissions. This team
+    // exists solely to be matched by the Cloudflare Access policy in accessPolicies.ts
+    // (Cloudflare matches direct team membership only, so SDK maintainers are added
+    // here explicitly rather than via sdk-maintainers).
+    github: { team: 'security-room' },
+    // GitHub only - grants no repository permissions by itself
+  },
 
   // ===================
   // Maintainer Groups
