@@ -3,13 +3,15 @@ import * as cloudflare from '@pulumi/cloudflare';
 import { ACCESS_POLICIES, GITHUB_ORG, getAccessPolicyTeams } from './config/accessPolicies';
 
 const config = new pulumi.Config('cloudflare');
-// Cloudflare integration is optional - only enabled if apiToken is configured, so
-// previews stay green before the CLOUDFLARE_API_TOKEN secret exists.
-const CLOUDFLARE_API_TOKEN = config.getSecret('apiToken');
-const CLOUDFLARE_ENABLED = CLOUDFLARE_API_TOKEN !== undefined;
+// Cloudflare integration is optional - only enabled if roleManagementToken is configured,
+// so previews stay green before the CLOUDFLARE_ROLE_MANAGEMENT_TOKEN secret exists.
+// The token is scoped to Access policy role management only (Account > Access: Apps and
+// Policies > Edit); it is not a general-purpose Cloudflare API token.
+const CLOUDFLARE_ROLE_MANAGEMENT_TOKEN = config.getSecret('roleManagementToken');
+const CLOUDFLARE_ENABLED = CLOUDFLARE_ROLE_MANAGEMENT_TOKEN !== undefined;
 
 if (!CLOUDFLARE_ENABLED) {
-  pulumi.log.info('Cloudflare integration disabled: apiToken not configured');
+  pulumi.log.info('Cloudflare integration disabled: roleManagementToken not configured');
 }
 
 // Access policies keyed by policy id (accessPolicies.ts)
@@ -26,7 +28,8 @@ if (CLOUDFLARE_ENABLED) {
   const importExisting = config.getBoolean('importExistingPolicies') ?? false;
 
   const provider = new cloudflare.Provider('cloudflare', {
-    apiToken: CLOUDFLARE_API_TOKEN,
+    // Provider argument name; the value is the role-management token above.
+    apiToken: CLOUDFLARE_ROLE_MANAGEMENT_TOKEN,
   });
 
   ACCESS_POLICIES.forEach((policy) => {

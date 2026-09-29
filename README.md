@@ -43,8 +43,8 @@ Once merged, Pulumi provisions the account. An admin will share your initial pas
 
 ### One-time setup
 
-1. In the Cloudflare dashboard for the **MCP Domain Account**, create an API token with the permission **Account → Access: Apps and Policies → Edit** (scoped to that account only).
-2. Add it as the GitHub Actions secret `CLOUDFLARE_API_TOKEN` in the `production` environment (repository settings → Environments → production). Until the secret exists, the Cloudflare module logs "Cloudflare integration disabled" and creates nothing, so previews stay green.
+1. In the Cloudflare dashboard for the **MCP Domain Account**, create a token dedicated to Access policy role management. Give it a descriptive name so it does not read as a generic API token, e.g. `mcp-access: Access policy role management`, and scope it to only **Account → Access: Apps and Policies → Edit** on the MCP Domain Account. Do not reuse this token for anything else.
+2. Add it as the GitHub Actions secret `CLOUDFLARE_ROLE_MANAGEMENT_TOKEN` in the `production` environment (repository settings → Environments → production). The deploy workflow passes it to Pulumi as `cloudflare:roleManagementToken`. Until the secret exists, the Cloudflare module logs "Cloudflare integration disabled: roleManagementToken not configured" and creates nothing, so previews stay green.
 3. The account ID and GitHub identity-provider ID are non-secret and live in [`Pulumi.prod.yaml`](Pulumi.prod.yaml).
 4. **Adopting the existing policy.** Pulumi's `import` resource option only succeeds when the program's inputs match the live resource, so adoption is two deploys:
    - With `cloudflare:importExistingPolicies: "true"` in `Pulumi.prod.yaml`, the first deploy imports the existing `Maintainers` policy (by its `cloudflarePolicyId`) as-is, ignoring its rule lists.
@@ -113,7 +113,7 @@ The following secrets must be configured in GitHub Actions for automated deploym
   - Used to decrypt encrypted values in Pulumi stack configuration
   - Keep this secure - if lost, you cannot decrypt your Pulumi state
 
-- **`CLOUDFLARE_API_TOKEN`** (optional, `production` environment): Cloudflare API token with **Account → Access: Apps and Policies → Edit** on the MCP Domain Account
+- **`CLOUDFLARE_ROLE_MANAGEMENT_TOKEN`** (optional, `production` environment): Cloudflare token dedicated to Access policy role management, scoped only to **Account → Access: Apps and Policies → Edit** on the MCP Domain Account (not a general-purpose API token)
   - Used to manage the Cloudflare Access policy for `securityroom.modelcontextprotocol.io` (see [Cloudflare Access (security-room)](#cloudflare-access-security-room))
 
 ## Initial Setup
