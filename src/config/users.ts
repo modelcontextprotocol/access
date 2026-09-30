@@ -126,7 +126,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Christopher',
     lastName: 'Hertel',
     googleEmailPrefix: 'chris',
-    memberOf: [ROLE_IDS.PHP_SDK],
+    memberOf: [ROLE_IDS.PHP_SDK, ROLE_IDS.SECURITY_TEAM],
   },
   {
     github: 'chughtapan',
@@ -700,6 +700,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.MCP_APPS_SDK,
       ROLE_IDS.PYTHON_SDK,
       ROLE_IDS.PYTHON_SDK_AUTH,
+      ROLE_IDS.SECURITY_TEAM,
       ROLE_IDS.TYPESCRIPT_SDK,
       ROLE_IDS.TYPESCRIPT_SDK_AUTH,
     ],
