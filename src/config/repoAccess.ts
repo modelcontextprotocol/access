@@ -39,9 +39,11 @@ export interface RepositoryAccess {
    * that already exists does not adopt it: the deploy fails with a
    * name-already-exists error. Adopt it with `pulumi import` first. The
    * `repository` key of a managed entry is also the Pulumi resource name, so
-   * renaming it in place archives the old repository and creates a new one:
-   * rename on GitHub first, then move the state (`pulumi state mv`) before
-   * changing the key.
+   * renaming it in place archives the old repository and creates a new one.
+   * To rename, do three things in order: rename the repository on GitHub,
+   * rename the resources in state with `pulumi state rename`
+   * (`repository-<old>` to `repository-<new>`, and `repo-<old>` to
+   * `repo-<new>`), then change the key.
    */
   settings?: RepositorySettings;
   teams?: Array<{
