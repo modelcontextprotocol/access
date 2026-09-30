@@ -50,6 +50,56 @@ for (const repo of REPOSITORY_ACCESS) {
   }
 }
 
+// Validate repository entries in REPOSITORY_ACCESS
+console.log('Validating repository entries in repoAccess.ts...');
+{
+  const repositoryNames = new Set<string>();
+  for (const repo of REPOSITORY_ACCESS) {
+    if (repositoryNames.has(repo.repository)) {
+      console.error(`ERROR: Repository "${repo.repository}" is declared twice in repoAccess.ts`);
+      hasErrors = true;
+    }
+    repositoryNames.add(repo.repository);
+  }
+
+  // Managed repositories (entries with `settings`) are created by Pulumi, so
+  // their inputs must be valid before the deploy tries to create them.
+  for (const repo of REPOSITORY_ACCESS) {
+    if (!repo.settings) continue;
+
+    if (!/^[a-z0-9][a-z0-9._-]*$/.test(repo.repository)) {
+      console.error(
+        `ERROR: Managed repository "${repo.repository}" has an invalid name; use lowercase letters, digits, '.', '_' and '-'`
+      );
+      hasErrors = true;
+    }
+
+    if (!repo.settings.description.trim()) {
+      console.error(`ERROR: Managed repository "${repo.repository}" has an empty description`);
+      hasErrors = true;
+    }
+
+    const hasAdmin =
+      (repo.teams?.some((t) => t.permission === 'admin') ?? false) ||
+      (repo.users?.some((u) => u.permission === 'admin') ?? false);
+    if (!hasAdmin) {
+      console.error(
+        `ERROR: Managed repository "${repo.repository}" grants no team or user admin permission; ` +
+          `a managed repository must have an admin so it is never ownerless`
+      );
+      hasErrors = true;
+    }
+
+    if (repo.settings.template && !repositoryNames.has(repo.settings.template)) {
+      console.error(
+        `ERROR: Managed repository "${repo.repository}" uses template "${repo.settings.template}" ` +
+          `which is not declared in repoAccess.ts; templates must be known org repositories`
+      );
+      hasErrors = true;
+    }
+  }
+}
+
 // Validate role references in MEMBERS (memberOf)
 console.log('Validating role references in users.ts...');
 for (const member of MEMBERS) {

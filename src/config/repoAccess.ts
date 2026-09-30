@@ -1,17 +1,78 @@
-// Repository access configuration
-// Each repository lists all teams and users that should have access and their permission level
+// Repository configuration
+// Each entry lists all teams and users that should have access to a repository
+// and their permission level. There are two kinds of entries:
+//
+// - Access-only: the repository pre-dates this config. Pulumi manages only its
+//   collaborators; the repository itself is untouched.
+// - Managed: the entry has `settings`. Pulumi creates the repository (if it does
+//   not exist yet), keeps those settings in sync, and then manages its
+//   collaborators — so a new repository and its access land in one deploy.
+//
+// To create a new repository (e.g. for a working group), add a managed entry.
+// See README.md "Creating a new repository".
+
+export type RepositoryPermission = 'pull' | 'triage' | 'push' | 'maintain' | 'admin';
+
+/**
+ * Settings for a repository that Pulumi creates and owns. Declaring this on an
+ * entry makes the deploy create the repository (if it does not exist yet) and
+ * keep these fields in sync afterwards. Removing the entry ARCHIVES the
+ * repository rather than deleting it (archiveOnDestroy); actual deletion stays
+ * a manual org-owner action.
+ */
+export interface RepositorySettings {
+  /** Shown on the repository page and in the org listing. Required. */
+  description: string;
+  /** Defaults to 'public'. */
+  visibility?: 'public' | 'private';
+  homepage?: string;
+  topics?: readonly string[];
+  /** Create from a template repository in the org (applied at creation only). */
+  template?: string;
+}
 
 export interface RepositoryAccess {
   repository: string;
+  /**
+   * Declare to have Pulumi create and own the repository. Omit for repositories
+   * that pre-date this config (access-only).
+   */
+  settings?: RepositorySettings;
   teams?: Array<{
     team: string; // Team slug
-    permission: 'pull' | 'triage' | 'push' | 'maintain' | 'admin';
+    permission: RepositoryPermission;
   }>;
   users?: Array<{
     username: string; // GitHub username
-    permission: 'pull' | 'triage' | 'push' | 'maintain' | 'admin';
+    permission: RepositoryPermission;
   }>;
 }
+
+/**
+ * Baseline applied to every repository Pulumi creates. Mirrors how the org's
+ * existing extension repositories (ext-*, experimental-ext-*) are configured;
+ * per-repo fields come from RepositorySettings. Security features (Dependabot,
+ * secret scanning, ...) come from orgSettings.ts "*EnabledForNewRepositories"
+ * and are not repeated here.
+ */
+export const REPOSITORY_DEFAULTS = {
+  hasIssues: true,
+  hasProjects: false,
+  hasWiki: false,
+  hasDiscussions: false,
+  allowSquashMerge: true,
+  allowMergeCommit: false,
+  allowRebaseMerge: false,
+  allowUpdateBranch: true,
+  deleteBranchOnMerge: true,
+  squashMergeCommitTitle: 'PR_TITLE',
+  squashMergeCommitMessage: 'PR_BODY',
+  vulnerabilityAlerts: true,
+  autoInit: true,
+  licenseTemplate: 'apache-2.0',
+  // Removing a managed entry archives the repository instead of deleting it.
+  archiveOnDestroy: true,
+} as const;
 
 export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   {
