@@ -9,6 +9,7 @@ Infrastructure as Code for managing access to MCP community resources using Pulu
 ## What This Manages
 
 - **GitHub Teams**: Automatically syncs team memberships in the MCP GitHub organization
+- **GitHub Repositories**: Creates and owns repositories declared with `settings` in [`src/config/repoAccess.ts`](src/config/repoAccess.ts), and syncs team and user access for every listed repository. See [Creating a new repository](#creating-a-new-repository-working-group-leads) below.
 - **Google Workspace Groups**: Automatically syncs group memberships for @modelcontextprotocol.io email accounts
   - **Email Groups**: Groups with `isEmailGroup: true` accept emails from anyone (including external users) and notify all members. External posts are moderated for security.
 - **Google Workspace User Accounts**: Provisions @modelcontextprotocol.io accounts for members of roles with `provisionUser: true` (directly, or via a role nested under one through `github.parent` — e.g. SDK teams under `sdk-maintainers`, working groups under `working-groups`)
@@ -31,6 +32,34 @@ If you're a maintainer — explicitly or implicitly (SDK maintainers, working gr
 ```
 
 Once merged, Pulumi provisions the account. An admin will share your initial password (retrievable via `pulumi stack output --show-secrets newGWSUserPasswords`).
+
+### Creating a new repository (working group leads)
+
+Org members cannot create repositories directly. Instead, open a PR adding an entry to [`src/config/repoAccess.ts`](src/config/repoAccess.ts) with a `settings` block plus the usual `teams`:
+
+```ts
+{
+  repository: 'ext-example',
+  settings: {
+    description: 'MCP Extension for Example. Maintained by the Example Working Group.',
+    // visibility: 'public' (default), homepage, topics, template are optional
+  },
+  teams: [
+    { team: 'core-maintainers', permission: 'admin' },
+    { team: 'moderators', permission: 'maintain' },
+    { team: 'example-wg', permission: 'admin' },
+  ],
+},
+```
+
+The PR's `pulumi preview` comment shows the repository create. Once merged, the deploy creates the repository (with the baseline in `REPOSITORY_DEFAULTS`) and then grants the listed access, in one apply. Notes:
+
+- Repository names are lowercase kebab-case (`ext-*` for extensions, `experimental-ext-*` while experimental).
+- At least one team or user must have `admin` permission (validated), so a managed repository is never ownerless.
+- Removing the entry **archives** the repository rather than deleting it; deletion stays a manual org-owner action.
+- Entries without `settings` are access-only: the repository pre-dates this config and Pulumi manages only its collaborators. Adding `settings` to such an entry does not adopt the repository — the deploy fails with a name-already-exists error. Adopt it with `pulumi import` first; that is out of scope for the PR flow above.
+- The `repository` key of a managed entry is also the Pulumi resource name. Renaming it in place archives the old repository and creates a new one: rename on GitHub first, then move the state (`pulumi state mv`) before changing the key.
+- A repository archived by hand in GitHub stays archived (`archived` is ignored on refresh); un-archiving is a manual org-owner action.
 
 ## Cloudflare Access (security-room)
 

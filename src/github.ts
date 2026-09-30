@@ -1,7 +1,8 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as github from '@pulumi/github';
 import { ROLES, type Role, buildRoleLookup } from './config/roles';
-import { REPOSITORY_ACCESS } from './config/repoAccess';
+import { REPOSITORY_ACCESS, REPOSITORY_DEFAULTS } from './config/repoAccess';
+import { GITHUB_ORG } from './config/accessPolicies';
 import { ORG_ROLE_ASSIGNMENTS } from './config/orgRoles';
 import { ORG_SETTINGS } from './config/orgSettings';
 import { MEMBERS } from './config/users';
@@ -97,11 +98,42 @@ ORG_ROLE_ASSIGNMENTS.forEach((assignment) => {
 // @pulumi/github release that includes that fix.
 const orgRoleTeamNames = [...new Set(ORG_ROLE_ASSIGNMENTS.map((a) => a.team))];
 
-// Configure repository access
+// Repositories. An entry with `settings` is created and owned by Pulumi; the
+// collaborators resource then depends on it through the name output, so a new
+// repository and its access land in the same apply. Entries without `settings`
+// pre-date this config: Pulumi manages only their collaborators.
+const repositories: Record<string, github.Repository> = {};
 REPOSITORY_ACCESS.forEach((repo) => {
+  let repositoryName: pulumi.Input<string> = repo.repository;
+  if (repo.settings) {
+    const repository = new github.Repository(
+      `repository-${repo.repository}`,
+      {
+        ...REPOSITORY_DEFAULTS,
+        name: repo.repository,
+        description: repo.settings.description,
+        visibility: repo.settings.visibility ?? 'public',
+        homepageUrl: repo.settings.homepage,
+        topics: repo.settings.topics ? [...repo.settings.topics] : undefined,
+        template: repo.settings.template
+          ? { owner: GITHUB_ORG, repository: repo.settings.template }
+          : undefined,
+      },
+      {
+        // A repository archived by hand in GitHub must stay archived: without
+        // this, the deploy's `pulumi up --refresh` would plan archived: true ->
+        // false and un-archive it. Archiving through this config still works
+        // (remove the entry; archiveOnDestroy archives instead of deleting).
+        ignoreChanges: ['archived'],
+      }
+    );
+    repositories[repo.repository] = repository;
+    repositoryName = repository.name;
+  }
+
   const grantedTeams = new Set(repo.teams?.map((t) => t.team));
   new github.RepositoryCollaborators(`repo-${repo.repository}`, {
-    repository: repo.repository,
+    repository: repositoryName,
     // Ignore org-role teams, except where repoAccess.ts grants them directly on
     // this repository (e.g. lead-maintainers on maintainer-docs) — those grants
     // must stay managed by Pulumi.
@@ -119,4 +151,4 @@ REPOSITORY_ACCESS.forEach((repo) => {
   });
 });
 
-export { teams as githubTeams };
+export { teams as githubTeams, repositories as githubRepositories };

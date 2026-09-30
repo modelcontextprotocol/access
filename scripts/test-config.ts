@@ -18,6 +18,7 @@ import {
   NPM_DEFAULT_POLICY,
 } from '../src/config/packageAccess';
 import { ACCESS_POLICIES, getAccessPolicyTeams } from '../src/config/accessPolicies';
+import { REPOSITORY_ACCESS, REPOSITORY_DEFAULTS } from '../src/config/repoAccess';
 
 let passed = 0;
 let failed = 0;
@@ -132,6 +133,22 @@ test('Some members in provisionUser roles have Google user fields', () => {
   );
   return membersInProvisionRoles.length > 0 && provisioned.length > 0;
 });
+
+// Test repository config
+test('REPOSITORY_ACCESS has no duplicate repositories', () => {
+  const names = REPOSITORY_ACCESS.map((r) => r.repository);
+  return names.length > 0 && names.length === new Set(names).size;
+});
+test('All managed repositories (with settings) have an admin grant', () =>
+  REPOSITORY_ACCESS.filter((r) => r.settings).every(
+    (r) =>
+      r.teams?.some((t) => t.permission === 'admin') ||
+      r.users?.some((u) => u.permission === 'admin')
+  ));
+test('All managed repositories have a non-empty description', () =>
+  REPOSITORY_ACCESS.filter((r) => r.settings).every((r) => !!r.settings!.description.trim()));
+test('REPOSITORY_DEFAULTS archives instead of deleting on destroy', () =>
+  REPOSITORY_DEFAULTS.archiveOnDestroy === true);
 
 // Test package registry access config
 test('NPM_ORG is modelcontextprotocol', () => NPM_ORG === 'modelcontextprotocol');
