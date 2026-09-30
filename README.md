@@ -57,7 +57,9 @@ The PR's `pulumi preview` comment shows the repository create. Once merged, the 
 - Repository names are lowercase kebab-case (`ext-*` for extensions, `experimental-ext-*` while experimental).
 - At least one team or user must have `admin` permission (validated), so a managed repository is never ownerless.
 - Removing the entry **archives** the repository rather than deleting it; deletion stays a manual org-owner action.
-- Entries without `settings` are access-only: the repository pre-dates this config and Pulumi manages only its collaborators. Adopting an existing repository requires a `pulumi import` and is out of scope for the PR flow above.
+- Entries without `settings` are access-only: the repository pre-dates this config and Pulumi manages only its collaborators. Adding `settings` to such an entry does not adopt the repository — the deploy fails with a name-already-exists error. Adopt it with `pulumi import` first; that is out of scope for the PR flow above.
+- The `repository` key of a managed entry is also the Pulumi resource name. Renaming it in place archives the old repository and creates a new one: rename on GitHub first, then move the state (`pulumi state mv`) before changing the key.
+- A repository archived by hand in GitHub stays archived (`archived` is ignored on refresh); un-archiving is a manual org-owner action.
 
 ## Cloudflare Access (security-room)
 

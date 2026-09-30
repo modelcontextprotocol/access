@@ -106,17 +106,27 @@ const repositories: Record<string, github.Repository> = {};
 REPOSITORY_ACCESS.forEach((repo) => {
   let repositoryName: pulumi.Input<string> = repo.repository;
   if (repo.settings) {
-    const repository = new github.Repository(`repository-${repo.repository}`, {
-      ...REPOSITORY_DEFAULTS,
-      name: repo.repository,
-      description: repo.settings.description,
-      visibility: repo.settings.visibility ?? 'public',
-      homepageUrl: repo.settings.homepage,
-      topics: repo.settings.topics ? [...repo.settings.topics] : undefined,
-      template: repo.settings.template
-        ? { owner: GITHUB_ORG, repository: repo.settings.template }
-        : undefined,
-    });
+    const repository = new github.Repository(
+      `repository-${repo.repository}`,
+      {
+        ...REPOSITORY_DEFAULTS,
+        name: repo.repository,
+        description: repo.settings.description,
+        visibility: repo.settings.visibility ?? 'public',
+        homepageUrl: repo.settings.homepage,
+        topics: repo.settings.topics ? [...repo.settings.topics] : undefined,
+        template: repo.settings.template
+          ? { owner: GITHUB_ORG, repository: repo.settings.template }
+          : undefined,
+      },
+      {
+        // A repository archived by hand in GitHub must stay archived: without
+        // this, the deploy's `pulumi up --refresh` would plan archived: true ->
+        // false and un-archive it. Archiving through this config still works
+        // (remove the entry; archiveOnDestroy archives instead of deleting).
+        ignoreChanges: ['archived'],
+      }
+    );
     repositories[repo.repository] = repository;
     repositoryName = repository.name;
   }

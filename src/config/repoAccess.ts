@@ -35,7 +35,13 @@ export interface RepositoryAccess {
   repository: string;
   /**
    * Declare to have Pulumi create and own the repository. Omit for repositories
-   * that pre-date this config (access-only).
+   * that pre-date this config (access-only). Adding `settings` to a repository
+   * that already exists does not adopt it: the deploy fails with a
+   * name-already-exists error. Adopt it with `pulumi import` first. The
+   * `repository` key of a managed entry is also the Pulumi resource name, so
+   * renaming it in place archives the old repository and creates a new one:
+   * rename on GitHub first, then move the state (`pulumi state mv`) before
+   * changing the key.
    */
   settings?: RepositorySettings;
   teams?: Array<{
