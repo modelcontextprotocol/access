@@ -73,7 +73,7 @@ The PR's `pulumi preview` comment shows the repository create. Once merged, the 
 ### One-time setup
 
 1. In the Cloudflare dashboard for the **MCP Domain Account**, create a token dedicated to Access policy role management. Give it a descriptive name so it does not read as a generic API token, e.g. `mcp-access: Access policy role management`, and scope it to only **Account → Access: Apps and Policies → Edit** on the MCP Domain Account. Do not reuse this token for anything else.
-2. Add it as the GitHub Actions secret `CLOUDFLARE_ROLE_MANAGEMENT_TOKEN` in the `production` environment (repository settings → Environments → production). The deploy workflow passes it to Pulumi as `cloudflare:roleManagementToken`. Until the secret exists, the Cloudflare module logs "Cloudflare integration disabled: roleManagementToken not configured" and creates nothing, so previews stay green.
+2. Add it as the GitHub Actions secret `CLOUDFLARE_ROLE_MANAGEMENT_TOKEN` in both the `production` and `preview` environments (repository settings → Environments; see [Required GitHub Secrets](#required-github-secrets-for-cicd)). The deploy workflow passes it to Pulumi as `cloudflare:roleManagementToken`. Until the secret exists, the Cloudflare module logs "Cloudflare integration disabled: roleManagementToken not configured" and creates nothing, so previews stay green.
 3. The account ID and GitHub identity-provider ID are non-secret and live in [`Pulumi.prod.yaml`](Pulumi.prod.yaml).
 4. **Adopting the existing policy.** Pulumi's `import` resource option only succeeds when the program's inputs match the live resource, so adoption is two deploys:
    - With `cloudflare:importExistingPolicies: "true"` in `Pulumi.prod.yaml`, the first deploy imports the existing `Maintainers` policy (by its `cloudflarePolicyId`) as-is, ignoring its rule lists.
@@ -131,7 +131,14 @@ Pre-requisites:
 
 ### Required GitHub Secrets (for CI/CD)
 
-The following secrets must be configured in GitHub Actions for automated deployments:
+Deploy credentials are **environment secrets**, not repository secrets. A repository-level Actions secret resolves for any workflow on any branch, so anyone with write access to this repository could read one by pushing a workflow file. Environment secrets resolve only for jobs that declare the environment, and each environment controls which refs may use it:
+
+| Environment  | Used by                                                | Protection                                                                                                                                         |
+| ------------ | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `production` | [`deploy.yml`](.github/workflows/deploy.yml) on `main` | Deployment branches: `main` only. No reviewers, so merges deploy without a manual step.                                                            |
+| `preview`    | [`preview.yml`](.github/workflows/preview.yml) on PRs  | Any branch. Required reviewers: `core-maintainers` (self-review allowed), so each preview run waits for one approval under **Review deployments**. |
+
+Both environments hold the same set of secrets. Keep no copy at repository level (repository settings → Secrets and variables → Actions should list only `NPM_READ_TOKEN`, a read-only npm token used by the package drift check).
 
 - **`GCP_PROD_SERVICE_ACCOUNT_KEY`**: GCP service account key
   - Used to authenticate with Google Cloud Storage for Pulumi state (`gs://mcp-access-prod-pulumi-state`)
@@ -142,8 +149,16 @@ The following secrets must be configured in GitHub Actions for automated deploym
   - Used to decrypt encrypted values in Pulumi stack configuration
   - Keep this secure - if lost, you cannot decrypt your Pulumi state
 
-- **`CLOUDFLARE_ROLE_MANAGEMENT_TOKEN`** (optional, `production` environment): Cloudflare token dedicated to Access policy role management, scoped only to **Account → Access: Apps and Policies → Edit** on the MCP Domain Account (not a general-purpose API token)
+- **`PULUMI_GITHUB_TOKEN`**: GitHub token with organization owner rights, exported as `GITHUB_TOKEN` for the Pulumi GitHub provider (teams, memberships, repositories, org settings). The most sensitive credential here.
+
+- **`DISCORD_BOT_TOKEN`** and **`DISCORD_GUILD_ID`**: Discord bot credentials for role sync ([`src/discord.ts`](src/discord.ts)). Optional; the Discord module is skipped when either is unset.
+
+- **`ORG_BILLING_EMAIL`**: billing contact applied to the GitHub organization settings (`githubBillingEmail`, required by `src/github.ts`).
+
+- **`CLOUDFLARE_ROLE_MANAGEMENT_TOKEN`** (optional): Cloudflare token dedicated to Access policy role management, scoped only to **Account → Access: Apps and Policies → Edit** on the MCP Domain Account (not a general-purpose API token)
   - Used to manage the Cloudflare Access policy for `securityroom.modelcontextprotocol.io` (see [Cloudflare Access (security-room)](#cloudflare-access-security-room))
+
+Rotating a secret means updating it in both environments.
 
 ## Initial Setup
 
@@ -201,9 +216,11 @@ pulumi config set --secret googleworkspace:credentials "$(cat sa-key.json)"
 pulumi config set --secret github:token "ghp_your_github_token_here"
 ```
 
-### 3. Configure GitHub Actions Secrets
+### 3. Configure GitHub Actions Environments and Secrets
 
-Add the CI/CD secrets to GitHub Actions (repository settings → Secrets and variables → Actions):
+Create the `production` and `preview` environments as described in [Required GitHub Secrets](#required-github-secrets-for-cicd) (repository settings → Environments), then add the secrets to **both**:
 
 - `GCP_PROD_SERVICE_ACCOUNT_KEY`: Content of `sa-key.json`
 - `PULUMI_PROD_PASSPHRASE`: The passphrase you set above
+- `PULUMI_GITHUB_TOKEN`: A GitHub token with organization owner rights
+- `ORG_BILLING_EMAIL`: The organization billing contact

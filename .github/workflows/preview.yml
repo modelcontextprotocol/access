@@ -18,7 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     # Skip preview for fork PRs and Dependabot - they don't have access to Actions secrets
     if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
-    environment: production
+    # Deploy credentials are environment secrets, never repository secrets, so a
+    # workflow pushed to a branch cannot read them. `preview` holds the same
+    # secrets as `production` but is gated by required reviewers instead of a
+    # main-only branch policy (previews run on PR branches). See README.md
+    # "Required GitHub Secrets (for CI/CD)".
+    environment: preview
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
