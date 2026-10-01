@@ -202,7 +202,7 @@ export const ROLES: readonly Role[] = [
   {
     id: ROLE_IDS.SDK_MAINTAINERS,
     description: 'Authors and maintainers of official MCP SDKs',
-    github: { team: 'sdk-maintainers', parent: ROLE_IDS.STEERING_COMMITTEE },
+    github: { team: 'sdk-maintainers', parent: ROLE_IDS.MAINTAINERS },
     discord: { role: 'sdk maintainers (synced)' },
     discordImplies: [ROLE_IDS.MAINTAINERS], // SDK maintainers are also general maintainers
     // Covers all SDK teams via github.parent (e.g. python-sdk, rust-sdk)
