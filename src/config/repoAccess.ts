@@ -450,6 +450,18 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
+    repository: 'experimental-ext-filesystems',
+    settings: {
+      description:
+        'Experimental MCP extension for filesystem operations on Resources. Maintained by the Filesystems Working Group.',
+    },
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'moderators', permission: 'maintain' },
+      { team: 'filesystems-wg', permission: 'admin' },
+    ],
+  },
+  {
     repository: 'maintainer-docs',
     teams: [
       { team: 'lead-maintainers', permission: 'maintain' },
