@@ -877,6 +877,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'sarahnovotny',
     discord: '705092472082137109',
+    firstName: 'Sarah',
+    lastName: 'Novotny',
+    googleEmailPrefix: 'sarah',
     memberOf: [ROLE_IDS.MAINTAINERS],
   },
   {
