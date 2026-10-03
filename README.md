@@ -13,6 +13,7 @@ Infrastructure as Code for managing access to MCP community resources using Pulu
 - **Google Workspace Groups**: Automatically syncs group memberships for @modelcontextprotocol.io email accounts
   - **Email Groups**: Groups with `isEmailGroup: true` accept emails from anyone (including external users) and notify all members. External posts are moderated for security.
 - **Google Workspace User Accounts**: Provisions @modelcontextprotocol.io accounts for members of roles with `provisionUser: true` (directly, or via a role nested under one through `github.parent` — e.g. SDK teams under `sdk-maintainers`, working groups under `working-groups`)
+- **Discord**: Syncs the Discord roles declared in [`src/config/roles.ts`](src/config/roles.ts) to the members' Discord IDs in `users.ts`, and manages the settings of the channels declared in [`src/config/channels.ts`](src/config/channels.ts), including thread-only forum/media channels. See [Discord channels](#discord-channels) below.
 - **Cloudflare Access (security-room)**: Syncs the Cloudflare Zero Trust Access policy that decides who can sign in to `securityroom.modelcontextprotocol.io` from the roles declared in [`src/config/accessPolicies.ts`](src/config/accessPolicies.ts). See [Cloudflare Access (security-room)](#cloudflare-access-security-room) below.
 - **npm & PyPI Package Publishing Access** (declared, not applied): Expected registry access is declared in [`src/config/packageAccess.ts`](src/config/packageAccess.ts) and drift against the live npm registry is detected by CI — but changes are applied manually by a maintainer. See [npm & PyPI Package Publishing Access](#npm--pypi-package-publishing-access) below for why and how.
 
@@ -60,6 +61,30 @@ The PR's `pulumi preview` comment shows the repository create. Once merged, the 
 - Entries without `settings` are access-only: the repository pre-dates this config and Pulumi manages only its collaborators. Adding `settings` to such an entry does not adopt the repository. The deploy fails with a name-already-exists error. Adopt it with `pulumi import` first; that is out of scope for the PR flow above.
 - The `repository` key of a managed entry is also the Pulumi resource name. Renaming it in place archives the old repository and creates a new one. To rename, do three things in order: rename the repository on GitHub, rename the resources in state with `pulumi state rename` (`repository-<old>` to `repository-<new>`, and `repo-<old>` to `repo-<new>`), then change the key.
 - A repository archived by hand in GitHub stays archived (`archived` is ignored on refresh); un-archiving is a manual org-owner action.
+
+## Discord channels
+
+Channels listed in [`src/config/channels.ts`](src/config/channels.ts) are managed by the `DiscordChannel` resource in [`src/discord.ts`](src/discord.ts), using the same `discord:botToken`/`discord:guildId` stack config as the role sync (the bot needs the **Manage Channels** permission in the guild). Each entry is either an **existing channel adopted by its ID** or a **new channel created on deploy**:
+
+```ts
+// Adopt an existing channel by ID: the declared settings are enforced in place,
+// anything not declared is left as it is on Discord
+{ id: '1234567890123456789', name: 'general', type: 'text', rateLimitPerUser: 5 },
+
+// Create a thread-only forum channel
+{
+  name: 'sdk-help',
+  type: 'forum',
+  requireTag: true,
+  availableTags: [{ name: 'typescript' }, { name: 'python' }, { name: 'answered', moderated: true }],
+  defaultSortOrder: 'latest_activity',
+},
+```
+
+- **Thread-only channels are a channel type, not a setting.** Discord has no "require threads" switch; thread-only behaviour exists only as `forum` and `media` channels, and the API cannot convert a text channel into one. To make an existing channel thread-only, declare a new `forum`/`media` channel (without `id`) and retire the old channel by hand. Declaring `type: 'forum'` on the `id` of a text channel fails the deploy with an error saying so.
+- **Channels are never deleted.** Removing an entry only drops the resource from Pulumi state; the channel and its history stay on Discord. Changing an entry's `id` or `type` likewise adopts/creates the new channel and leaves the old one alone.
+- Only declared settings are managed. Validation (`npm run check`) rejects malformed snowflakes, duplicate entries, more than 20 tags, and forum/media settings on text channels (`defaultForumLayout` is forum-only).
+- Settings changed by hand in Discord show up as drift on refresh and are reverted by the next deploy (`make up` runs `pulumi up --refresh`).
 
 ## Cloudflare Access (security-room)
 
