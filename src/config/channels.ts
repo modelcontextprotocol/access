@@ -9,10 +9,12 @@
 //
 // Each entry works in one of two modes:
 //   - `id` set: the existing channel with that snowflake is adopted and the settings
-//     declared here are enforced on it in place. Settings you omit are left exactly as
-//     they are on Discord. The declared `type` must match the live channel type; a
-//     mismatch fails the deploy instead of silently managing the wrong thing.
-//   - `id` unset: a new channel of `type` is created in the guild on the next deploy.
+//     declared here are enforced on it in place. Settings you omit (including `name`)
+//     are left exactly as they are on Discord. The declared `type` must match the live
+//     channel type; a mismatch fails the deploy instead of silently managing the wrong
+//     thing.
+//   - `id` unset: a new channel named `name` of `type` is created in the guild on the
+//     next deploy.
 //
 // Removing an entry NEVER deletes the channel on Discord (that would destroy its
 // history); the resource is only dropped from Pulumi state. Changing `id` or `type`
@@ -48,22 +50,24 @@ export interface DiscordForumTagConfig extends DiscordEmojiConfig {
   moderated?: boolean;
 }
 
-export interface DiscordChannelConfig {
-  /**
-   * Snowflake of an existing channel to adopt. When set, the settings below are
-   * applied to that channel in place; when unset, a new channel is created.
-   */
-  id?: string;
-  /** Channel name: lowercase letters, digits, '-' and '_' (Discord normalizes anything else) */
-  name: string;
+/** The settings an entry can manage, shared by adopted and newly created channels. */
+interface DiscordChannelSettings {
   /** 'text' is a normal channel; 'forum' and 'media' are thread-only */
   type: DiscordChannelType;
   /** Category (parent channel) snowflake */
   parentId?: string;
-  /** Channel topic; for forum/media channels this is the post guidelines text */
+  /**
+   * Channel topic (max 1024 characters); for forum/media channels this is the post
+   * guidelines text (max 4096 characters)
+   */
   topic?: string;
   nsfw?: boolean;
-  /** Sort position within the category */
+  /**
+   * Sort position within the category, applied on creation only. Discord renumbers
+   * positions whenever neighbouring channels move, so a declared position would show
+   * drift on every deploy; it is neither checked nor re-applied afterwards. Reorder
+   * channels in Discord.
+   */
   position?: number;
   /** Slowmode in seconds (0-21600) */
   rateLimitPerUser?: number;
@@ -73,7 +77,11 @@ export interface DiscordChannelConfig {
   defaultThreadRateLimitPerUser?: number;
 
   // --- forum/media only ---
-  /** Require every new thread to carry at least one tag */
+  /**
+   * Require every new thread to carry at least one tag. Needs at least one tag, either
+   * in `availableTags` or (for an adopted channel that omits `availableTags`) already on
+   * the channel; otherwise the deploy fails, because Discord would reject every post.
+   */
   requireTag?: boolean;
   /** Tags threads can be filed under (max 20). `[]` removes all tags; omit to leave them alone. */
   availableTags?: readonly DiscordForumTagConfig[];
@@ -86,13 +94,38 @@ export interface DiscordChannelConfig {
 }
 
 /**
+ * An existing channel adopted by its snowflake. Only the declared settings are enforced,
+ * so `name` is optional: omit it to leave the channel's name alone.
+ */
+export interface DiscordAdoptedChannelConfig extends DiscordChannelSettings {
+  id: string;
+  /**
+   * Channel name, 1-100 characters. Discord lowercases names of these channel types and
+   * turns spaces into '-', so declare the normalized form (validation warns otherwise).
+   */
+  name?: string;
+}
+
+/** A channel created on the next deploy, so `name` is required. */
+export interface DiscordNewChannelConfig extends DiscordChannelSettings {
+  id?: undefined;
+  /**
+   * Channel name, 1-100 characters. Discord lowercases names of these channel types and
+   * turns spaces into '-', so declare the normalized form (validation warns otherwise).
+   */
+  name: string;
+}
+
+export type DiscordChannelConfig = DiscordAdoptedChannelConfig | DiscordNewChannelConfig;
+
+/**
  * Channels managed by Pulumi. Empty until maintainers add entries, so deploys are a
  * no-op. Examples:
  *
- *   // Adopt an existing text channel by ID and pin its slowmode and thread defaults
+ *   // Adopt an existing text channel by ID and pin its slowmode and thread defaults;
+ *   // `name` is omitted, so the channel keeps whatever it is called on Discord
  *   {
  *     id: '1234567890123456789',
- *     name: 'general',
  *     type: 'text',
  *     rateLimitPerUser: 5,
  *     defaultAutoArchiveDuration: 4320,
@@ -117,7 +150,8 @@ export interface DiscordChannelConfig {
  *     defaultAutoArchiveDuration: 10080,
  *   },
  *
- *   // Adopt an existing media (thread-only, image/video first) channel by ID
+ *   // Adopt an existing media (thread-only, image/video first) channel by ID; the
+ *   // declared `name` is enforced, so the channel is renamed if it differs
  *   {
  *     id: '1234567890123456789',
  *     name: 'showcase',
@@ -143,7 +177,16 @@ export function isThreadOnlyChannelType(type: DiscordChannelType): boolean {
 // ---------------------------------------------------------------------------
 
 const SNOWFLAKE_PATTERN = /^\d{17,20}$/;
-const CHANNEL_NAME_PATTERN = /^[a-z0-9_-]{1,100}$/;
+/** Discord allows any 1-100 characters (unicode letters, emoji, separators like '│' included) */
+const MAX_CHANNEL_NAME_LENGTH = 100;
+/** Discord lowercases these and replaces spaces with '-', so the live name never matches */
+const NORMALIZED_AWAY_PATTERN = /\p{Lu}|\s/u;
+/** Topic limits per channel type: 1024 for text, 4096 (post guidelines) for forum/media */
+const MAX_TOPIC_LENGTH: Record<DiscordChannelType, number> = {
+  text: 1024,
+  forum: 4096,
+  media: 4096,
+};
 /** Discord's maximum slowmode, in seconds (6 hours) */
 const MAX_RATE_LIMIT_PER_USER = 21600;
 const MAX_AVAILABLE_TAGS = 20;
@@ -151,6 +194,11 @@ const MAX_TAG_NAME_LENGTH = 20;
 
 export function isDiscordSnowflake(value: string): boolean {
   return SNOWFLAKE_PATTERN.test(value);
+}
+
+/** Length in code points, which is how Discord counts (an emoji or '│' is one character) */
+function codePointLength(value: string): number {
+  return Array.from(value).length;
 }
 
 function emojiConfigErrors(
@@ -176,26 +224,54 @@ function emojiConfigErrors(
   return errors;
 }
 
+export interface DiscordChannelValidation {
+  /** Problems that fail validation; one human-readable message each */
+  errors: string[];
+  /** Entries that deploy but behave surprisingly (perpetual drift, reliance on live state) */
+  warnings: string[];
+}
+
 /**
  * Validate the channel entries. Returns one human-readable message per problem
- * (empty when everything is fine) so the validate script can print them and the
- * tests can assert on them. Catches what would otherwise only fail inside the
- * deploy: malformed snowflakes, duplicate resource names, settings Discord rejects
- * for the channel type, and limits Discord enforces (tags, slowmode, durations).
+ * (both lists empty when everything is fine) so the validate script can print them
+ * and the tests can assert on them. Errors catch what would otherwise only fail inside
+ * the deploy: missing names on new channels, malformed snowflakes, duplicate resource
+ * names, settings Discord rejects for the channel type, and limits Discord enforces
+ * (name and topic length, tags, slowmode, durations). Warnings flag names Discord would
+ * normalize (perpetual drift) and `requireTag` that relies on tags already on Discord.
  */
-export function getDiscordChannelConfigErrors(channels: readonly DiscordChannelConfig[]): string[] {
+export function validateDiscordChannels(
+  channels: readonly DiscordChannelConfig[]
+): DiscordChannelValidation {
   const errors: string[] = [];
+  const warnings: string[] = [];
   const seenIds = new Set<string>();
   const seenNamesWithoutId = new Set<string>();
 
   for (const channel of channels) {
-    const label = `Discord channel "${channel.id ?? channel.name}"`;
+    const label = `Discord channel "${channel.id ?? channel.name ?? '<unnamed>'}"`;
     const threadOnly = isThreadOnlyChannelType(channel.type);
+    // Typed as required without id, but the runtime check keeps a cast or a stale
+    // entry from reaching the deploy with no name to create the channel under
+    const name: string | undefined = channel.name;
 
-    if (!CHANNEL_NAME_PATTERN.test(channel.name)) {
-      errors.push(
-        `${label} has an invalid name "${channel.name}"; use 1-100 lowercase letters, digits, '-' and '_'`
-      );
+    if (name === undefined) {
+      if (channel.id === undefined) {
+        errors.push(`${label} has no name; a channel created without an id needs one`);
+      }
+    } else {
+      const length = codePointLength(name.trim());
+      if (length < 1 || length > MAX_CHANNEL_NAME_LENGTH) {
+        errors.push(
+          `${label} has an invalid name "${name}"; Discord allows 1-${MAX_CHANNEL_NAME_LENGTH} characters`
+        );
+      } else if (NORMALIZED_AWAY_PATTERN.test(name)) {
+        warnings.push(
+          `${label} has name "${name}" with uppercase letters or spaces; Discord stores it ` +
+            `lowercased with '-' for spaces, so the declared name never matches the live one ` +
+            `and shows as drift on every deploy. Declare the normalized name instead.`
+        );
+      }
     }
 
     if (channel.id !== undefined) {
@@ -216,6 +292,16 @@ export function getDiscordChannelConfigErrors(channels: readonly DiscordChannelC
 
     if (channel.parentId !== undefined && !isDiscordSnowflake(channel.parentId)) {
       errors.push(`${label} has parentId "${channel.parentId}" which is not a Discord snowflake`);
+    }
+
+    if (channel.topic !== undefined) {
+      const length = codePointLength(channel.topic);
+      const max = MAX_TOPIC_LENGTH[channel.type];
+      if (length > max) {
+        errors.push(
+          `${label} has a topic of ${length} characters; Discord allows at most ${max} on a ${channel.type} channel`
+        );
+      }
     }
 
     if (
@@ -272,6 +358,26 @@ export function getDiscordChannelConfigErrors(channels: readonly DiscordChannelC
       );
     }
 
+    if (threadOnly && channel.requireTag === true) {
+      // REQUIRE_TAG with no tags to pick from makes Discord reject every post
+      if (channel.availableTags !== undefined) {
+        if (channel.availableTags.length === 0) {
+          errors.push(
+            `${label} sets requireTag but availableTags is empty; Discord would reject every post`
+          );
+        }
+      } else if (channel.id === undefined) {
+        errors.push(
+          `${label} sets requireTag but declares no availableTags; a new channel has no tags, so Discord would reject every post`
+        );
+      } else {
+        warnings.push(
+          `${label} sets requireTag without availableTags, so it relies on the tags already on ` +
+            `the channel; the deploy fails if the live channel has none`
+        );
+      }
+    }
+
     if (channel.availableTags !== undefined) {
       if (channel.availableTags.length > MAX_AVAILABLE_TAGS) {
         errors.push(
@@ -299,7 +405,19 @@ export function getDiscordChannelConfigErrors(channels: readonly DiscordChannelC
     }
   }
 
-  return errors;
+  return { errors, warnings };
+}
+
+/** The errors from validateDiscordChannels (fail the check). */
+export function getDiscordChannelConfigErrors(channels: readonly DiscordChannelConfig[]): string[] {
+  return validateDiscordChannels(channels).errors;
+}
+
+/** The warnings from validateDiscordChannels (printed, never fail the check). */
+export function getDiscordChannelConfigWarnings(
+  channels: readonly DiscordChannelConfig[]
+): string[] {
+  return validateDiscordChannels(channels).warnings;
 }
 
 // ---------------------------------------------------------------------------
@@ -396,6 +514,7 @@ export interface DiscordChannelState {
   parentId: string | null;
   topic: string;
   nsfw: boolean;
+  /** Informational only: position is applied on creation and never compared for drift */
   position: number | null;
   rateLimitPerUser: number;
   defaultAutoArchiveDuration: number | null;
@@ -452,22 +571,23 @@ export function discordChannelStateFromApi(
 
 /**
  * Build the body for PATCH /channels/{id} (Modify Channel) from the declared config.
- * Only declared settings are sent, and only those valid for the channel type: forum/media
- * settings never reach a text channel and defaultForumLayout only reaches a forum.
- * `current` is the live state: REQUIRE_TAG is merged into its other flag bits and
- * existing tags keep their Discord ID when their name is still declared, so an update
- * does not delete and recreate them.
+ * Only declared settings are sent (`name` included: an adopted channel without one keeps
+ * its name), and only those valid for the channel type: forum/media settings never reach
+ * a text channel and defaultForumLayout only reaches a forum. `position` is create-only
+ * and never sent here. `current` is the live state: REQUIRE_TAG is merged into its other
+ * flag bits and existing tags keep their Discord ID when their name is still declared,
+ * so an update does not delete and recreate them.
  */
 export function discordChannelPayloadFromConfig(
   config: DiscordChannelConfig,
   current?: DiscordChannelState
 ): Record<string, unknown> {
-  const payload: Record<string, unknown> = { name: config.name };
+  const payload: Record<string, unknown> = {};
 
+  if (config.name !== undefined) payload.name = config.name;
   if (config.parentId !== undefined) payload.parent_id = config.parentId;
   if (config.topic !== undefined) payload.topic = config.topic;
   if (config.nsfw !== undefined) payload.nsfw = config.nsfw;
-  if (config.position !== undefined) payload.position = config.position;
   if (config.rateLimitPerUser !== undefined) payload.rate_limit_per_user = config.rateLimitPerUser;
   if (config.defaultAutoArchiveDuration !== undefined) {
     payload.default_auto_archive_duration = config.defaultAutoArchiveDuration;
@@ -508,14 +628,36 @@ export function discordChannelPayloadFromConfig(
 
 /**
  * Build the body for POST /guilds/{guild}/channels (Create Guild Channel). Same as the
- * modify payload plus `type`, minus `flags`, which that endpoint does not accept;
- * create() applies requireTag with a follow-up PATCH.
+ * modify payload plus `type` and the create-only `position`, minus `flags`, which that
+ * endpoint does not accept; create() applies requireTag with a follow-up PATCH.
  */
 export function discordChannelCreatePayloadFromConfig(
-  config: DiscordChannelConfig
+  config: DiscordNewChannelConfig
 ): Record<string, unknown> {
   const { flags: _flags, ...payload } = discordChannelPayloadFromConfig(config);
-  return { type: DISCORD_CHANNEL_TYPE_IDS[config.type], ...payload };
+  return {
+    type: DISCORD_CHANNEL_TYPE_IDS[config.type],
+    ...payload,
+    ...(config.position !== undefined ? { position: config.position } : {}),
+  };
+}
+
+/**
+ * Why REQUIRE_TAG cannot be applied, or undefined when it can. The tags threads would
+ * have to pick from are the declared ones or, when `availableTags` is omitted, those
+ * already on the channel; if that set is empty Discord rejects every post, so the
+ * deploy must fail with a clear message instead. Checked before every PATCH.
+ */
+export function discordChannelRequireTagError(
+  config: DiscordChannelConfig,
+  current: DiscordChannelState
+): string | undefined {
+  if (config.requireTag !== true || !isThreadOnlyChannelType(config.type)) return undefined;
+  const tags = config.availableTags ?? current.availableTags;
+  if (tags.length > 0) return undefined;
+  return config.availableTags === undefined
+    ? 'requireTag is set but the channel has no tags on Discord and channels.ts declares none; add availableTags'
+    : 'requireTag is set but availableTags is empty; declare at least one tag';
 }
 
 function sortTagsByName<T extends { name: string }>(tags: readonly T[]): T[] {
@@ -524,7 +666,8 @@ function sortTagsByName<T extends { name: string }>(tags: readonly T[]): T[] {
 
 /**
  * Names of the declared settings whose live value differs from the config. Settings the
- * config omits are not managed and never count as drift. Empty means in sync.
+ * config omits (`name` included) are not managed and never count as drift, and `position`
+ * is create-only, so it is never compared. Empty means in sync.
  */
 export function getDiscordChannelDrift(
   config: DiscordChannelConfig,
@@ -542,7 +685,6 @@ export function getDiscordChannelDrift(
   check('parentId', config.parentId, state.parentId);
   check('topic', config.topic, state.topic);
   check('nsfw', config.nsfw, state.nsfw);
-  check('position', config.position, state.position);
   check('rateLimitPerUser', config.rateLimitPerUser, state.rateLimitPerUser);
   check(
     'defaultAutoArchiveDuration',

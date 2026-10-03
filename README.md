@@ -64,12 +64,12 @@ The PR's `pulumi preview` comment shows the repository create. Once merged, the 
 
 ## Discord channels
 
-Channels listed in [`src/config/channels.ts`](src/config/channels.ts) are managed by the `DiscordChannel` resource in [`src/discord.ts`](src/discord.ts), using the same `discord:botToken`/`discord:guildId` stack config as the role sync (the bot needs the **Manage Channels** permission in the guild). Each entry is either an **existing channel adopted by its ID** or a **new channel created on deploy**:
+Channels listed in [`src/config/channels.ts`](src/config/channels.ts) are managed by the `DiscordChannel` resource in [`src/discord.ts`](src/discord.ts), using the same `discord:botToken`/`discord:guildId` stack config as the role sync (the bot needs the **Manage Channels** permission in the guild, plus **View Channel** on any private channel you adopt; creating `forum`/`media` channels requires the guild's Community feature). Each entry is either an **existing channel adopted by its ID** or a **new channel created on deploy**:
 
 ```ts
 // Adopt an existing channel by ID: the declared settings are enforced in place,
-// anything not declared is left as it is on Discord
-{ id: '1234567890123456789', name: 'general', type: 'text', rateLimitPerUser: 5 },
+// anything not declared (here, the name) is left as it is on Discord
+{ id: '1234567890123456789', type: 'text', rateLimitPerUser: 5 },
 
 // Create a thread-only forum channel
 {
@@ -83,8 +83,9 @@ Channels listed in [`src/config/channels.ts`](src/config/channels.ts) are manage
 
 - **Thread-only channels are a channel type, not a setting.** Discord has no "require threads" switch; thread-only behaviour exists only as `forum` and `media` channels, and the API cannot convert a text channel into one. To make an existing channel thread-only, declare a new `forum`/`media` channel (without `id`) and retire the old channel by hand. Declaring `type: 'forum'` on the `id` of a text channel fails the deploy with an error saying so.
 - **Channels are never deleted.** Removing an entry only drops the resource from Pulumi state; the channel and its history stay on Discord. Changing an entry's `id` or `type` likewise adopts/creates the new channel and leaves the old one alone.
-- Only declared settings are managed. Validation (`npm run check`) rejects malformed snowflakes, duplicate entries, more than 20 tags, and forum/media settings on text channels (`defaultForumLayout` is forum-only).
-- Settings changed by hand in Discord show up as drift on refresh and are reverted by the next deploy (`make up` runs `pulumi up --refresh`).
+- Only declared settings are managed. `name` is required when creating a channel and optional when adopting one by `id`; declare it only if you want it enforced. Validation (`npm run check`) rejects a missing name on a new channel, names outside 1-100 characters, topics over Discord's limit (1024 for text, 4096 for forum/media), malformed snowflakes, duplicate entries, more than 20 tags, `requireTag` with no tags to pick from, and forum/media settings on text channels (`defaultForumLayout` is forum-only). It prints a `WARNING:` without failing for names with uppercase letters or spaces (Discord normalizes those, so the declared name would never match) and for `requireTag` on an adopted channel that declares no `availableTags` (it relies on the tags already on Discord; the deploy fails if there are none).
+- `position` is applied on creation only. Discord renumbers positions whenever channels move, so it is not checked or re-applied afterwards; reorder channels in Discord.
+- Settings changed by hand in Discord show up as drift on refresh and are reverted by the next deploy (`make up` runs `pulumi up --refresh`). Channel creates and updates carry `X-Audit-Log-Reason: modelcontextprotocol/access deploy`, so the guild's audit log shows where a change came from.
 
 ## Cloudflare Access (security-room)
 

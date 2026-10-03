@@ -7,6 +7,7 @@ import {
   DISCORD_CHANNEL_TYPE_IDS,
   discordChannelCreatePayloadFromConfig,
   discordChannelPayloadFromConfig,
+  discordChannelRequireTagError,
   discordChannelResourceName,
   discordChannelStateFromApi,
   discordChannelTypeName,
@@ -499,9 +500,23 @@ interface DiscordChannelOutputs extends DiscordChannelInputs {
 /** Discord error code for "Unknown Channel" */
 const DISCORD_UNKNOWN_CHANNEL_CODE = 10003;
 
+// Sent on every channel create/modify so the guild's audit log shows where the change
+// came from. Discord URL-decodes this header, hence the encoding. Passed per call rather
+// than inside discordFetch so the role/member providers' serialized code is unchanged.
+const DISCORD_CHANNEL_AUDIT_LOG_HEADERS = {
+  'X-Audit-Log-Reason': encodeURIComponent('modelcontextprotocol/access deploy'),
+};
+
 function describeDiscordChannelType(typeId: number): string {
   const name = discordChannelTypeName(typeId);
   return name ? `type ${typeId} (${name})` : `type ${typeId}`;
+}
+
+/** "Discord channel <id> ("<name>")", or just the id when the entry declares no name */
+function discordChannelLabel(id: string, config: DiscordChannelConfig): string {
+  return config.name !== undefined
+    ? `Discord channel ${id} ("${config.name}")`
+    : `Discord channel ${id}`;
 }
 
 /**
@@ -514,7 +529,7 @@ function assertDiscordChannelMatches(
   config: DiscordChannelConfig,
   live: DiscordChannelApiResponse
 ): void {
-  const label = `Discord channel ${live.id} ("${config.name}")`;
+  const label = discordChannelLabel(live.id, config);
   if (live.guild_id !== guildId) {
     throw new Error(
       `${label} belongs to guild ${live.guild_id ?? 'unknown'}, not the configured guild ${guildId}`
@@ -546,8 +561,15 @@ async function reconcileDiscordChannel(
   const drift = getDiscordChannelDrift(config, current);
   if (drift.length === 0) return current;
 
+  // Turning on REQUIRE_TAG with no tags to pick from would make Discord reject every post
+  const requireTagError = discordChannelRequireTagError(config, current);
+  if (requireTagError !== undefined) {
+    throw new Error(`${discordChannelLabel(live.id, config)}: ${requireTagError}`);
+  }
+
   const updated = await discordFetch<DiscordChannelApiResponse>(token, `/channels/${live.id}`, {
     method: 'PATCH',
+    headers: DISCORD_CHANNEL_AUDIT_LOG_HEADERS,
     body: JSON.stringify(discordChannelPayloadFromConfig(config, current)),
   });
   return discordChannelStateFromApi(updated);
@@ -610,6 +632,7 @@ const discordChannelProvider: pulumi.dynamic.ResourceProvider = {
       // Create Guild Channel does not take `flags`; reconcile below applies requireTag
       live = await discordFetch<DiscordChannelApiResponse>(token, `/guilds/${guildId}/channels`, {
         method: 'POST',
+        headers: DISCORD_CHANNEL_AUDIT_LOG_HEADERS,
         body: JSON.stringify(discordChannelCreatePayloadFromConfig(channel)),
       });
     }
@@ -641,7 +664,7 @@ const discordChannelProvider: pulumi.dynamic.ResourceProvider = {
         // Deleted outside Pulumi: a blank id drops the resource from state on refresh.
         // The next deploy recreates a channel declared without id, and fails with a
         // clear error for one declared by id.
-        console.warn(`Discord channel ${id} ("${props.channel.name}") no longer exists`);
+        console.warn(`${discordChannelLabel(id, props.channel)} no longer exists`);
         return { id: '' };
       }
       throw new Error(`Failed to read channel ${id}: ${error}`);
@@ -681,8 +704,8 @@ const discordChannelProvider: pulumi.dynamic.ResourceProvider = {
     // Never delete a Discord channel: that would destroy its message history.
     // Removing an entry from channels.ts only stops managing the channel.
     console.warn(
-      `Discord channel ${id} ("${props.channel.name}") was removed from config; it is left ` +
-        `in place on Discord and only dropped from Pulumi state. Delete it by hand if intended.`
+      `${discordChannelLabel(id, props.channel)} was removed from config; it is left in place ` +
+        `on Discord and only dropped from Pulumi state. Delete it by hand if intended.`
     );
   },
 };

@@ -24,13 +24,16 @@ import {
   DISCORD_CHANNEL_FLAG_REQUIRE_TAG,
   discordChannelCreatePayloadFromConfig,
   discordChannelPayloadFromConfig,
+  discordChannelRequireTagError,
   discordChannelResourceName,
   discordChannelStateFromApi,
   discordChannelTypeName,
   getDiscordChannelConfigErrors,
+  getDiscordChannelConfigWarnings,
   getDiscordChannelDrift,
   type DiscordChannelApiResponse,
   type DiscordChannelConfig,
+  type DiscordNewChannelConfig,
 } from '../src/config/channels';
 
 let passed = 0;
@@ -249,7 +252,7 @@ test('getAccessPolicyTeams throws for a role without a GitHub team', () => {
 // Test Discord channel config (channels.ts) and its pure Discord API mapping
 const SNOWFLAKE = '123456789012345678';
 const OTHER_SNOWFLAKE = '987654321098765432';
-const FORUM_CONFIG: DiscordChannelConfig = {
+const FORUM_CONFIG: DiscordNewChannelConfig = {
   name: 'sdk-help',
   type: 'forum',
   parentId: OTHER_SNOWFLAKE,
@@ -312,6 +315,11 @@ const TEXT_API: DiscordChannelApiResponse = {
 };
 const hasErrorMatching = (channels: DiscordChannelConfig[], pattern: RegExp) =>
   getDiscordChannelConfigErrors(channels).some((e) => pattern.test(e));
+const hasWarningMatching = (channels: DiscordChannelConfig[], pattern: RegExp) =>
+  getDiscordChannelConfigWarnings(channels).some((w) => pattern.test(w));
+const isClean = (channels: DiscordChannelConfig[]) =>
+  getDiscordChannelConfigErrors(channels).length === 0 &&
+  getDiscordChannelConfigWarnings(channels).length === 0;
 
 test('DISCORD_CHANNELS passes validation', () =>
   getDiscordChannelConfigErrors(DISCORD_CHANNELS).length === 0);
@@ -320,11 +328,18 @@ test('DISCORD_CHANNELS resource names are unique', () => {
   return names.length === new Set(names).size;
 });
 test('Channel validation accepts adopted text, new forum and adopted media entries', () =>
-  getDiscordChannelConfigErrors([
+  isClean([
     { id: SNOWFLAKE, name: 'general', type: 'text', rateLimitPerUser: 5 },
     FORUM_CONFIG,
     { id: OTHER_SNOWFLAKE, name: 'showcase', type: 'media', requireTag: false },
-  ]).length === 0);
+  ]));
+test('Channel name is optional when adopting by id and required when creating', () =>
+  isClean([{ id: SNOWFLAKE, type: 'text', rateLimitPerUser: 5 }]) &&
+  discordChannelResourceName({ id: SNOWFLAKE, type: 'text' }) === `discord-channel-${SNOWFLAKE}` &&
+  hasErrorMatching(
+    [{ type: 'text' } as unknown as DiscordChannelConfig],
+    /"<unnamed>" has no name; a channel created without an id needs one/
+  ));
 test('Channel validation rejects malformed snowflakes', () =>
   hasErrorMatching(
     [{ id: '12345', name: 'a', type: 'text' }],
@@ -359,9 +374,59 @@ test('Channel validation rejects duplicate ids and duplicate names without id', 
     { id: SNOWFLAKE, name: 'a', type: 'text' },
     { name: 'a', type: 'forum' },
   ]).length === 0);
-test('Channel validation rejects invalid names', () =>
-  hasErrorMatching([{ name: 'SDK Help', type: 'text' }], /invalid name "SDK Help"/) &&
-  hasErrorMatching([{ name: '', type: 'text' }], /invalid name ""/));
+test('Channel validation accepts any 1-100 character name, unicode and emoji included', () =>
+  isClean([
+    { name: 'sdk│help', type: 'text' },
+    { name: '🐛-bugs', type: 'forum', availableTags: [{ name: 'open' }] },
+    { name: 'ヘルプ', type: 'text' },
+    // 100 emoji are 100 characters to Discord even though they are 200 UTF-16 code units
+    { name: '🟦'.repeat(100), type: 'text' },
+  ]));
+test('Channel validation rejects empty and over-long names', () =>
+  hasErrorMatching([{ name: '', type: 'text' }], /invalid name ""; Discord allows 1-100/) &&
+  hasErrorMatching([{ name: '   ', type: 'text' }], /invalid name "   "/) &&
+  hasErrorMatching([{ name: 'a'.repeat(101), type: 'text' }], /invalid name "a{101}"/) &&
+  !hasErrorMatching([{ name: 'a'.repeat(100), type: 'text' }], /invalid name/));
+test('Channel validation warns, without an error, on names Discord would normalize', () =>
+  hasWarningMatching(
+    [{ name: 'SDK Help', type: 'text' }],
+    /"SDK Help" with uppercase letters or spaces/
+  ) &&
+  !hasErrorMatching([{ name: 'SDK Help', type: 'text' }], /name/) &&
+  hasWarningMatching([{ id: SNOWFLAKE, name: 'General', type: 'text' }], /"General"/) &&
+  hasWarningMatching([{ name: 'sdk help', type: 'text' }], /"sdk help"/) &&
+  getDiscordChannelConfigWarnings([{ name: 'sdk-help_2', type: 'text' }]).length === 0);
+test('Channel validation enforces topic length per channel type', () =>
+  hasErrorMatching(
+    [{ name: 'a', type: 'text', topic: 'x'.repeat(1025) }],
+    /topic of 1025 characters; Discord allows at most 1024 on a text channel/
+  ) &&
+  isClean([{ name: 'a', type: 'text', topic: 'x'.repeat(1024) }]) &&
+  isClean([{ name: 'a', type: 'forum', topic: 'x'.repeat(4096) }]) &&
+  hasErrorMatching(
+    [{ name: 'a', type: 'media', topic: 'x'.repeat(4097) }],
+    /topic of 4097 characters; Discord allows at most 4096 on a media channel/
+  ));
+test('requireTag needs tags: error on a new channel or empty tags, warning on an adopted one', () =>
+  hasErrorMatching(
+    [{ name: 'a', type: 'forum', requireTag: true }],
+    /sets requireTag but declares no availableTags; a new channel has no tags/
+  ) &&
+  hasErrorMatching(
+    [{ name: 'a', type: 'forum', requireTag: true, availableTags: [] }],
+    /sets requireTag but availableTags is empty/
+  ) &&
+  hasErrorMatching(
+    [{ id: SNOWFLAKE, type: 'media', requireTag: true, availableTags: [] }],
+    /sets requireTag but availableTags is empty/
+  ) &&
+  !hasErrorMatching([{ id: SNOWFLAKE, type: 'forum', requireTag: true }], /requireTag/) &&
+  hasWarningMatching(
+    [{ id: SNOWFLAKE, type: 'forum', requireTag: true }],
+    /sets requireTag without availableTags, so it relies on the tags already on the channel/
+  ) &&
+  isClean([{ id: SNOWFLAKE, type: 'forum', requireTag: false }]) &&
+  isClean([{ name: 'a', type: 'forum', requireTag: true, availableTags: [{ name: 't' }] }]));
 test('Channel validation rejects more than 20 tags and duplicate tag names', () =>
   hasErrorMatching(
     [
@@ -445,6 +510,16 @@ test('Text channel payload never contains forum/media fields', () => {
 test('Payload omits settings the config does not declare', () => {
   const payload = discordChannelPayloadFromConfig({ name: 'general', type: 'text' });
   return Object.keys(payload).length === 1 && payload.name === 'general';
+});
+test('Payload leaves out name when an adopted channel does not declare one', () => {
+  const payload = discordChannelPayloadFromConfig({ id: SNOWFLAKE, type: 'text', topic: 'Hi' });
+  return Object.keys(payload).join(',') === 'topic';
+});
+test('position is sent on create only, never in the modify payload', () => {
+  const config: DiscordNewChannelConfig = { name: 'a', type: 'text', position: 4, nsfw: true };
+  const modify = discordChannelPayloadFromConfig(config);
+  const create = discordChannelCreatePayloadFromConfig(config);
+  return !('position' in modify) && modify.nsfw === true && create.position === 4;
 });
 test('Forum payload maps tags, emoji, sort order, layout and REQUIRE_TAG', () => {
   const payload = discordChannelPayloadFromConfig(FORUM_CONFIG);
@@ -548,6 +623,40 @@ test('Omitted settings never count as drift', () =>
     { id: SNOWFLAKE, name: 'general', type: 'text' },
     discordChannelStateFromApi(TEXT_API)
   ).length === 0);
+test('Name counts as drift only when declared', () => {
+  const state = discordChannelStateFromApi(TEXT_API);
+  return (
+    getDiscordChannelDrift({ id: SNOWFLAKE, type: 'text', rateLimitPerUser: 0 }, state).length ===
+      0 &&
+    getDiscordChannelDrift({ id: SNOWFLAKE, name: 'genral', type: 'text' }, state).join(',') ===
+      'name'
+  );
+});
+test('position never counts as drift', () =>
+  getDiscordChannelDrift({ ...FORUM_CONFIG, position: 99 }, discordChannelStateFromApi(FORUM_API))
+    .length === 0);
+test('discordChannelRequireTagError fires only when REQUIRE_TAG would have no tags', () => {
+  const withTags = discordChannelStateFromApi(FORUM_API);
+  const noTags = discordChannelStateFromApi({ ...FORUM_API, available_tags: [] });
+  return (
+    discordChannelRequireTagError({ id: SNOWFLAKE, type: 'forum', requireTag: true }, withTags) ===
+      undefined &&
+    /no tags on Discord and channels.ts declares none/.test(
+      discordChannelRequireTagError({ id: SNOWFLAKE, type: 'forum', requireTag: true }, noTags) ??
+        ''
+    ) &&
+    /availableTags is empty/.test(
+      discordChannelRequireTagError(
+        { id: SNOWFLAKE, type: 'forum', requireTag: true, availableTags: [] },
+        withTags
+      ) ?? ''
+    ) &&
+    discordChannelRequireTagError({ ...FORUM_CONFIG }, noTags) === undefined &&
+    discordChannelRequireTagError({ id: SNOWFLAKE, type: 'forum', requireTag: false }, noTags) ===
+      undefined &&
+    discordChannelRequireTagError({ id: SNOWFLAKE, type: 'text' }, noTags) === undefined
+  );
+});
 test('Drift reports a type mismatch between config and live channel', () =>
   getDiscordChannelDrift(
     { id: SNOWFLAKE, name: 'general', type: 'forum' },

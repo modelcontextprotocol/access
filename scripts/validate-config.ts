@@ -15,7 +15,7 @@ import {
 } from '../src/config/packageAccess';
 import { MEMBERS } from '../src/config/users';
 import { ACCESS_POLICIES } from '../src/config/accessPolicies';
-import { DISCORD_CHANNELS, getDiscordChannelConfigErrors } from '../src/config/channels';
+import { DISCORD_CHANNELS, validateDiscordChannels } from '../src/config/channels';
 import { hasProvisionUserRole, resolveGoogleMemberEmail } from '../src/config/utils';
 import type { RoleId } from '../src/config/roleIds';
 
@@ -400,10 +400,18 @@ console.log('Validating Cloudflare Access policies in accessPolicies.ts...');
 // Validate Discord channel entries in channels.ts
 // Snowflake formats, duplicate entries, settings that Discord rejects for the channel
 // type, and Discord's limits — all of which would otherwise only fail inside the deploy.
+// Warnings (names Discord would normalize, requireTag relying on live tags) are printed
+// but do not fail the check.
 console.log('Validating Discord channel entries in channels.ts...');
-for (const error of getDiscordChannelConfigErrors(DISCORD_CHANNELS)) {
-  console.error(`ERROR: ${error}`);
-  hasErrors = true;
+{
+  const { errors, warnings } = validateDiscordChannels(DISCORD_CHANNELS);
+  for (const warning of warnings) {
+    console.warn(`WARNING: ${warning}`);
+  }
+  for (const error of errors) {
+    console.error(`ERROR: ${error}`);
+    hasErrors = true;
+  }
 }
 
 // Validate parent role references in roles.ts
