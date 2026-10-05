@@ -78,41 +78,4 @@ jobs:
           if [ -n "$CLOUDFLARE_ROLE_MANAGEMENT_TOKEN" ]; then
             pulumi config set cloudflare:roleManagementToken "$CLOUDFLARE_ROLE_MANAGEMENT_TOKEN" --secret --stack prod
           fi
-          # TEMP: one-time state surgery so Pulumi stops managing clare@'s Workspace
-          # user (existingGWSUser in src/config/users.ts). Deploy runs #289 and #290
-          # (2026-10-05) fail in the refresh pass of `make up` because Google returns
-          # 400 on users.get for the stored gws-user-clare resource although the
-          # account is active. With the flag set, the program no longer declares
-          # gws-user-clare or its gws-pwd-clare RandomPassword, so both MUST leave
-          # state before `make up`, or Pulumi plans a real users.delete.
-          # `pulumi state delete` is not usable here: clare's GroupMember records list
-          # the User in their dependencies, so it refuses without --target-dependents
-          # (which would also drop the memberships from state). Instead: export the
-          # state, remove both entries, strip their URNs from every remaining
-          # resource's dependencies, and re-import. Deliberately NOT `|| true`-guarded:
-          # a failed surgery must fail the deploy loudly rather than let `make up`
-          # delete the real account. Idempotent: if neither entry is in state, the
-          # import is skipped. Remove this block after the next green deploy.
-          STALE_URNS='[
-            "urn:pulumi:prod::mcp-access::googleworkspace:index/user:User::gws-user-clare",
-            "urn:pulumi:prod::mcp-access::random:index/randomPassword:RandomPassword::gws-pwd-clare"
-          ]'
-          pulumi stack export --stack prod --file /tmp/state.json
-          jq --argjson urns "$STALE_URNS" '
-            def drop_stale: map(select(. as $d | ($urns | index($d)) | not));
-            .deployment.resources |= (
-              map(select(.urn as $u | ($urns | index($u)) | not))
-              | map(
-                  (if .dependencies then .dependencies |= drop_stale else . end)
-                  | (if .propertyDependencies then .propertyDependencies |= map_values(drop_stale) else . end)
-                )
-            )' /tmp/state.json > /tmp/state-repaired.json
-          before=$(jq '.deployment.resources | length' /tmp/state.json)
-          after=$(jq '.deployment.resources | length' /tmp/state-repaired.json)
-          echo "State surgery: removing $((before - after)) stale gws-user-clare/gws-pwd-clare entries"
-          if [ "$before" -eq "$after" ]; then
-            echo "No matching entries in state (already removed); skipping import"
-          else
-            pulumi stack import --stack prod --file /tmp/state-repaired.json
-          fi
           make up
