@@ -160,7 +160,20 @@ export type DiscordChannelConfig = DiscordAdoptedChannelConfig | DiscordNewChann
  *     defaultSortOrder: 'creation_date',
  *   },
  */
-export const DISCORD_CHANNELS: readonly DiscordChannelConfig[] = [];
+export const DISCORD_CHANNELS: readonly DiscordChannelConfig[] = [
+  // Test of the thread-only channel machinery: a new forum channel, because no existing
+  // text channel can be converted to a forum (Discord does not convert the type).
+  {
+    name: 'thread-only-test',
+    type: 'forum',
+    parentId: '1358869848138059967', // General
+    topic:
+      'Test channel for Pulumi-managed thread-only (forum) channels. Every post opens a thread.',
+    defaultSortOrder: 'latest_activity',
+    defaultForumLayout: 'list',
+    defaultAutoArchiveDuration: 10080,
+  },
+];
 
 /** Pulumi resource name for a channel entry (stable across deploys). */
 export function discordChannelResourceName(channel: DiscordChannelConfig): string {
