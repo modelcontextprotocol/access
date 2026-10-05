@@ -161,18 +161,13 @@ export type DiscordChannelConfig = DiscordAdoptedChannelConfig | DiscordNewChann
  *   },
  */
 export const DISCORD_CHANNELS: readonly DiscordChannelConfig[] = [
-  // Test of the thread-only channel machinery: a new forum channel, because no existing
-  // text channel can be converted to a forum (Discord does not convert the type).
-  {
-    name: 'thread-only-test',
-    type: 'forum',
-    parentId: '1358869848138059967', // General
-    topic:
-      'Test channel for Pulumi-managed thread-only (forum) channels. Every post opens a thread.',
-    defaultSortOrder: 'latest_activity',
-    defaultForumLayout: 'list',
-    defaultAutoArchiveDuration: 10080,
-  },
+  // Empty on purpose. Creating or editing a channel needs the deploy bot's role to hold
+  // Manage Channels in the guild (see README, "Discord channels"); until it does, Discord
+  // answers every channel write with "Missing Permissions (code: 50013)" and the whole
+  // deploy fails. The `thread-only-test` forum entry from #210 was removed for that
+  // reason before any deploy managed to create it. Re-add entries once the permission
+  // has been granted (adopting by `id` any channel that was created by hand meanwhile,
+  // since an entry without `id` always creates a new channel).
 ];
 
 /** Pulumi resource name for a channel entry (stable across deploys). */
