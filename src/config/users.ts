@@ -152,6 +152,9 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Clare',
     lastName: 'Liguori',
     googleEmailPrefix: 'clare',
+    // Google returns 400 on refresh of this user since 2026-10-05 (deploy runs
+    // #289/#290); the account is active and managed outside Pulumi.
+    existingGWSUser: true,
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRIGGERS_EVENTS_WG],
   },
   {
