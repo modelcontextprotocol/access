@@ -17,6 +17,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'a-akimov',
     discord: '1365254196621738116',
+    firstName: 'Alex',
+    lastName: 'Akimov',
+    googleEmailPrefix: 'alex',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.MAINTAINERS],
   },
   {
@@ -149,6 +152,9 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Clare',
     lastName: 'Liguori',
     googleEmailPrefix: 'clare',
+    // Google returns 400 on refresh of this user since 2026-10-05 (deploy runs
+    // #289/#290); the account is active and managed outside Pulumi.
+    existingGWSUser: true,
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRIGGERS_EVENTS_WG],
   },
   {
@@ -485,7 +491,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'Kehrlann',
     discord: '1112624611901837373',
-    memberOf: [ROLE_IDS.JAVA_SDK],
+    memberOf: [ROLE_IDS.JAVA_SDK, ROLE_IDS.SECURITY_TEAM],
     firstName: 'Daniel',
     lastName: 'Garnier-Moiroux',
     googleEmailPrefix: 'daniel',
@@ -877,6 +883,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'sarahnovotny',
     discord: '705092472082137109',
+    firstName: 'Sarah',
+    lastName: 'Novotny',
+    googleEmailPrefix: 'sarah',
     memberOf: [ROLE_IDS.MAINTAINERS],
   },
   {

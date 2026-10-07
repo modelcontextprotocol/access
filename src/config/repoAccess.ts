@@ -480,7 +480,11 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'access',
-    teams: [{ team: 'infrastructure-wg', permission: 'admin' }],
+    teams: [
+      { team: 'infrastructure-wg', permission: 'admin' },
+      { team: 'maintainers', permission: 'triage' },
+      { team: 'sdk-maintainers', permission: 'triage' },
+    ],
     users: [
       { username: 'felixweinberger', permission: 'admin' },
       { username: 'maxisbey', permission: 'admin' },

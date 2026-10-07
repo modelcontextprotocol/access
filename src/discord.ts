@@ -2,6 +2,20 @@ import * as pulumi from '@pulumi/pulumi';
 import { ROLES, type Role, buildRoleLookup } from './config/roles';
 import { MEMBERS } from './config/users';
 import type { RoleId } from './config/roleIds';
+import {
+  DISCORD_CHANNELS,
+  DISCORD_CHANNEL_TYPE_IDS,
+  discordChannelCreatePayloadFromConfig,
+  discordChannelPayloadFromConfig,
+  discordChannelRequireTagError,
+  discordChannelResourceName,
+  discordChannelStateFromApi,
+  discordChannelTypeName,
+  getDiscordChannelDrift,
+  type DiscordChannelApiResponse,
+  type DiscordChannelConfig,
+  type DiscordChannelState,
+} from './config/channels';
 
 const config = new pulumi.Config('discord');
 // Discord integration is optional - only enabled if botToken and guildId are configured
@@ -459,9 +473,274 @@ class DiscordMemberRoleSync extends pulumi.dynamic.Resource {
   }
 }
 
+// Discord Channel Dynamic Provider
+// Manages the settings of a channel declared in config/channels.ts: either an existing
+// channel adopted by its ID, or a new channel created by this provider (the only way to
+// get a thread-only forum/media channel, since Discord cannot convert a text channel).
+//
+// Only the settings the config declares are managed; the rest of the channel is left
+// alone. read() is side-effect free and returns the live settings as `state`, and
+// diff() compares that state with the declared config, so drift introduced by hand in
+// Discord is corrected by the next deploy (`make up` runs `pulumi up --refresh`).
+//
+// NEVER deletes a channel: removing an entry from channels.ts only drops the resource
+// from Pulumi state, because deleting a channel destroys its message history.
+interface DiscordChannelInputs {
+  guildId: string;
+  channel: DiscordChannelConfig;
+  token: string;
+}
+
+interface DiscordChannelOutputs extends DiscordChannelInputs {
+  channelId: string;
+  /** Managed settings as last read from Discord */
+  state: DiscordChannelState;
+}
+
+/** Discord error code for "Unknown Channel" */
+const DISCORD_UNKNOWN_CHANNEL_CODE = 10003;
+
+// Sent on every channel create/modify so the guild's audit log shows where the change
+// came from. Discord URL-decodes this header, hence the encoding. Passed per call rather
+// than inside discordFetch so the role/member providers' serialized code is unchanged.
+const DISCORD_CHANNEL_AUDIT_LOG_HEADERS = {
+  'X-Audit-Log-Reason': encodeURIComponent('modelcontextprotocol/access deploy'),
+};
+
+function describeDiscordChannelType(typeId: number): string {
+  const name = discordChannelTypeName(typeId);
+  return name ? `type ${typeId} (${name})` : `type ${typeId}`;
+}
+
+/** "Discord channel <id> ("<name>")", or just the id when the entry declares no name */
+function discordChannelLabel(id: string, config: DiscordChannelConfig): string {
+  return config.name !== undefined
+    ? `Discord channel ${id} ("${config.name}")`
+    : `Discord channel ${id}`;
+}
+
+/**
+ * Check that a live channel is the one the config means: same guild, same type.
+ * Discord can only convert text <-> announcement channels, so a type mismatch cannot
+ * be fixed with a PATCH and the deploy must fail with an actionable message.
+ */
+function assertDiscordChannelMatches(
+  guildId: string,
+  config: DiscordChannelConfig,
+  live: DiscordChannelApiResponse
+): void {
+  const label = discordChannelLabel(live.id, config);
+  if (live.guild_id !== guildId) {
+    throw new Error(
+      `${label} belongs to guild ${live.guild_id ?? 'unknown'}, not the configured guild ${guildId}`
+    );
+  }
+  if (discordChannelTypeName(live.type) !== config.type) {
+    throw new Error(
+      `${label} is ${describeDiscordChannelType(live.type)} but channels.ts declares type ` +
+        `'${config.type}' (${DISCORD_CHANNEL_TYPE_IDS[config.type]}). Discord cannot convert ` +
+        `between these types: to make an existing channel thread-only, declare a new forum/media ` +
+        `channel (without id) and retire the old one by hand.`
+    );
+  }
+}
+
+/**
+ * Apply the declared settings to a live channel if they differ, and return the
+ * resulting state. Tag IDs and unmanaged flag bits come from `live`.
+ */
+async function reconcileDiscordChannel(
+  token: string,
+  guildId: string,
+  config: DiscordChannelConfig,
+  live: DiscordChannelApiResponse
+): Promise<DiscordChannelState> {
+  assertDiscordChannelMatches(guildId, config, live);
+
+  const current = discordChannelStateFromApi(live);
+  const drift = getDiscordChannelDrift(config, current);
+  if (drift.length === 0) return current;
+
+  // Turning on REQUIRE_TAG with no tags to pick from would make Discord reject every post
+  const requireTagError = discordChannelRequireTagError(config, current);
+  if (requireTagError !== undefined) {
+    throw new Error(`${discordChannelLabel(live.id, config)}: ${requireTagError}`);
+  }
+
+  const updated = await discordFetch<DiscordChannelApiResponse>(token, `/channels/${live.id}`, {
+    method: 'PATCH',
+    headers: DISCORD_CHANNEL_AUDIT_LOG_HEADERS,
+    body: JSON.stringify(discordChannelPayloadFromConfig(config, current)),
+  });
+  return discordChannelStateFromApi(updated);
+}
+
+/** Deep equality for the JSON-like values Pulumi hands to the provider (key order ignored) */
+function jsonEqual(a: unknown, b: unknown): boolean {
+  if (a === b) return true;
+  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) return false;
+  if (Array.isArray(a) !== Array.isArray(b)) return false;
+  if (Array.isArray(a) && Array.isArray(b)) {
+    return a.length === b.length && a.every((value, i) => jsonEqual(value, b[i]));
+  }
+  const recordA = a as Record<string, unknown>;
+  const recordB = b as Record<string, unknown>;
+  // undefined properties are dropped during serialization, so treat them as absent
+  const keysA = Object.keys(recordA).filter((k) => recordA[k] !== undefined);
+  const keysB = Object.keys(recordB).filter((k) => recordB[k] !== undefined);
+  return keysA.length === keysB.length && keysA.every((k) => jsonEqual(recordA[k], recordB[k]));
+}
+
+const discordChannelProvider: pulumi.dynamic.ResourceProvider = {
+  async diff(
+    _id: string,
+    olds: DiscordChannelOutputs,
+    news: DiscordChannelInputs
+  ): Promise<pulumi.dynamic.DiffResult> {
+    const replaces: string[] = [];
+    if (olds.guildId !== news.guildId) replaces.push('guildId');
+    // A different channel, or a type Discord cannot convert to: adopt/create the new
+    // one and drop the old one from state (delete() never touches Discord).
+    if (olds.channel?.id !== news.channel.id || olds.channel?.type !== news.channel.type) {
+      replaces.push('channel');
+    }
+
+    const inputsChanged =
+      olds.guildId !== news.guildId ||
+      olds.token !== news.token ||
+      !jsonEqual(olds.channel, news.channel);
+    // `state` is the live state from the last create/update/refresh
+    const drifted =
+      olds.state === undefined || getDiscordChannelDrift(news.channel, olds.state).length > 0;
+
+    return {
+      changes: inputsChanged || drifted,
+      replaces: replaces.length > 0 ? replaces : undefined,
+    };
+  },
+
+  async create(
+    inputs: DiscordChannelInputs
+  ): Promise<pulumi.dynamic.CreateResult<DiscordChannelOutputs>> {
+    const { guildId, channel, token } = inputs;
+
+    let live: DiscordChannelApiResponse;
+    if (channel.id !== undefined) {
+      // Adopt the existing channel and bring its declared settings in line
+      live = await discordFetch<DiscordChannelApiResponse>(token, `/channels/${channel.id}`);
+    } else {
+      // Create Guild Channel does not take `flags`; reconcile below applies requireTag
+      live = await discordFetch<DiscordChannelApiResponse>(token, `/guilds/${guildId}/channels`, {
+        method: 'POST',
+        headers: DISCORD_CHANNEL_AUDIT_LOG_HEADERS,
+        body: JSON.stringify(discordChannelCreatePayloadFromConfig(channel)),
+      });
+    }
+
+    const state = await reconcileDiscordChannel(token, guildId, channel, live);
+
+    return {
+      id: live.id,
+      outs: {
+        ...inputs,
+        channelId: live.id,
+        state,
+      },
+    };
+  },
+
+  async read(
+    id: string,
+    props: DiscordChannelOutputs
+  ): Promise<pulumi.dynamic.ReadResult<DiscordChannelOutputs>> {
+    let live: DiscordChannelApiResponse;
+    try {
+      live = await discordFetch<DiscordChannelApiResponse>(props.token, `/channels/${id}`);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message.includes(`code: ${DISCORD_UNKNOWN_CHANNEL_CODE}`)
+      ) {
+        // Deleted outside Pulumi: a blank id drops the resource from state on refresh.
+        // The next deploy recreates a channel declared without id, and fails with a
+        // clear error for one declared by id.
+        console.warn(`${discordChannelLabel(id, props.channel)} no longer exists`);
+        return { id: '' };
+      }
+      throw new Error(`Failed to read channel ${id}: ${error}`);
+    }
+
+    // Side-effect free: report the live settings and let diff() turn drift into an update
+    return {
+      id,
+      props: {
+        ...props,
+        channelId: live.id,
+        state: discordChannelStateFromApi(live),
+      },
+    };
+  },
+
+  async update(
+    id: string,
+    _olds: DiscordChannelOutputs,
+    news: DiscordChannelInputs
+  ): Promise<pulumi.dynamic.UpdateResult<DiscordChannelOutputs>> {
+    // Re-read before patching so tag IDs and unmanaged flag bits are current even
+    // when the last refresh is stale
+    const live = await discordFetch<DiscordChannelApiResponse>(news.token, `/channels/${id}`);
+    const state = await reconcileDiscordChannel(news.token, news.guildId, news.channel, live);
+
+    return {
+      outs: {
+        ...news,
+        channelId: id,
+        state,
+      },
+    };
+  },
+
+  async delete(id: string, props: DiscordChannelOutputs): Promise<void> {
+    // Never delete a Discord channel: that would destroy its message history.
+    // Removing an entry from channels.ts only stops managing the channel.
+    console.warn(
+      `${discordChannelLabel(id, props.channel)} was removed from config; it is left in place ` +
+        `on Discord and only dropped from Pulumi state. Delete it by hand if intended.`
+    );
+  },
+};
+
+class DiscordChannel extends pulumi.dynamic.Resource {
+  public readonly channelId!: pulumi.Output<string>;
+  public readonly state!: pulumi.Output<DiscordChannelState>;
+
+  constructor(
+    name: string,
+    args: {
+      guildId: pulumi.Input<string>;
+      channel: pulumi.Input<DiscordChannelConfig>;
+      token: pulumi.Input<string>;
+    },
+    opts?: pulumi.CustomResourceOptions
+  ) {
+    super(
+      discordChannelProvider,
+      name,
+      {
+        channelId: undefined,
+        state: undefined,
+        ...args,
+      },
+      opts
+    );
+  }
+}
+
 const roleLookup = buildRoleLookup();
 // Discord roles keyed by Discord role name
 const roles: Record<string, DiscordRole> = {};
+// Discord channels keyed by `id ?? name` of their channels.ts entry
+const channels: Record<string, DiscordChannel> = {};
 
 /**
  * Expand a set of role IDs to include all implied Discord roles.
@@ -546,6 +825,15 @@ if (DISCORD_ENABLED) {
       { dependsOn: Object.values(roles) }
     );
   });
+
+  // Manage the channels declared in channels.ts (adopted by id, or created)
+  DISCORD_CHANNELS.forEach((channel) => {
+    channels[channel.id ?? channel.name] = new DiscordChannel(discordChannelResourceName(channel), {
+      guildId,
+      channel,
+      token: botToken,
+    });
+  });
 }
 
-export { roles as discordRoles };
+export { roles as discordRoles, channels as discordChannels };
