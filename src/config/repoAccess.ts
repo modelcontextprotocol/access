@@ -430,7 +430,8 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     teams: [
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'moderators', permission: 'maintain' },
-      { team: 'triggers-events-wg', permission: 'admin' },
+      { team: 'triggers-events-wg', permission: 'push' },
+      { team: 'triggers-events-wg-leads', permission: 'admin' },
     ],
   },
   {

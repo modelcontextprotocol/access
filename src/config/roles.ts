@@ -341,6 +341,11 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'triggers & events working group (synced)' },
   },
   {
+    id: ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
+    description: 'Triggers & Events Working Group leads',
+    github: { team: 'triggers-events-wg-leads', parent: ROLE_IDS.TRIGGERS_EVENTS_WG },
+  },
+  {
     id: ROLE_IDS.MCP_APPS_WG,
     description: 'MCP Apps Working Group',
     github: { team: 'mcp-apps-wg', parent: ROLE_IDS.WORKING_GROUPS },
