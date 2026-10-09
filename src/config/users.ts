@@ -155,7 +155,11 @@ export const MEMBERS: readonly Member[] = [
     // Google returns 400 on refresh of this user since 2026-10-05 (deploy runs
     // #289/#290); the account is active and managed outside Pulumi.
     existingGWSUser: true,
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRIGGERS_EVENTS_WG],
+    memberOf: [
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.TRIGGERS_EVENTS_WG,
+      ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
+    ],
   },
   {
     github: 'cliffhall',
@@ -799,6 +803,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.SKILLS_OVER_MCP_WG_LEADS,
       ROLE_IDS.TRANSPORT_WG,
       ROLE_IDS.TRIGGERS_EVENTS_WG,
+      ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
       ROLE_IDS.AGENTS_WG,
     ],
   },
@@ -980,6 +985,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'topherbullock',
     discord: '1059910719124013168',
     memberOf: [ROLE_IDS.RUBY_SDK],
+  },
+  {
+    github: 'tsarlandie-oai',
+    discord: '1516121882297106487',
+    memberOf: [ROLE_IDS.TRIGGERS_EVENTS_WG],
   },
   {
     github: 'tzolov',
