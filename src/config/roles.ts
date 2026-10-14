@@ -393,6 +393,11 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'filesystems working group (synced)' },
   },
   {
+    id: ROLE_IDS.FILESYSTEMS_WG_LEADS,
+    description: 'Filesystems Working Group leads',
+    github: { team: 'filesystems-wg-leads', parent: ROLE_IDS.FILESYSTEMS_WG },
+  },
+  {
     id: ROLE_IDS.CORE_PRIMITIVE_WG,
     description: 'Core Primitive Working Group',
     github: { team: 'core-primitive-wg', parent: ROLE_IDS.WORKING_GROUPS },

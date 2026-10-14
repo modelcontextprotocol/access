@@ -459,7 +459,8 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     teams: [
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'moderators', permission: 'maintain' },
-      { team: 'filesystems-wg', permission: 'admin' },
+      { team: 'filesystems-wg', permission: 'push' },
+      { team: 'filesystems-wg-leads', permission: 'admin' },
     ],
   },
   {
