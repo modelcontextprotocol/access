@@ -57,6 +57,7 @@ export const ROLE_IDS = {
   AUTH_FINE_GRAINED_AUTHZ_WG: 'auth-wg-fine-grained-authz',
   TRANSPORT_WG: 'transport-wg',
   TRIGGERS_EVENTS_WG: 'triggers-events-wg',
+  TRIGGERS_EVENTS_WG_LEADS: 'triggers-events-wg-leads',
   MCP_APPS_WG: 'mcp-apps-wg',
   SERVER_CARD_WG: 'server-card-wg',
   INTERCEPTORS_WG: 'interceptors-wg',
