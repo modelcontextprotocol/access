@@ -462,6 +462,18 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
+    repository: 'experimental-ext-file-uploads',
+    settings: {
+      description:
+        'Experimental MCP extension for uploading files to tools over MCP. Maintained by the File Uploads Working Group.',
+    },
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'moderators', permission: 'maintain' },
+      { team: 'file-uploads-wg', permission: 'admin' },
+    ],
+  },
+  {
     repository: 'maintainer-docs',
     teams: [
       { team: 'lead-maintainers', permission: 'maintain' },
