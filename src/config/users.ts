@@ -101,10 +101,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.INSPECTOR_MAINTAINERS, ROLE_IDS.REGISTRY_MAINTAINERS],
   },
   {
-    github: 'bolinfest',
-    memberOf: [ROLE_IDS.RUST_SDK],
-  },
-  {
     github: 'caitiem20',
     email: 'caitie.mccaffrey@microsoft.com',
     discord: '1425586366288494722',
@@ -187,6 +183,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'CodeWithKyrian',
     discord: '951883230250946633',
     memberOf: [ROLE_IDS.PHP_SDK],
+  },
+  {
+    github: 'connor4312',
+    discord: '141305677485309952',
+    memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'crondinini-ant',
@@ -373,6 +374,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'findleyr',
     discord: '776094836796424213',
     memberOf: [ROLE_IDS.GO_SDK],
+  },
+  {
+    github: 'gocamille',
+    discord: '259396562625495040',
+    memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'guglielmo-san',
@@ -989,7 +995,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'tsarlandie-oai',
     discord: '1516121882297106487',
-    memberOf: [ROLE_IDS.TRIGGERS_EVENTS_WG],
+    memberOf: [ROLE_IDS.RUST_SDK, ROLE_IDS.TRIGGERS_EVENTS_WG],
   },
   {
     github: 'tzolov',
