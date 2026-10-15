@@ -547,7 +547,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'kziemski',
     discord: '312056735248416770',
-    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.FILESYSTEMS_WG_LEADS, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
   },
   {
     github: 'liady',
