@@ -517,6 +517,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
+    github: 'kevklam',
+    memberOf: [ROLE_IDS.FILE_UPLOADS_WG],
+  },
+  {
     github: 'KKonstantinov',
     discord: '390932438903422987',
     memberOf: [
