@@ -212,7 +212,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Daniel',
     lastName: 'Temesgen',
     googleEmailPrefix: 'danieltemesgen',
-    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.FILESYSTEMS_WG_LEADS, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'davidortinau',
@@ -430,6 +430,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
+    github: 'jayzuccarelli',
+    discord: '740214858930323548',
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
+  },
+  {
     github: 'jba',
     discord: '773276903364755518',
     memberOf: [ROLE_IDS.GO_SDK],
@@ -545,6 +550,11 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Van Gent',
     googleEmailPrefix: 'kvg',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.CORE_PRIMITIVE_WG, ROLE_IDS.TRANSPORT_WG],
+  },
+  {
+    github: 'kziemski',
+    discord: '312056735248416770',
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
   },
   {
     github: 'liady',
@@ -735,6 +745,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.COMMUNITY_MANAGERS,
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.FILESYSTEMS_WG,
+      ROLE_IDS.FILESYSTEMS_WG_LEADS,
       ROLE_IDS.INSPECTOR_MAINTAINERS,
       ROLE_IDS.INTERCEPTORS_WG,
       ROLE_IDS.MAINTAINERS,
@@ -883,6 +894,7 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [
       ROLE_IDS.MAINTAINERS,
       ROLE_IDS.FILESYSTEMS_WG,
+      ROLE_IDS.FILESYSTEMS_WG_LEADS,
       ROLE_IDS.FINANCIAL_SERVICES_IG,
       ROLE_IDS.INFRASTRUCTURE_WG,
       ROLE_IDS.INTERCEPTORS_WG,
