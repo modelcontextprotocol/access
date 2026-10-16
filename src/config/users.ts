@@ -796,7 +796,22 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SECURITY_IG],
   },
   {
+    // Same person as 'Poita' below; Discord and Google Workspace identity live
+    // on that entry (both are keyed per person, so only one entry can carry them)
     github: 'pja-ant',
+    memberOf: [
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.SKILLS_OVER_MCP_WG,
+      ROLE_IDS.SKILLS_OVER_MCP_WG_LEADS,
+      ROLE_IDS.TRANSPORT_WG,
+      ROLE_IDS.TRIGGERS_EVENTS_WG,
+      ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
+      ROLE_IDS.AGENTS_WG,
+    ],
+  },
+  {
+    github: 'Poita',
     discord: '328628782497923072',
     firstName: 'Peter',
     lastName: 'Alexander',
