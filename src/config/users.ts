@@ -1022,7 +1022,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'tsarlandie-oai',
     discord: '1516121882297106487',
-    memberOf: [ROLE_IDS.RUST_SDK, ROLE_IDS.TRIGGERS_EVENTS_WG],
+    memberOf: [ROLE_IDS.RUST_SDK, ROLE_IDS.TRIGGERS_EVENTS_WG, ROLE_IDS.FILE_UPLOADS_WG],
   },
   {
     github: 'tzolov',
