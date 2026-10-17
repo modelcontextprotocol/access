@@ -409,6 +409,12 @@ export const ROLES: readonly Role[] = [
     github: { team: 'infrastructure-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'infrastructure working group (synced)' },
   },
+  {
+    id: ROLE_IDS.GOVERNANCE_WG,
+    description: 'Governance Working Group',
+    github: { team: 'governance-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'governance working group (synced)' },
+  },
 
   // ===================
   // Interest Groups

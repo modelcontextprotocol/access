@@ -69,6 +69,7 @@ export const ROLE_IDS = {
   FILESYSTEMS_WG_LEADS: 'filesystems-wg-leads',
   CORE_PRIMITIVE_WG: 'core-primitive-wg',
   INFRASTRUCTURE_WG: 'infrastructure-wg',
+  GOVERNANCE_WG: 'governance-wg',
 
   // ===================
   // Interest Groups
