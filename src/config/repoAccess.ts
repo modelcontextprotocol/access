@@ -476,6 +476,18 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     ],
   },
   {
+    repository: 'governance-wg',
+    settings: {
+      description:
+        'Governance documentation and working materials for the MCP Governance Working Group.',
+    },
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'moderators', permission: 'maintain' },
+      { team: 'governance-wg', permission: 'admin' },
+    ],
+  },
+  {
     repository: 'maintainer-docs',
     teams: [
       { team: 'lead-maintainers', permission: 'maintain' },
