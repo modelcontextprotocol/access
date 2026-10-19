@@ -558,7 +558,9 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'kziemski',
     discord: '312056735248416770',
-    memberOf: [ROLE_IDS.FILESYSTEMS_WG],
+    firstName: 'Kryspin',
+    lastName: 'Ziemski',
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.GOVERNANCE_WG],
   },
   {
     github: 'liady',
@@ -567,6 +569,13 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Yosef',
     googleEmailPrefix: 'liad',
     memberOf: [ROLE_IDS.WORKING_GROUPS, ROLE_IDS.MCP_APPS_WG, ROLE_IDS.MCP_APPS_SDK],
+  },
+  {
+    github: 'linsun',
+    discord: '1212420366199165032',
+    firstName: 'Lin',
+    lastName: 'Sun',
+    memberOf: [ROLE_IDS.GOVERNANCE_WG],
   },
   {
     github: 'localden',
@@ -802,6 +811,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.FINANCIAL_SERVICES_IG,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.SKILLS_OVER_MCP_WG,
+      ROLE_IDS.GOVERNANCE_WG,
       ROLE_IDS.INTERCEPTORS_WG,
       ROLE_IDS.APPEALS,
     ],
@@ -928,7 +938,14 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Sarah',
     lastName: 'Novotny',
     googleEmailPrefix: 'sarah',
-    memberOf: [ROLE_IDS.MAINTAINERS],
+    memberOf: [ROLE_IDS.GOVERNANCE_WG, ROLE_IDS.MAINTAINERS],
+  },
+  {
+    github: 'schlpbch',
+    discord: '1467977452969267412',
+    firstName: 'Andreas',
+    lastName: 'Schlapbach',
+    memberOf: [ROLE_IDS.GOVERNANCE_WG],
   },
   {
     github: 'sdubov',
