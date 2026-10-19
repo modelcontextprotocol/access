@@ -586,7 +586,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Kryspin',
     lastName: 'Ziemski',
     googleEmailPrefix: 'kziemski',
-    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.GOVERNANCE_WG],
+    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.GOVERNANCE_WG, ROLE_IDS.FINANCIAL_SERVICES_IG],
   },
   {
     github: 'liady',
@@ -1079,6 +1079,13 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'varun06',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
+  },
+  {
+    github: 'vinoo999',
+    discord: '759950435640541234',
+    firstName: 'Vinay',
+    lastName: 'Ramesh',
+    memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
   },
   {
     github: 'yarolegovich',
