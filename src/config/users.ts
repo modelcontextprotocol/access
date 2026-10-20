@@ -50,6 +50,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'akhilcb',
+    discord: '916141121925677137',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
@@ -66,6 +67,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'andreyvelich',
+    discord: '1073334676153970699',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
@@ -119,6 +121,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'canarik',
+    discord: '409814689095352320',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
@@ -453,6 +456,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jeanmatthieu',
+    discord: '1558123148614828183',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
