@@ -56,13 +56,12 @@ export const ROLE_IDS = {
   AUTH_TOOL_SCOPES_WG: 'auth-wg-tool-scopes',
   AUTH_FINE_GRAINED_AUTHZ_WG: 'auth-wg-fine-grained-authz',
   TRANSPORT_WG: 'transport-wg',
-  TRIGGERS_EVENTS_WG: 'triggers-events-wg',
-  TRIGGERS_EVENTS_WG_LEADS: 'triggers-events-wg-leads',
+  TASKS_EVENTS_WG: 'tasks-events-wg',
+  TASKS_EVENTS_WG_LEADS: 'tasks-events-wg-leads',
   MCP_APPS_WG: 'mcp-apps-wg',
   SERVER_CARD_WG: 'server-card-wg',
   INTERCEPTORS_WG: 'interceptors-wg',
   FILE_UPLOADS_WG: 'file-uploads-wg',
-  AGENTS_WG: 'agents-wg',
   SKILLS_OVER_MCP_WG: 'skills-over-mcp-wg',
   SKILLS_OVER_MCP_WG_LEADS: 'skills-over-mcp-wg-leads',
   FILESYSTEMS_WG: 'filesystems-wg',
@@ -75,6 +74,7 @@ export const ROLE_IDS = {
   // Interest Groups
   // ===================
   INTEREST_GROUPS: 'interest-groups',
+  AGENTS_IG: 'agents-ig',
   AUTH_IG: 'auth-ig',
   CLIENT_IMPLEMENTOR_IG: 'client-implementor-ig',
   ENTERPRISE_MANAGED_AUTHORIZATION_IG: 'enterprise-managed-authorization-ig',
