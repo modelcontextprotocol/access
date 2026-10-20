@@ -49,6 +49,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [],
   },
   {
+    github: 'akhilcb',
+    memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
+  },
+  {
     github: 'alexhancock',
     discord: '1325885093343924316',
     firstName: 'Alex',
@@ -59,6 +63,10 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'an-dustin',
     memberOf: [ROLE_IDS.SECURITY_IG],
+  },
+  {
+    github: 'andreyvelich',
+    memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'antonpk1',
@@ -108,6 +116,10 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'McCaffrey',
     googleEmailPrefix: 'caitie',
     memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG, ROLE_IDS.AGENTS_WG],
+  },
+  {
+    github: 'canarik',
+    memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'caseychow-oai',
@@ -438,6 +450,10 @@ export const MEMBERS: readonly Member[] = [
     github: 'jba',
     discord: '773276903364755518',
     memberOf: [ROLE_IDS.GO_SDK],
+  },
+  {
+    github: 'jeanmatthieu',
+    memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'jeffhandley',
@@ -1050,6 +1066,10 @@ export const MEMBERS: readonly Member[] = [
     github: 'tzolov',
     discord: '1097924660055777290',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.JAVA_SDK],
+  },
+  {
+    github: 'varun06',
+    memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'yarolegovich',
