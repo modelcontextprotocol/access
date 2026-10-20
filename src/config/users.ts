@@ -212,7 +212,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Daniel',
     lastName: 'Temesgen',
     googleEmailPrefix: 'danieltemesgen',
-    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.FILESYSTEMS_WG_LEADS, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [
+      ROLE_IDS.FILESYSTEMS_WG,
+      ROLE_IDS.FILESYSTEMS_WG_LEADS,
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.WG_IG_FACILITATORS,
+    ],
   },
   {
     github: 'davidortinau',
