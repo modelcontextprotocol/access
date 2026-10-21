@@ -307,7 +307,7 @@ export const ROLES: readonly Role[] = [
     description: 'MCP Working Groups',
     github: { team: 'working-groups', parent: ROLE_IDS.STEERING_COMMITTEE },
     // No discord - organizational container
-    // Covers all working groups via github.parent (e.g. transport-wg, agents-wg)
+    // Covers all working groups via github.parent (e.g. transport-wg, tasks-events-wg)
     provisionUser: true,
   },
   {
@@ -335,15 +335,15 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'transports working group (synced)' },
   },
   {
-    id: ROLE_IDS.TRIGGERS_EVENTS_WG,
-    description: 'Triggers & Events Working Group',
-    github: { team: 'triggers-events-wg', parent: ROLE_IDS.WORKING_GROUPS },
-    discord: { role: 'triggers & events working group (synced)' },
+    id: ROLE_IDS.TASKS_EVENTS_WG,
+    description: 'Tasks and Events Working Group',
+    github: { team: 'tasks-events-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'tasks & events working group (synced)' },
   },
   {
-    id: ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
-    description: 'Triggers & Events Working Group leads',
-    github: { team: 'triggers-events-wg-leads', parent: ROLE_IDS.TRIGGERS_EVENTS_WG },
+    id: ROLE_IDS.TASKS_EVENTS_WG_LEADS,
+    description: 'Tasks and Events Working Group leads',
+    github: { team: 'tasks-events-wg-leads', parent: ROLE_IDS.TASKS_EVENTS_WG },
   },
   {
     id: ROLE_IDS.MCP_APPS_WG,
@@ -368,12 +368,6 @@ export const ROLES: readonly Role[] = [
     description: 'File Uploads Working Group',
     github: { team: 'file-uploads-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'file uploads working group (synced)' },
-  },
-  {
-    id: ROLE_IDS.AGENTS_WG,
-    description: 'Agents Working Group',
-    github: { team: 'agents-wg', parent: ROLE_IDS.WORKING_GROUPS },
-    discord: { role: 'agents working group (synced)' },
   },
   {
     id: ROLE_IDS.SKILLS_OVER_MCP_WG,
@@ -424,6 +418,12 @@ export const ROLES: readonly Role[] = [
     description: 'Interest Groups',
     github: { team: 'interest-groups', parent: ROLE_IDS.STEERING_COMMITTEE },
     // No discord - organizational container
+  },
+  {
+    id: ROLE_IDS.AGENTS_IG,
+    description: 'Agents Interest Group',
+    github: { team: 'agents-ig', parent: ROLE_IDS.INTEREST_GROUPS },
+    discord: { role: 'agents interest group (synced)' },
   },
   {
     id: ROLE_IDS.AUTH_IG,
