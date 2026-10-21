@@ -1078,6 +1078,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'varun06',
+    discord: '1327624284499349536',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
