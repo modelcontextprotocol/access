@@ -112,7 +112,6 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.TRANSPORT_WG,
       ROLE_IDS.TASKS_EVENTS_WG,
       ROLE_IDS.TASKS_EVENTS_WG_LEADS,
-      ROLE_IDS.AGENTS_IG,
     ],
   },
   {
