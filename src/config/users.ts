@@ -715,7 +715,8 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'movetz',
     discord: '1427569183427919906',
-    memberOf: [ROLE_IDS.SWIFT_SDK],
+    // Emeritus maintainer of the Swift SDK
+    memberOf: [],
   },
   {
     github: 'nahapetyan-serob',
@@ -986,7 +987,8 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'stallent',
     discord: '1137898074086314136',
-    memberOf: [ROLE_IDS.SWIFT_SDK],
+    // Emeritus maintainer of the Swift SDK
+    memberOf: [],
   },
   {
     github: 'stephentoub',
