@@ -58,7 +58,7 @@ One-time steps:
    ```
    Keep `oidc-client-secret.txt` until step 4 (Google needs the same value), then delete it.
 3. **GitHub App** (org owner): org-owned, callback URL `https://access.modelcontextprotocol.io/login`, permission Account → Email addresses: read-only (the sign-in library reads it; it is not used), no repository or organization permissions. Put its client ID in `GITHUB_CLIENT_ID` in `wrangler.toml` (PR) and its client secret in `ACCESS_SITE_GITHUB_CLIENT_SECRET` (production environment).
-4. **Google SSO profile** (super admin), once the Worker is live: Security → Authentication → SSO with third-party IdP → add a custom **OIDC** profile with issuer `https://access.modelcontextprotocol.io`, client ID `google-workspace`, and the client secret from step 2. Put the redirect URI Google shows into `OIDC_REDIRECT_URIS` in `wrangler.toml` (PR). Assign the profile to a pilot sub-OU first, then to **Model Context Protocol**. Super admins always keep Google sign-in, which is the break-glass path.
+4. **Google SSO profile** (super admin), once the Worker is live: Security → Authentication → SSO with third-party IdP → add a custom **OIDC** profile with issuer `https://access.modelcontextprotocol.io`, client ID `google-workspace`, the client secret from step 2, and change password URL `https://github.com/settings/security` (passwords now live on GitHub). Put the redirect URI Google shows into `OIDC_REDIRECT_URIS` in `wrangler.toml` (PR). Assign the profile to a pilot sub-OU first, then to **Model Context Protocol**. Super admins always keep Google sign-in, which is the break-glass path.
 
 ## Operations
 
@@ -75,6 +75,7 @@ npm run typecheck
 npm run dev      # wrangler dev
 ```
 
-## To verify on first deploy
+## Google behaviour
 
-- Whether Google sends PKCE (both cases are handled) and the exact redirect URI it uses.
+- The redirect URI is specific to each SSO profile and only shown once the profile exists, so it is set by PR after setup step 4.
+- Google doesn't document whether it sends PKCE; both cases are supported.
