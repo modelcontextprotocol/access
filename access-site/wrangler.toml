@@ -2,14 +2,15 @@ name = "access-site"
 main = "src/index.ts"
 compatibility_date = "2026-10-01"
 workers_dev = false
+# MCP Domain Account (same as cloudflare:accountId in Pulumi.prod.yaml).
+account_id = "c39d6379ccfdb20a3627eeddffa80ec9"
 
 routes = [{ pattern = "access.modelcontextprotocol.io", custom_domain = true }]
 
 [observability]
 enabled = true
 
-# Create with: npx wrangler d1 create access-site
-# Then apply migrations: npm run migrate
+# Created on first deploy by scripts/deploy.sh, which fills in the ID.
 [[d1_databases]]
 binding = "DB"
 database_name = "access-site"
@@ -19,15 +20,14 @@ migrations_dir = "migrations"
 [vars]
 ISSUER = "https://access.modelcontextprotocol.io"
 WORKSPACE_DOMAIN = "modelcontextprotocol.io"
+# Client ID of the org-owned GitHub App (not secret).
 GITHUB_CLIENT_ID = "REPLACE_WITH_GITHUB_APP_CLIENT_ID"
 # Google Workspace is the only OIDC client. The client ID is chosen by us and
 # entered in Google's custom OIDC SSO profile; the redirect URI is the one
-# Google shows when the profile is created.
+# Google shows when the profile is created (comma-separate if several).
 OIDC_CLIENT_ID = "google-workspace"
 OIDC_REDIRECT_URIS = "REPLACE_WITH_GOOGLE_SSO_REDIRECT_URI"
 
-# Secrets (npx wrangler secret put <NAME>):
-#   OIDC_CLIENT_SECRET     shared with Google's SSO profile
-#   OIDC_SIGNING_KEY       RSA private key, PKCS#8 PEM (npm run generate-keys)
-#   OIDC_PREVIOUS_JWK      optional, previous public JWK during key rotation
-#   GITHUB_CLIENT_SECRET   GitHub App client secret
+# Secrets are uploaded by scripts/deploy.sh from GitHub secrets in the
+# `production` environment: OIDC_SIGNING_KEY, OIDC_CLIENT_SECRET and
+# GITHUB_CLIENT_SECRET. OIDC_PREVIOUS_JWK is optional, during key rotation.

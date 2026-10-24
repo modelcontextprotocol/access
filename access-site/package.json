@@ -6,11 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
-    "deploy": "wrangler deploy",
-    "migrate": "wrangler d1 migrations apply access-site --remote",
     "typecheck": "tsc --noEmit",
-    "test": "vitest run",
-    "generate-keys": "node scripts/generate-keys.mjs"
+    "test": "vitest run"
   },
   "license": "MIT",
   "dependencies": {
