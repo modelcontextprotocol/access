@@ -5,6 +5,11 @@ workers_dev = false
 
 routes = [{ pattern = "access.modelcontextprotocol.io", custom_domain = true }]
 
+# Keep console output (account creations, links, suspensions, nightly report)
+# in Workers Logs.
+[observability]
+enabled = true
+
 # Nightly at 04:17 UTC: refresh the GitHub ID -> Workspace email cache, clean
 # up expired rows, and run offboarding (report-only until OFFBOARDING_MODE is
 # "enforce").
@@ -41,4 +46,3 @@ OFFBOARDING_MAX_PER_RUN = "3"
 #   GITHUB_CLIENT_SECRET   GitHub App client secret
 #   GOOGLE_SA_KEY          service account JSON key (custom role scoped to the MCP OU)
 #   GITHUB_API_TOKEN       optional, higher GitHub rate limit for the nightly job
-#   DISCORD_WEBHOOK_URL    optional, account creation and offboarding notices

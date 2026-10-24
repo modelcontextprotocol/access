@@ -8,11 +8,10 @@
  * OFFBOARDING_MAX_PER_RUN accounts suspends none.
  */
 import type { Env } from './env';
-import { type Account, audit, deleteExpired, replaceAccounts } from './db';
+import { type Account, deleteExpired, replaceAccounts } from './db';
 import { findMember, isEligible } from './eligibility';
 import { githubLoginForId } from './github';
 import { githubIdOf, listUsersInOu, suspendUser } from './google';
-import { notify } from './notify';
 
 export interface NightlyReport {
   linked: number;
@@ -74,7 +73,7 @@ export async function runNightly(env: Env): Promise<NightlyReport> {
   } else if (enforce) {
     for (const { email, reason } of report.toSuspend) {
       await suspendUser(env, email);
-      await audit(env.DB, 'nightly', 'account.suspend', email, { reason });
+      console.log(JSON.stringify({ event: 'account.suspend', email, reason }));
       report.suspended.push(email);
     }
     if (report.suspended.length > 0) {
@@ -86,23 +85,9 @@ export async function runNightly(env: Env): Promise<NightlyReport> {
     }
   }
 
-  await audit(env.DB, 'nightly', 'nightly.run', null, report);
-  const lines: string[] = [];
-  if (report.suspended.length) lines.push(`Suspended: ${report.suspended.join(', ')}`);
-  if (!enforce && report.toSuspend.length) {
-    lines.push(
-      `Would suspend (report mode): ${report.toSuspend.map((s) => `${s.email} (${s.reason})`).join(', ')}`
-    );
-  }
-  if (report.aborted) {
-    lines.push(
-      `Offboarding aborted: ${report.toSuspend.length} accounts flagged, limit is ${max}. Check the config.`
-    );
-  }
-  if (report.unlinked.length) lines.push(`Not linked to GitHub: ${report.unlinked.join(', ')}`);
-  if (report.skipped.length)
-    lines.push(`Skipped: ${report.skipped.map((s) => s.email).join(', ')}`);
-  if (lines.length)
-    await notify(env, `access.modelcontextprotocol.io nightly\n${lines.join('\n')}`);
+  // The full report, including what report mode would have suspended, goes to Workers logs.
+  console.log(
+    JSON.stringify({ event: 'nightly', mode: enforce ? 'enforce' : 'report', max, ...report })
+  );
   return report;
 }

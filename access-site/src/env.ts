@@ -22,8 +22,6 @@ export interface Env {
   GOOGLE_SA_KEY: string;
   /** Optional token for the nightly job's GitHub API lookups (higher rate limit). */
   GITHUB_API_TOKEN?: string;
-  /** Optional Discord webhook for account and offboarding notices. */
-  DISCORD_WEBHOOK_URL?: string;
 }
 
 export type AppEnv = { Bindings: Env };

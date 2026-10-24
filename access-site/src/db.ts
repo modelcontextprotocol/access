@@ -173,7 +173,7 @@ export async function replaceAccounts(db: D1Database, accounts: Account[]): Prom
   ]);
 }
 
-// --- Locks, audit, cleanup ---------------------------------------------------
+// --- Locks and cleanup -------------------------------------------------------
 
 /** Returns false if another creation for this GitHub user is in flight. */
 export async function acquireCreationLock(db: D1Database, githubId: string): Promise<boolean> {
@@ -188,25 +188,6 @@ export async function acquireCreationLock(db: D1Database, githubId: string): Pro
 
 export async function releaseCreationLock(db: D1Database, githubId: string): Promise<void> {
   await db.prepare(`DELETE FROM creation_locks WHERE github_id = ?`).bind(githubId).run();
-}
-
-export async function audit(
-  db: D1Database,
-  actor: string,
-  action: string,
-  subject: string | null,
-  detail?: unknown
-): Promise<void> {
-  await db
-    .prepare(`INSERT INTO audit_log (at, actor, action, subject, detail) VALUES (?, ?, ?, ?, ?)`)
-    .bind(
-      nowSeconds(),
-      actor,
-      action,
-      subject,
-      detail === undefined ? null : JSON.stringify(detail)
-    )
-    .run();
 }
 
 export async function deleteExpired(db: D1Database): Promise<void> {
