@@ -1,14 +1,12 @@
 # access.modelcontextprotocol.io
 
-Sign in to MCP Google Workspace with GitHub, and self-service `@modelcontextprotocol.io` accounts.
+Sign in to MCP Google Workspace with GitHub.
 
-A Cloudflare Worker (Hono, jose, D1) that:
+A small Cloudflare Worker (Hono, jose, D1) that is the OpenID Connect provider for Google Workspace's custom OIDC SSO profile. Maintainers sign in to Google with their GitHub account; there are no Google passwords.
 
-- is a minimal OpenID Connect provider for Google Workspace's custom OIDC SSO profile, keyed on the numeric GitHub user ID
-- lets eligible maintainers create their own account, or link the one already configured for them in `users.ts`
-- runs nightly to refresh its account cache and suspend accounts whose owners are no longer eligible
+Accounts stay infrastructure as code. Who has an account, and which address, is `users.ts`: a GitHub user can sign in as `<googleEmailPrefix>@modelcontextprotocol.io` only if their entry has a `googleEmailPrefix`, isn't opted out, and is in a role with `provisionUser`, the same rule Pulumi uses to create the account. The Worker bundles `src/config` and is redeployed on every config change, so removing someone from `users.ts` stops their sign-in on the next deploy.
 
-Eligibility is exactly the Pulumi rule: a member of a role with `provisionUser` (directly or through a child team). The Worker bundles `src/config`, so it is redeployed whenever the config changes.
+The Worker holds no Google credentials and creates nothing in Google.
 
 ## How sign-in works
 
@@ -18,36 +16,27 @@ sequenceDiagram
   participant G as Google
   participant W as access.modelcontextprotocol.io
   participant GH as GitHub
-  participant D as Google Directory
   M->>G: Open Gmail
   G->>W: /authorize (OIDC)
   W->>GH: GitHub App sign-in
   GH-->>W: user ID, login
-  W->>W: eligible in users.ts?
-  W->>D: account with externalId github=<id>? (cached in D1)
+  W->>W: login -> address in users.ts
   W-->>G: code
   G->>W: /token
   W-->>G: ID token: sub=<GitHub ID>, email=<prefix>@modelcontextprotocol.io
   G-->>M: Signed in
 ```
 
-Users who are eligible but have no account, or whose account is suspended, land on the account page instead of being sent back to Google.
+GitHub users with no account in `users.ts` get a page explaining how to request one.
 
-## Account page
-
-- **Configured in `users.ts`** (`googleEmailPrefix` set): confirms that address and links it to the GitHub ID, creating it if it doesn't exist yet.
-- **Eligible, not configured**: picks a name and email prefix; the account is created immediately in the MCP OU with the GitHub ID in `externalIds`. Reserved names and team slugs are refused.
-- **Not eligible**: explains which roles grant accounts.
-
-Accounts are never deleted. Leaving every eligible team makes the next sign-in fail, and the nightly job suspends the account (report-only until `OFFBOARDING_MODE = "enforce"`; it refuses to suspend more than `OFFBOARDING_MAX_PER_RUN` in one run, and skips any account whose GitHub lookup fails).
+D1 holds only short-lived sign-in state: pending requests (10 minutes) and single-use authorization codes (2 minutes), stored hashed and consumed with `DELETE ... RETURNING`. PKCE is enforced when Google sends it, redirect URIs must match exactly, and the client secret is compared in constant time. Sign-ins and refusals are logged as JSON lines in Workers Logs.
 
 ## Setup
 
 One-time, in this order.
 
-1. **GitHub App** (org-owned). Callback URL `https://access.modelcontextprotocol.io/login`. Permissions: Account → Email addresses: read-only (the sign-in library reads the primary email; it is not used). No repository or organization permissions. Note the client ID and generate a client secret.
-2. **Google service account**. Create it in the `mcp-access-prod` GCP project and download a JSON key. In the Admin console, create a custom admin role with Users: Create, Read, Update (not Delete), assign it to the service account, and scope the assignment to the **Model Context Protocol** OU.
-3. **Cloudflare**:
+1. **GitHub App** (org-owned). Callback URL `https://access.modelcontextprotocol.io/login`. Permissions: Account → Email addresses: read-only (the sign-in library reads it; it is not used). No repository or organization permissions. Note the client ID and generate a client secret.
+2. **Cloudflare**:
    ```sh
    cd access-site
    npm ci
@@ -58,28 +47,18 @@ One-time, in this order.
    ```sh
    npm run generate-keys                       # OIDC_SIGNING_KEY + OIDC_CLIENT_SECRET (printed once)
    npx wrangler secret put GITHUB_CLIENT_SECRET
-   npx wrangler secret put GOOGLE_SA_KEY < key.json
-   npx wrangler secret put GITHUB_API_TOKEN    # optional, read-only token for the nightly job
    ```
-4. **Backfill** existing accounts with GitHub IDs (from the repo root, with the Pulumi service account key):
-   ```sh
-   GOOGLE_SA_KEY="$(cat sa-key.json)" GITHUB_TOKEN=... npx ts-node scripts/backfill-github-ids.ts          # dry run
-   GOOGLE_SA_KEY="$(cat sa-key.json)" GITHUB_TOKEN=... npx ts-node scripts/backfill-github-ids.ts --apply
-   ```
-   Fix anything it reports. Anyone missed can still link themselves on the account page.
-5. **Google SSO profile** (super admin): Security → Authentication → SSO with third-party IdP → add a custom **OIDC** profile.
+3. **Google SSO profile** (super admin): Security → Authentication → SSO with third-party IdP → add a custom **OIDC** profile.
    - Issuer: `https://access.modelcontextprotocol.io`
    - Client ID: `google-workspace`, client secret: the value from `generate-keys`
    - Put the redirect URI Google shows into `OIDC_REDIRECT_URIS` in `wrangler.toml` and deploy.
-   - Assign the profile to a pilot sub-OU first, then to **Model Context Protocol**. Super admins always keep Google sign-in.
-6. **CI**: add `CLOUDFLARE_ACCESS_SITE_TOKEN` (Workers Scripts edit, D1 edit, Workers Routes / DNS edit on the zone) to the `production` environment and `CLOUDFLARE_ACCOUNT_ID` as a repository variable. Merges to `main` then test, migrate and deploy (`.github/workflows/access-site.yml`).
+   - Assign the profile to a pilot sub-OU first, then to **Model Context Protocol**. Super admins always keep Google sign-in, which is the break-glass path.
+4. **CI**: add `CLOUDFLARE_ACCESS_SITE_TOKEN` (Workers Scripts edit, D1 edit, Workers Routes / DNS edit on the zone) to the `production` environment and `CLOUDFLARE_ACCOUNT_ID` as a repository variable. Merges to `main` then test, migrate and deploy (`.github/workflows/access-site.yml`).
 
 ## Operations
 
-- **Turn on offboarding**: after a few clean report-only runs, set `OFFBOARDING_MODE = "enforce"`.
 - **Rotate the signing key**: copy the current key from `/jwks` into the `OIDC_PREVIOUS_JWK` secret, run `node scripts/generate-keys.mjs --rotate`, deploy; remove `OIDC_PREVIOUS_JWK` a day later.
-- **Logs**: account creations, links, suspensions and the nightly report are logged as JSON lines in Workers Logs (dashboard, or `npx wrangler tail` live).
-- **Break-glass**: super admins are exempt from the SSO profile, so they can always sign in to fix things.
+- **Logs**: Workers Logs in the dashboard, or `npx wrangler tail` live.
 
 ## Development
 
@@ -90,7 +69,6 @@ npm run typecheck
 npm run dev      # wrangler dev
 ```
 
-## To verify against the live services
+## To verify on first deploy
 
-- Directory API search by `externalId:<id>` (`findUserByGithubId`); the nightly job rebuilds the D1 cache from a full OU listing, so sign-in works even if this search does not.
-- Whether Google sends PKCE in its OIDC requests (both cases are supported) and the exact redirect URI it uses.
+- Whether Google sends PKCE (both cases are handled) and the exact redirect URI it uses.

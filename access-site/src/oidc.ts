@@ -3,7 +3,8 @@
  *
  * Authorization code flow only, one confidential client (Google), RS256 ID
  * tokens. The subject is the numeric GitHub user ID; the email claim is the
- * user's Workspace address, which is what Google matches on.
+ * Workspace address configured for that GitHub user in users.ts, which is
+ * what Google matches on.
  */
 import type { Context } from 'hono';
 import { setCookie } from 'hono/cookie';
@@ -11,8 +12,13 @@ import { SignJWT, createLocalJWKSet, jwtVerify, type JWK } from 'jose';
 import type { AppEnv, Env } from './env';
 import { loadSigningKey, randomToken, timingSafeEqual, verifyPkce } from './crypto';
 import { saveCode, savePending, takeCode, type PendingAuthorization } from './db';
-import { resolveAccount, type GitHubIdentity } from './accounts';
-import { findMember, isEligible, teamsFor } from './eligibility';
+import { workspaceEmailFor } from './eligibility';
+
+export interface GitHubIdentity {
+  id: string;
+  login: string;
+  name: string | null;
+}
 
 export const PENDING_COOKIE = '__Host-mcp_pending';
 const PENDING_TTL = 600;
@@ -47,7 +53,7 @@ export function discovery(c: Ctx) {
     scopes_supported: ['openid', 'email', 'profile'],
     token_endpoint_auth_methods_supported: ['client_secret_basic', 'client_secret_post'],
     code_challenge_methods_supported: ['S256'],
-    claims_supported: ['sub', 'email', 'email_verified', 'name', 'preferred_username', 'groups'],
+    claims_supported: ['sub', 'email', 'email_verified', 'name', 'preferred_username'],
   });
 }
 
@@ -112,27 +118,23 @@ export async function authorize(c: Ctx) {
 
 /**
  * Called after GitHub sign-in when a Google request is pending. Returns the
- * redirect back to Google with a code, or null if this user cannot sign in
- * (no eligible role, no account yet, or suspended): the caller then shows the
- * account page instead.
+ * redirect back to Google with a code, or null if this GitHub user has no
+ * Workspace account in users.ts (the caller then shows an explanation).
  */
 export async function completeAuthorization(
   env: Env,
   identity: GitHubIdentity,
   pending: PendingAuthorization
 ): Promise<string | null> {
-  const member = findMember(identity.login);
-  if (!isEligible(member)) return null;
-  const account = await resolveAccount(env, identity.id);
-  if (!account || account.suspended) return null;
+  const email = workspaceEmailFor(identity.login, env.WORKSPACE_DOMAIN);
+  if (!email) return null;
 
   const claims = {
     sub: identity.id,
-    email: account.email,
+    email,
     email_verified: true,
     name: identity.name || identity.login,
     preferred_username: identity.login,
-    groups: teamsFor(member),
   };
   const code = randomToken();
   await saveCode(
@@ -257,7 +259,6 @@ export async function userinfo(c: Ctx) {
       email_verified: payload.email_verified,
       name: payload.name,
       preferred_username: payload.preferred_username,
-      groups: payload.groups,
     });
   } catch {
     c.header('WWW-Authenticate', 'Bearer error="invalid_token"');

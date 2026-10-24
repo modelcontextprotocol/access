@@ -5,16 +5,8 @@ workers_dev = false
 
 routes = [{ pattern = "access.modelcontextprotocol.io", custom_domain = true }]
 
-# Keep console output (account creations, links, suspensions, nightly report)
-# in Workers Logs.
 [observability]
 enabled = true
-
-# Nightly at 04:17 UTC: refresh the GitHub ID -> Workspace email cache, clean
-# up expired rows, and run offboarding (report-only until OFFBOARDING_MODE is
-# "enforce").
-[triggers]
-crons = ["17 4 * * *"]
 
 # Create with: npx wrangler d1 create access-site
 # Then apply migrations: npm run migrate
@@ -27,22 +19,15 @@ migrations_dir = "migrations"
 [vars]
 ISSUER = "https://access.modelcontextprotocol.io"
 WORKSPACE_DOMAIN = "modelcontextprotocol.io"
-WORKSPACE_OU_PATH = "/Model Context Protocol"
 GITHUB_CLIENT_ID = "REPLACE_WITH_GITHUB_APP_CLIENT_ID"
 # Google Workspace is the only OIDC client. The client ID is chosen by us and
 # entered in Google's custom OIDC SSO profile; the redirect URI is the one
 # Google shows when the profile is created.
 OIDC_CLIENT_ID = "google-workspace"
 OIDC_REDIRECT_URIS = "REPLACE_WITH_GOOGLE_SSO_REDIRECT_URI"
-OFFBOARDING_MODE = "report"
-# Refuse to suspend more than this many accounts in one run (guards against a
-# bad config deploy suspending everyone).
-OFFBOARDING_MAX_PER_RUN = "3"
 
 # Secrets (npx wrangler secret put <NAME>):
 #   OIDC_CLIENT_SECRET     shared with Google's SSO profile
 #   OIDC_SIGNING_KEY       RSA private key, PKCS#8 PEM (npm run generate-keys)
 #   OIDC_PREVIOUS_JWK      optional, previous public JWK during key rotation
 #   GITHUB_CLIENT_SECRET   GitHub App client secret
-#   GOOGLE_SA_KEY          service account JSON key (custom role scoped to the MCP OU)
-#   GITHUB_API_TOKEN       optional, higher GitHub rate limit for the nightly job
