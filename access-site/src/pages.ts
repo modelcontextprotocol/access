@@ -68,6 +68,17 @@ export function noAccountPage(login: string, domain: string): Html {
   );
 }
 
+export function identityMismatchPage(login: string): Html {
+  return layout(
+    html`<p class="error">Sign-in refused for @${login}.</p>
+      <p>
+        This GitHub login was previously used by a different GitHub account. If you renamed your
+        account, ask in the Infrastructure WG channel to update your entry in
+        <a href="https://github.com/modelcontextprotocol/access">modelcontextprotocol/access</a>.
+      </p>`
+  );
+}
+
 export function errorPage(message: string): Html {
   return layout(html`<p class="error">${message}</p>`);
 }

@@ -29,7 +29,18 @@ sequenceDiagram
 
 GitHub users with no account in `users.ts` get a page explaining how to request one.
 
-D1 holds only short-lived sign-in state: pending requests (10 minutes) and single-use authorization codes (2 minutes), stored hashed and consumed with `DELETE ... RETURNING`. PKCE is enforced when Google sends it, redirect URIs must match exactly, and the client secret is compared in constant time. Sign-ins and refusals are logged as JSON lines in Workers Logs.
+## Security
+
+- **Accounts come from `users.ts`**, which only core maintainers can approve (CODEOWNERS). Anyone who can merge a `googleEmailPrefix` change can map a GitHub account to that Workspace address, so treat those changes like credential changes.
+- **GitHub logins are pinned to GitHub user IDs** on first sign-in (`github_identities` in D1). GitHub frees a login when its owner renames, so if someone else registers that name, sign-in is refused until `users.ts` is updated and the pin is cleared (see Operations).
+- **Codes and requests are single-use and short-lived**: pending requests last 10 minutes and authorization codes 2 minutes, stored hashed and consumed with `DELETE ... RETURNING`. PKCE is enforced when Google sends it, and a verifier without a challenge is rejected (RFC 9700). Redirect URIs must match exactly; client credentials are form-decoded (RFC 6749 2.3.1) and compared in constant time.
+- **Rate limited**: `/authorize` and `/login` allow 30 requests per minute per IP, so anonymous traffic can't exhaust D1 writes.
+- **Minimal GitHub access**: the GitHub App has no repository or organization permissions, and its user token is revoked right after the user is read.
+- **No Google credentials** in the Worker; it cannot create, change or read Google accounts.
+- **CI**: actions are pinned to commit SHAs, Git credentials aren't persisted, and deploy secrets are only exposed to the deploy step, never to `npm ci`.
+- **Break-glass**: super admins are exempt from the SSO profile. The GitHub org requires 2FA, which covers Google skipping its own 2-step verification for SSO users.
+
+Sign-ins and refusals are logged as JSON lines in Workers Logs.
 
 ## Setup
 
@@ -52,7 +63,8 @@ One-time steps:
 ## Operations
 
 - **Rotate the signing key**: copy the current key object (`keys[0]`) from `https://access.modelcontextprotocol.io/jwks` into the `ACCESS_SITE_OIDC_PREVIOUS_JWK` secret, replace `ACCESS_SITE_OIDC_SIGNING_KEY` as in setup step 2, and re-run the workflow. A day later set `ACCESS_SITE_OIDC_PREVIOUS_JWK` to `{}` and re-run.
-- **Logs**: sign-ins and refusals are JSON lines in Workers Logs (dashboard, or `npx wrangler tail`).
+- **Logs**: sign-ins and refusals are JSON lines in Workers Logs (dashboard, or `npx wrangler tail`). `signin.denied` with `reason: identity_mismatch` means a pinned login came from a different GitHub account.
+- **Clear an identity pin** (after confirming the person, e.g. they recreated their GitHub account): `npx wrangler d1 execute access-site --remote --command "DELETE FROM github_identities WHERE login = '<login>'"`.
 
 ## Development
 

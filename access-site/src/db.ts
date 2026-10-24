@@ -18,7 +18,7 @@ export interface AuthorizationCode extends Omit<PendingAuthorization, 'state'> {
   claims: Record<string, unknown>;
 }
 
-/** Removes expired rows. Cheap, so it runs on every new sign-in. */
+/** Removes expired rows. */
 async function deleteExpired(db: D1Database): Promise<void> {
   const now = nowSeconds();
   await db.batch([
@@ -27,13 +27,16 @@ async function deleteExpired(db: D1Database): Promise<void> {
   ]);
 }
 
+/** Share of new sign-ins that also clean up expired rows (keeps D1 writes low). */
+const CLEANUP_RATE = 0.05;
+
 export async function savePending(
   db: D1Database,
   id: string,
   p: PendingAuthorization,
   ttlSeconds: number
 ): Promise<void> {
-  await deleteExpired(db);
+  if (Math.random() < CLEANUP_RATE) await deleteExpired(db);
   await db
     .prepare(
       `INSERT INTO pending_authorizations
@@ -95,4 +98,30 @@ export async function takeCode(db: D1Database, code: string): Promise<Authorizat
     .first<Omit<AuthorizationCode, 'claims'> & { claims: string; expires_at: number }>();
   if (!row || row.expires_at < nowSeconds()) return null;
   return { ...row, claims: JSON.parse(row.claims) as Record<string, unknown> };
+}
+
+/**
+ * Pins each GitHub login to the first GitHub user ID seen signing in with it
+ * (trust on first use). GitHub frees a login when its owner renames, so a
+ * different ID for a pinned login means someone else registered that name.
+ * Returns false on a mismatch. Clear the row only after confirming the
+ * person (e.g. they deleted and recreated their GitHub account).
+ */
+export async function pinGithubIdentity(
+  db: D1Database,
+  login: string,
+  githubId: string
+): Promise<boolean> {
+  const key = login.toLowerCase();
+  await db
+    .prepare(
+      `INSERT OR IGNORE INTO github_identities (login, github_id, first_seen) VALUES (?, ?, ?)`
+    )
+    .bind(key, githubId, nowSeconds())
+    .run();
+  const row = await db
+    .prepare(`SELECT github_id FROM github_identities WHERE login = ?`)
+    .bind(key)
+    .first<{ github_id: string }>();
+  return row?.github_id === githubId;
 }

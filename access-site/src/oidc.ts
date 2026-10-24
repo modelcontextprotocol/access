@@ -11,7 +11,13 @@ import { setCookie } from 'hono/cookie';
 import { SignJWT, createLocalJWKSet, jwtVerify, type JWK } from 'jose';
 import type { AppEnv, Env } from './env';
 import { loadSigningKey, randomToken, timingSafeEqual, verifyPkce } from './crypto';
-import { saveCode, savePending, takeCode, type PendingAuthorization } from './db';
+import {
+  pinGithubIdentity,
+  saveCode,
+  savePending,
+  takeCode,
+  type PendingAuthorization,
+} from './db';
 import { workspaceEmailFor } from './eligibility';
 
 export interface GitHubIdentity {
@@ -134,18 +140,26 @@ export async function authorize(c: Ctx) {
   return c.redirect('/login');
 }
 
+export type AuthorizationResult =
+  | { ok: true; location: string }
+  | { ok: false; reason: 'no_account' | 'identity_mismatch' };
+
 /**
  * Called after GitHub sign-in when a Google request is pending. Returns the
- * redirect back to Google with a code, or null if this GitHub user has no
- * Workspace account in users.ts (the caller then shows an explanation).
+ * redirect back to Google with a code, or why this GitHub user can't sign in:
+ * no Workspace account in users.ts, or a login that is pinned to a different
+ * GitHub user ID (a freed and re-registered login).
  */
 export async function completeAuthorization(
   env: Env,
   identity: GitHubIdentity,
   pending: PendingAuthorization
-): Promise<string | null> {
+): Promise<AuthorizationResult> {
   const email = workspaceEmailFor(identity.login, env.WORKSPACE_DOMAIN);
-  if (!email) return null;
+  if (!email) return { ok: false, reason: 'no_account' };
+  if (!(await pinGithubIdentity(env.DB, identity.login, identity.id))) {
+    return { ok: false, reason: 'identity_mismatch' };
+  }
 
   const claims = {
     sub: identity.id,
@@ -153,6 +167,7 @@ export async function completeAuthorization(
     email_verified: true,
     name: identity.name || identity.login,
     preferred_username: identity.login,
+    auth_time: Math.floor(Date.now() / 1000),
   };
   const code = randomToken();
   await saveCode(
@@ -170,17 +185,24 @@ export async function completeAuthorization(
   const url = new URL(pending.redirect_uri);
   url.searchParams.set('code', code);
   if (pending.state) url.searchParams.set('state', pending.state);
-  return url.toString();
+  return { ok: true, location: url.toString() };
+}
+
+/** RFC 6749 section 2.3.1: Basic credentials are form-urlencoded, then base64. */
+function formDecode(value: string): string {
+  return decodeURIComponent(value.replace(/\+/g, ' '));
 }
 
 function clientCredentials(c: Ctx, body: Record<string, unknown>) {
   const header = c.req.header('Authorization');
   if (header?.startsWith('Basic ')) {
     try {
-      const [id, secret] = atob(header.slice(6)).split(':', 2);
+      const decoded = atob(header.slice(6));
+      const colon = decoded.indexOf(':');
+      if (colon < 0) return { id: '', secret: '' };
       return {
-        id: decodeURIComponent(id ?? ''),
-        secret: decodeURIComponent(secret ?? ''),
+        id: formDecode(decoded.slice(0, colon)),
+        secret: formDecode(decoded.slice(colon + 1)),
       };
     } catch {
       return { id: '', secret: '' };
@@ -213,11 +235,14 @@ export async function token(c: Ctx) {
   if (!code || code.client_id !== client.id || code.redirect_uri !== body.redirect_uri) {
     return oauthError(c, 'invalid_grant', 'Invalid or expired code');
   }
+  const verifier = typeof body.code_verifier === 'string' ? body.code_verifier : '';
   if (code.code_challenge) {
-    const verifier = typeof body.code_verifier === 'string' ? body.code_verifier : '';
     if (!(await verifyPkce(verifier, code.code_challenge))) {
       return oauthError(c, 'invalid_grant', 'PKCE verification failed');
     }
+  } else if (verifier) {
+    // RFC 9700: a verifier without a challenge at /authorize is a downgrade attempt.
+    return oauthError(c, 'invalid_grant', 'Unexpected code_verifier');
   }
 
   const { privateKey, publicJwk } = await loadSigningKey(env.OIDC_SIGNING_KEY);
@@ -225,7 +250,6 @@ export async function token(c: Ctx) {
   const idToken = await new SignJWT({
     ...code.claims,
     ...(code.nonce ? { nonce: code.nonce } : {}),
-    auth_time: Math.floor(Date.now() / 1000),
   })
     .setProtectedHeader({ alg: 'RS256', kid: publicJwk.kid, typ: 'JWT' })
     .setIssuer(env.ISSUER)
