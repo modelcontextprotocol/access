@@ -46,22 +46,36 @@ Sign-ins and refusals are logged as JSON lines in Workers Logs.
 
 Cloudflare provisioning is done by CI: on every merge to `main`, [`scripts/deploy.sh`](scripts/deploy.sh) finds or creates the `access-site` D1 database, applies migrations, and deploys the Worker with its secrets. Until the secrets below exist, the deploy job is skipped with a notice, so merging early is safe. Non-secret settings live in `wrangler.toml` and change by PR.
 
-One-time steps:
+One-time steps, in order. Secrets go straight from the command line into GitHub secrets (needs `openssl` and `gh`), so they never pass between people.
 
-1. **Cloudflare API token** (MCP Domain Account): create a token scoped to Workers Scripts edit, D1 edit, and Workers Routes and DNS edit on the `modelcontextprotocol.io` zone. Store it as `CLOUDFLARE_ACCESS_SITE_TOKEN` in the `production` environment.
-2. **OIDC keys**, generated locally and stored straight into GitHub secrets without being printed (needs `openssl` and `gh`):
+1. **Cloudflare API token** (Cloudflare admin): create a token on the MCP Domain Account scoped to Workers Scripts edit, D1 edit, and Workers Routes and DNS edit on the `modelcontextprotocol.io` zone. Store it as `CLOUDFLARE_ACCESS_SITE_TOKEN` in the `production` environment.
+2. **OIDC signing key** (anyone with access to the repo's secrets):
    ```sh
    openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 \
      | gh secret set ACCESS_SITE_OIDC_SIGNING_KEY --env production -R modelcontextprotocol/access
+   ```
+3. **GitHub App** (org owner): create it at <https://github.com/organizations/modelcontextprotocol/settings/apps/new>.
+   - Homepage URL `https://access.modelcontextprotocol.io`, callback URL `https://access.modelcontextprotocol.io/login`; leave token expiry on; no device flow; webhook off
+   - Permissions: Account → Email addresses: read-only (the sign-in library reads it; it is not used). Nothing else.
+   - Installable only on this account; no need to install it
+   - Generate a client secret and store it: `gh secret set ACCESS_SITE_GITHUB_CLIENT_SECRET --env production -R modelcontextprotocol/access` (paste when prompted)
+   - Put the client ID (not secret) in `GITHUB_CLIENT_ID` in `wrangler.toml` by PR
+4. **OIDC client secret** (whoever does step 6, so it stays with one person):
+   ```sh
    openssl rand -base64 32 | tr '+/' '-_' | tr -d '=\n' > oidc-client-secret.txt
    gh secret set ACCESS_SITE_OIDC_CLIENT_SECRET --env production -R modelcontextprotocol/access < oidc-client-secret.txt
    ```
-   Keep `oidc-client-secret.txt` until step 4 (Google needs the same value), then delete it.
-3. **GitHub App** (org owner): org-owned, callback URL `https://access.modelcontextprotocol.io/login`, permission Account → Email addresses: read-only (the sign-in library reads it; it is not used), no repository or organization permissions. Put its client ID in `GITHUB_CLIENT_ID` in `wrangler.toml` (PR) and its client secret in `ACCESS_SITE_GITHUB_CLIENT_SECRET` (production environment).
-4. **Google SSO profile** (super admin), once the Worker is live: Security → Authentication → SSO with third-party IdP → add a custom **OIDC** profile with issuer `https://access.modelcontextprotocol.io`, client ID `google-workspace`, the client secret from step 2, and change password URL `https://github.com/settings/security` (passwords now live on GitHub). Put the redirect URI Google shows into `OIDC_REDIRECT_URIS` in `wrangler.toml` (PR). Assign the profile to a pilot sub-OU first, then to **Model Context Protocol**. Super admins always keep Google sign-in, which is the break-glass path.
+   Keep `oidc-client-secret.txt` for step 6, then delete it.
+5. **Deploy**: merge (or re-run the `access-site` workflow) and check `https://access.modelcontextprotocol.io/.well-known/openid-configuration`.
+6. **Google SSO profile** (super admin): in the [Admin console](https://admin.google.com), Security → Authentication → SSO with third-party IdP → add a custom **OIDC** profile:
+   - Issuer URL `https://access.modelcontextprotocol.io`, client ID `google-workspace`, client secret from step 4
+   - Change password URL `https://github.com/settings/security` (passwords now live on GitHub)
+   - Copy the **Redirect URI** Google shows into `OIDC_REDIRECT_URIS` in `wrangler.toml` by PR
+   - Assign the profile to a pilot sub-OU holding only the pilot users first, then to **Model Context Protocol**. Super admins always keep Google sign-in, which is the break-glass path.
 
 ## Operations
 
+- **Pilot**: `PILOT_GITHUB_LOGINS` in `wrangler.toml` limits sign-in to the listed GitHub logins (initially `sambhav`); a test checks each one maps to an account. Add logins to widen the pilot, and remove the line by PR to open sign-in to everyone in `users.ts`.
 - **Rotate the signing key**: copy the current key object (`keys[0]`) from `https://access.modelcontextprotocol.io/jwks` into the `ACCESS_SITE_OIDC_PREVIOUS_JWK` secret, replace `ACCESS_SITE_OIDC_SIGNING_KEY` as in setup step 2, and re-run the workflow. A day later set `ACCESS_SITE_OIDC_PREVIOUS_JWK` to `{}` and re-run.
 - **Logs**: sign-ins and refusals are JSON lines in Workers Logs (dashboard, or `npx wrangler tail`). `signin.denied` with `reason: identity_mismatch` means a pinned login came from a different GitHub account.
 - **Clear an identity pin** (after confirming the person, e.g. they recreated their GitHub account): `npx wrangler d1 execute access-site --remote --command "DELETE FROM github_identities WHERE login = '<login>'"`.
@@ -77,5 +91,5 @@ npm run dev      # wrangler dev
 
 ## Google behaviour
 
-- The redirect URI is specific to each SSO profile and only shown once the profile exists, so it is set by PR after setup step 4.
+- The redirect URI is specific to each SSO profile and only shown once the profile exists, so it is set by PR after setup step 6.
 - Google doesn't document whether it sends PKCE; both cases are supported.

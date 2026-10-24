@@ -9,6 +9,11 @@ export interface Env {
   OIDC_CLIENT_ID: string;
   /** Comma-separated list of exact redirect URIs accepted from the OIDC client. */
   OIDC_REDIRECT_URIS: string;
+  /**
+   * Optional comma-separated GitHub logins. When set, only these users can
+   * sign in (rollout pilot); remove it to open sign-in to everyone in users.ts.
+   */
+  PILOT_GITHUB_LOGINS?: string;
 
   OIDC_CLIENT_SECRET: string;
   /** RSA private key, PKCS#8 PEM. */

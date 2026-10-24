@@ -1,3 +1,5 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLocalJWKSet, jwtVerify } from 'jose';
 import { app } from '../src/index';
@@ -334,5 +336,31 @@ describe('users.ts invariants the sign-in mapping relies on', () => {
       m.googleEmailPrefix ? [m.googleEmailPrefix.toLowerCase()] : []
     );
     expect(new Set(prefixes).size).toBe(prefixes.length);
+  });
+});
+
+describe('rollout pilot', () => {
+  it('only lets the pilot logins sign in when PILOT_GITHUB_LOGINS is set', async () => {
+    const withAccount = MEMBERS.filter((m) => m.github && workspaceEmailFor(m.github, DOMAIN));
+    const [pilot, other] = withAccount;
+    env = await createEnv({ PILOT_GITHUB_LOGINS: ` ${pilot!.github!.toUpperCase()} ` });
+
+    expect((await signIn({ id: 11, login: pilot!.github! })).status).toBe(302);
+
+    const res = await signIn({ id: 12, login: other!.github! });
+    expect(res.status).toBe(403);
+    expect(await res.text()).toContain("isn't enabled");
+  });
+
+  it('maps every pilot login in wrangler.toml to a Workspace account', () => {
+    const toml = readFileSync(join(import.meta.dirname, '../wrangler.toml'), 'utf8');
+    const match = toml.match(/^PILOT_GITHUB_LOGINS\s*=\s*"([^"]*)"/m);
+    const logins = (match?.[1] ?? '')
+      .split(',')
+      .map((l) => l.trim())
+      .filter(Boolean);
+    for (const login of logins) {
+      expect(workspaceEmailFor(login, DOMAIN), login).not.toBeNull();
+    }
   });
 });

@@ -33,6 +33,9 @@ GITHUB_CLIENT_ID = "REPLACE_WITH_GITHUB_APP_CLIENT_ID"
 # Google shows when the profile is created (comma-separate if several).
 OIDC_CLIENT_ID = "google-workspace"
 OIDC_REDIRECT_URIS = "REPLACE_WITH_GOOGLE_SSO_REDIRECT_URI"
+# Rollout pilot: only these GitHub logins can sign in. Remove the line (by PR)
+# to open sign-in to everyone with an account in users.ts.
+PILOT_GITHUB_LOGINS = "sambhav"
 
 # Secrets are uploaded by scripts/deploy.sh from GitHub secrets in the
 # `production` environment: OIDC_SIGNING_KEY, OIDC_CLIENT_SECRET and

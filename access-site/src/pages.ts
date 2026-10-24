@@ -79,6 +79,15 @@ export function identityMismatchPage(login: string): Html {
   );
 }
 
+export function pilotPage(login: string): Html {
+  return layout(
+    html`<p class="error">GitHub sign-in isn't enabled for @${login} yet.</p>
+      <p>
+        It is being piloted with a few maintainers first. Please use your usual sign-in for now.
+      </p>`
+  );
+}
+
 export function errorPage(message: string): Html {
   return layout(html`<p class="error">${message}</p>`);
 }
