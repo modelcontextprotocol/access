@@ -1,0 +1,27 @@
+{
+  "name": "@mcp/access-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "access.modelcontextprotocol.io: GitHub sign-in (OIDC) and self-service Google Workspace accounts for MCP maintainers",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "migrate": "wrangler d1 migrations apply access-site --remote",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "generate-keys": "node scripts/generate-keys.mjs"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@hono/oauth-providers": "^0.9.0",
+    "hono": "^4.13.13",
+    "jose": "^6.2.13"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261024.1",
+    "typescript": "^5.9.2",
+    "vitest": "^5.0.5",
+    "wrangler": "^4.152.0"
+  }
+}
