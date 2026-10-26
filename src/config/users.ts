@@ -117,7 +117,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Caitie',
     lastName: 'McCaffrey',
     googleEmailPrefix: 'caitie',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG, ROLE_IDS.AGENTS_WG],
+    memberOf: [
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.TRANSPORT_WG,
+      ROLE_IDS.TASKS_EVENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG_LEADS,
+    ],
   },
   {
     github: 'canarik',
@@ -166,11 +171,7 @@ export const MEMBERS: readonly Member[] = [
     // Google returns 400 on refresh of this user since 2026-10-05 (deploy runs
     // #289/#290); the account is active and managed outside Pulumi.
     existingGWSUser: true,
-    memberOf: [
-      ROLE_IDS.CORE_MAINTAINERS,
-      ROLE_IDS.TRIGGERS_EVENTS_WG,
-      ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
-    ],
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TASKS_EVENTS_WG, ROLE_IDS.TASKS_EVENTS_WG_LEADS],
   },
   {
     github: 'cliffhall',
@@ -324,7 +325,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.SERVER_CARD_WG,
-      ROLE_IDS.AGENTS_WG,
+      ROLE_IDS.AGENTS_IG,
       ROLE_IDS.CORE_PRIMITIVE_WG,
       ROLE_IDS.INFRASTRUCTURE_WG,
       ROLE_IDS.APPEALS,
@@ -639,7 +640,13 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Luca',
     lastName: 'Chang',
     googleEmailPrefix: 'luca',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.AGENTS_WG, ROLE_IDS.WORKING_GROUPS],
+    memberOf: [
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.TASKS_EVENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG_LEADS,
+      ROLE_IDS.AGENTS_IG,
+      ROLE_IDS.WORKING_GROUPS,
+    ],
   },
   {
     github: 'maciej-kisiel',
@@ -857,9 +864,9 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.SKILLS_OVER_MCP_WG,
       ROLE_IDS.SKILLS_OVER_MCP_WG_LEADS,
       ROLE_IDS.TRANSPORT_WG,
-      ROLE_IDS.TRIGGERS_EVENTS_WG,
-      ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
-      ROLE_IDS.AGENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG_LEADS,
+      ROLE_IDS.AGENTS_IG,
     ],
   },
   {
@@ -875,9 +882,9 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.SKILLS_OVER_MCP_WG,
       ROLE_IDS.SKILLS_OVER_MCP_WG_LEADS,
       ROLE_IDS.TRANSPORT_WG,
-      ROLE_IDS.TRIGGERS_EVENTS_WG,
-      ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
-      ROLE_IDS.AGENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG_LEADS,
+      ROLE_IDS.AGENTS_IG,
     ],
   },
   {
@@ -1071,7 +1078,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'tsarlandie-oai',
     discord: '1516121882297106487',
-    memberOf: [ROLE_IDS.RUST_SDK, ROLE_IDS.TRIGGERS_EVENTS_WG, ROLE_IDS.FILE_UPLOADS_WG],
+    memberOf: [ROLE_IDS.RUST_SDK, ROLE_IDS.TASKS_EVENTS_WG, ROLE_IDS.FILE_UPLOADS_WG],
   },
   {
     github: 'tzolov',
