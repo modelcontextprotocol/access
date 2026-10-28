@@ -220,7 +220,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Dale',
     lastName: 'Seo',
     googleEmailPrefix: 'dale.seo',
-    memberOf: [ROLE_IDS.RUST_SDK, ROLE_IDS.SECURITY_TEAM],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.RUST_SDK, ROLE_IDS.SECURITY_TEAM],
   },
   {
     github: 'DanielTemesgen',
