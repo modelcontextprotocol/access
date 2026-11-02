@@ -498,6 +498,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
+    github: 'jerome3o-anthropic',
+    memberOf: [ROLE_IDS.STEERING_COMMITTEE],
+  },
+  {
     github: 'joan-anthropic',
     discord: '1398403578892128437',
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
