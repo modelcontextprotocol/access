@@ -408,6 +408,11 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'core primitive working group (synced)' },
   },
   {
+    id: ROLE_IDS.CORE_PRIMITIVES_WG_LEADS,
+    description: 'Core Primitives Working Group leads',
+    github: { team: 'core-primitives-wg-leads', parent: ROLE_IDS.CORE_PRIMITIVE_WG },
+  },
+  {
     id: ROLE_IDS.INFRASTRUCTURE_WG,
     description: 'Infrastructure Working Group',
     github: { team: 'infrastructure-wg', parent: ROLE_IDS.WORKING_GROUPS },

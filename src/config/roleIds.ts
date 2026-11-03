@@ -68,6 +68,7 @@ export const ROLE_IDS = {
   FILESYSTEMS_WG: 'filesystems-wg',
   FILESYSTEMS_WG_LEADS: 'filesystems-wg-leads',
   CORE_PRIMITIVE_WG: 'core-primitive-wg',
+  CORE_PRIMITIVES_WG_LEADS: 'core-primitives-wg-leads',
   INFRASTRUCTURE_WG: 'infrastructure-wg',
   GOVERNANCE_WG: 'governance-wg',
 
