@@ -249,7 +249,7 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Degiorgio',
     discord: '602175181133316105',
     googleEmailPrefix: 'kdegiorgio',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.INTERCEPTORS_WG],
   },
   {
     github: 'dend',
@@ -327,6 +327,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.SERVER_CARD_WG,
       ROLE_IDS.AGENTS_IG,
       ROLE_IDS.CORE_PRIMITIVE_WG,
+      ROLE_IDS.CORE_PRIMITIVES_WG_LEADS,
       ROLE_IDS.INFRASTRUCTURE_WG,
       ROLE_IDS.APPEALS,
       ROLE_IDS.SECURITY_MANAGERS,
@@ -482,7 +483,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Ukjae',
     lastName: 'Jeong',
     googleEmailPrefix: 'jeongukjae',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'joan-anthropic',
@@ -579,7 +580,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Kurtis',
     lastName: 'Van Gent',
     googleEmailPrefix: 'kvg',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.CORE_PRIMITIVE_WG, ROLE_IDS.TRANSPORT_WG],
+    memberOf: [
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.CORE_PRIMITIVE_WG,
+      ROLE_IDS.CORE_PRIMITIVES_WG_LEADS,
+      ROLE_IDS.TRANSPORT_WG,
+    ],
   },
   {
     github: 'kziemski',
@@ -935,7 +941,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'rreichel3',
     discord: '1458485333757788273',
-    memberOf: [ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'sambhav',

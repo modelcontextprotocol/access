@@ -103,6 +103,16 @@ export const ROLES: readonly Role[] = [
     provisionUser: true,
   },
   {
+    id: ROLE_IDS.MEMBERS,
+    description:
+      'Members on the contributor ladder (https://modelcontextprotocol.io/community/contributor-ladder#member)',
+    // No parent team: must not inherit steering-committee repo permissions.
+    // Triage on core public repos is granted per repository in repoAccess.ts,
+    // not via the all_repo_triage org role, which would include private repos.
+    github: { team: 'members' },
+    discord: { role: 'members (synced)' },
+  },
+  {
     id: ROLE_IDS.MODERATORS,
     description: 'Community moderators',
     github: { team: 'moderators', parent: ROLE_IDS.STEERING_COMMITTEE },
@@ -396,6 +406,11 @@ export const ROLES: readonly Role[] = [
     description: 'Core Primitive Working Group',
     github: { team: 'core-primitive-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'core primitive working group (synced)' },
+  },
+  {
+    id: ROLE_IDS.CORE_PRIMITIVES_WG_LEADS,
+    description: 'Core Primitives Working Group leads',
+    github: { team: 'core-primitives-wg-leads', parent: ROLE_IDS.CORE_PRIMITIVE_WG },
   },
   {
     id: ROLE_IDS.INFRASTRUCTURE_WG,
