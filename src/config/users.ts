@@ -249,7 +249,7 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Degiorgio',
     discord: '602175181133316105',
     googleEmailPrefix: 'kdegiorgio',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.INTERCEPTORS_WG],
   },
   {
     github: 'dend',
@@ -482,7 +482,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Ukjae',
     lastName: 'Jeong',
     googleEmailPrefix: 'jeongukjae',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'joan-anthropic',
@@ -930,7 +930,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'rreichel3',
     discord: '1458485333757788273',
-    memberOf: [ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'sambhav',

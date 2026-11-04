@@ -9,6 +9,7 @@ export const ROLE_IDS = {
   STEERING_COMMITTEE: 'steering-committee',
   CORE_MAINTAINERS: 'core-maintainers',
   LEAD_MAINTAINERS: 'lead-maintainers',
+  MEMBERS: 'members', // Contributor ladder Member tier
   MODERATORS: 'moderators',
   SECURITY_MANAGERS: 'security-managers', // GitHub only (org security_manager role)
   SECURITY_TEAM: 'security-team', // GitHub only (MCP Security Team; Cloudflare Access to securityroom.modelcontextprotocol.io)
