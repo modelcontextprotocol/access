@@ -206,6 +206,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
+    github: 'corykinney',
+    // Scientific Computing IG facilitator; SEP-2149 requires ladder Member status
+    memberOf: [ROLE_IDS.MEMBERS],
+  },
+  {
     github: 'crondinini-ant',
     memberOf: [],
   },
@@ -249,7 +254,7 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Degiorgio',
     discord: '602175181133316105',
     googleEmailPrefix: 'kdegiorgio',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.INTERCEPTORS_WG],
   },
   {
     github: 'dend',
@@ -482,7 +487,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Ukjae',
     lastName: 'Jeong',
     googleEmailPrefix: 'jeongukjae',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'joan-anthropic',
@@ -918,6 +923,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [],
   },
   {
+    github: 'raghu-chandra-mcp',
+    // Enterprise IG facilitator; SEP-2149 requires ladder Member status
+    memberOf: [ROLE_IDS.MEMBERS],
+  },
+  {
     github: 'rdimitrov',
     email: 'radoslav@modelcontextprotocol.io',
     discord: '1088231882979815424',
@@ -930,7 +940,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'rreichel3',
     discord: '1458485333757788273',
-    memberOf: [ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'sambhav',
@@ -1096,6 +1106,11 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Vinay',
     lastName: 'Ramesh',
     memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
+  },
+  {
+    github: 'yannj-fr',
+    // Enterprise IG facilitator; SEP-2149 requires ladder Member status
+    memberOf: [ROLE_IDS.MEMBERS],
   },
   {
     github: 'yarolegovich',
