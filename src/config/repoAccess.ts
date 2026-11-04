@@ -349,6 +349,17 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     teams: [{ team: 'registry-wg', permission: 'push' }],
   },
   {
+    repository: 'core-primitives-wg',
+    settings: {
+      description: 'Coordination and proposals for the MCP Core Primitives Working Group.',
+    },
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'moderators', permission: 'maintain' },
+      { team: 'core-primitive-wg', permission: 'admin' },
+    ],
+  },
+  {
     repository: 'financial-services-interest-group',
     teams: [{ team: 'ig-financial-services', permission: 'admin' }],
     users: [
