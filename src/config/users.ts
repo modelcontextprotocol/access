@@ -206,11 +206,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
-    github: 'corykinney',
-    // Scientific Computing IG facilitator; SEP-2149 requires ladder Member status
-    memberOf: [ROLE_IDS.MEMBERS],
-  },
-  {
     github: 'crondinini-ant',
     memberOf: [],
   },
@@ -923,11 +918,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [],
   },
   {
-    github: 'raghu-chandra-mcp',
-    // Enterprise IG facilitator; SEP-2149 requires ladder Member status
-    memberOf: [ROLE_IDS.MEMBERS],
-  },
-  {
     github: 'rdimitrov',
     email: 'radoslav@modelcontextprotocol.io',
     discord: '1088231882979815424',
@@ -1106,11 +1096,6 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Vinay',
     lastName: 'Ramesh',
     memberOf: [ROLE_IDS.FINANCIAL_SERVICES_IG],
-  },
-  {
-    github: 'yannj-fr',
-    // Enterprise IG facilitator; SEP-2149 requires ladder Member status
-    memberOf: [ROLE_IDS.MEMBERS],
   },
   {
     github: 'yarolegovich',
