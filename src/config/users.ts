@@ -820,6 +820,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
+    github: 'panyam',
+    // TODO: add Discord ID once confirmed
+    memberOf: [ROLE_IDS.MEMBERS],
+  },
+  {
     github: 'pcarleton',
     discord: '1354465170969067852',
     npm: 'pcarleton',
@@ -1100,6 +1105,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'varun06',
     discord: '1327624284499349536',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
+  },
+  {
+    github: 'vijaydeepsinha',
+    // TODO: add Discord ID once confirmed
+    memberOf: [ROLE_IDS.MEMBERS],
   },
   {
     github: 'vinoo999',
