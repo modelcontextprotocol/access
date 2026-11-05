@@ -38,7 +38,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'aditya-scio',
     discord: '1196052678925631498',
-    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'ajribeiro',
@@ -593,7 +593,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Kryspin',
     lastName: 'Ziemski',
     googleEmailPrefix: 'kziemski',
-    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.GOVERNANCE_WG, ROLE_IDS.FINANCIAL_SERVICES_IG],
+    memberOf: [
+      ROLE_IDS.MEMBERS,
+      ROLE_IDS.FILESYSTEMS_WG,
+      ROLE_IDS.GOVERNANCE_WG,
+      ROLE_IDS.FINANCIAL_SERVICES_IG,
+    ],
   },
   {
     github: 'liady',
@@ -1058,7 +1063,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'tobi-oye',
     discord: '791307404293177354',
-    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'tobinsouth',
