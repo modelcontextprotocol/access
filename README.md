@@ -171,14 +171,45 @@ Pre-requisites:
 
 1. Authenticate with GCP: `gcloud auth application-default login`
 2. Get the passphrase file `passphrase.prod.txt` from the maintainers
-3. Preview changes: `make preview`
-4. Deploy changes: `make up`
+3. Export `GITHUB_TOKEN` with a token that has the permissions of the [deploy GitHub App](#deploy-github-app). The organization rejects classic personal access tokens.
+   Also set the `discord:*`, `githubBillingEmail` and `cloudflare:roleManagementToken` config values as [`deploy.yml`](.github/workflows/deploy.yml) does. **Without the Discord and Cloudflare values, `make up` deletes the resources they manage.**
+4. Preview changes: `make preview`
+5. Deploy changes: `make up`
 
 ## Key Management
+
+### Deploy GitHub App
+
+CI authenticates to GitHub as the `mcp-access-deploy` GitHub App, owned by the organization and installed on **all repositories**. Each workflow run mints an installation token that expires after one hour and is revoked when the job ends. Deploy uses the full permissions below; Preview requests a token that can only read organization roles.
+
+| Scope        | Permission                | Access     |
+| ------------ | ------------------------- | ---------- |
+| Repository   | Administration            | Read/write |
+| Repository   | Metadata                  | Read       |
+| Repository   | Pages                     | Read       |
+| Organization | Administration            | Read/write |
+| Organization | Members                   | Read/write |
+| Organization | Custom organization roles | Read       |
+
+The App deliberately has no `Contents` permission. GitHub hides merge-related repository settings from tokens without it, so repositories with a `settings` block may show repeated changes to those settings. Creating a repository from a `template` also needs `Contents` read, so it does not work with the current permissions.
+
+The private key is equivalent to organization admin. Store it as an environment secret, never as a variable. To rotate: generate a new key in the App settings, run the command below, then delete the old key and the local file.
+
+```bash
+gh secret set DEPLOY_APP_PRIVATE_KEY --env production -R modelcontextprotocol/access < key.pem
+```
+
+Do not use a refresh (`make refresh`, `pulumi preview --refresh`) as a read-only check: the Discord member sync corrects role drift during `read()`, so any refresh can change live Discord roles.
 
 ### Required GitHub Secrets (for CI/CD)
 
 The following secrets must be configured in GitHub Actions for automated deployments:
+
+- **`DEPLOY_APP_PRIVATE_KEY`** (secret, `production` environment): private key of the deploy GitHub App
+
+- **`DEPLOY_APP_CLIENT_ID`** (a **variable**, not a secret, `production` environment): client ID of the deploy GitHub App
+
+- **`ORG_BILLING_EMAIL`**, **`DISCORD_BOT_TOKEN`**, **`DISCORD_GUILD_ID`**: passed to Pulumi config by the workflows
 
 - **`GCP_PROD_SERVICE_ACCOUNT_KEY`**: GCP service account key
   - Used to authenticate with Google Cloud Storage for Pulumi state (`gs://mcp-access-prod-pulumi-state`)
@@ -245,7 +276,6 @@ pulumi stack init prod
 
 # Configure application secrets in Pulumi
 pulumi config set --secret googleworkspace:credentials "$(cat sa-key.json)"
-pulumi config set --secret github:token "ghp_your_github_token_here"
 ```
 
 ### 3. Configure GitHub Actions Secrets
@@ -254,3 +284,4 @@ Add the CI/CD secrets to GitHub Actions (repository settings → Secrets and var
 
 - `GCP_PROD_SERVICE_ACCOUNT_KEY`: Content of `sa-key.json`
 - `PULUMI_PROD_PASSPHRASE`: The passphrase you set above
+- `DEPLOY_APP_CLIENT_ID` and `DEPLOY_APP_PRIVATE_KEY` (in the `production` environment, not at repository level): see [Deploy GitHub App](#deploy-github-app)

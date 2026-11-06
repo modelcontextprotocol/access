@@ -289,6 +289,30 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     teams: [{ team: 'php-sdk', permission: 'admin' }],
   },
   {
+    repository: 'php-sdk-schema',
+    settings: {
+      description:
+        'Schema component of the official PHP SDK for Model Context Protocol. Maintained in collaboration with The PHP Foundation.',
+    },
+    teams: [{ team: 'php-sdk', permission: 'admin' }],
+  },
+  {
+    repository: 'php-sdk-client',
+    settings: {
+      description:
+        'Client component of the official PHP SDK for Model Context Protocol. Maintained in collaboration with The PHP Foundation.',
+    },
+    teams: [{ team: 'php-sdk', permission: 'admin' }],
+  },
+  {
+    repository: 'php-sdk-server',
+    settings: {
+      description:
+        'Server component of the official PHP SDK for Model Context Protocol. Maintained in collaboration with The PHP Foundation.',
+    },
+    teams: [{ team: 'php-sdk', permission: 'admin' }],
+  },
+  {
     repository: 'python-sdk',
     teams: [
       { team: 'python-sdk', permission: 'admin' },
