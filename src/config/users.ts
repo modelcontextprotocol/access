@@ -38,7 +38,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'aditya-scio',
     discord: '1196052678925631498',
-    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'ajribeiro',
@@ -593,7 +593,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Kryspin',
     lastName: 'Ziemski',
     googleEmailPrefix: 'kziemski',
-    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.GOVERNANCE_WG, ROLE_IDS.FINANCIAL_SERVICES_IG],
+    memberOf: [
+      ROLE_IDS.MEMBERS,
+      ROLE_IDS.FILESYSTEMS_WG,
+      ROLE_IDS.GOVERNANCE_WG,
+      ROLE_IDS.FINANCIAL_SERVICES_IG,
+    ],
   },
   {
     github: 'liady',
@@ -813,6 +818,11 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'Ololoshechkin',
     memberOf: [ROLE_IDS.KOTLIN_SDK],
+  },
+  {
+    github: 'panyam',
+    // TODO: add Discord ID once confirmed
+    memberOf: [ROLE_IDS.MEMBERS],
   },
   {
     github: 'pcarleton',
@@ -1058,7 +1068,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'tobi-oye',
     discord: '791307404293177354',
-    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'tobinsouth',
@@ -1095,6 +1105,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'varun06',
     discord: '1327624284499349536',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
+  },
+  {
+    github: 'vijaydeepsinha',
+    // TODO: add Discord ID once confirmed
+    memberOf: [ROLE_IDS.MEMBERS],
   },
   {
     github: 'vinoo999',
