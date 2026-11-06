@@ -1,0 +1,42 @@
+name = "access-site"
+main = "src/index.ts"
+compatibility_date = "2026-10-01"
+workers_dev = false
+# MCP Domain Account (same as cloudflare:accountId in Pulumi.prod.yaml).
+account_id = "c39d6379ccfdb20a3627eeddffa80ec9"
+
+routes = [{ pattern = "access.modelcontextprotocol.io", custom_domain = true }]
+
+[observability]
+enabled = true
+
+# Per-IP limit on the browser-facing sign-in endpoints (/authorize, /login).
+[[ratelimits]]
+name = "RATE_LIMITER"
+namespace_id = "1001"
+simple = { limit = 30, period = 60 }
+
+# Created on first deploy by scripts/deploy.sh, which fills in the ID.
+[[d1_databases]]
+binding = "DB"
+database_name = "access-site"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+migrations_dir = "migrations"
+
+[vars]
+ISSUER = "https://access.modelcontextprotocol.io"
+WORKSPACE_DOMAIN = "modelcontextprotocol.io"
+# Client ID of the org-owned GitHub App (not secret).
+GITHUB_CLIENT_ID = "REPLACE_WITH_GITHUB_APP_CLIENT_ID"
+# Google Workspace is the only OIDC client. The client ID is chosen by us and
+# entered in Google's custom OIDC SSO profile; the redirect URI is the one
+# Google shows when the profile is created (comma-separate if several).
+OIDC_CLIENT_ID = "google-workspace"
+OIDC_REDIRECT_URIS = "REPLACE_WITH_GOOGLE_SSO_REDIRECT_URI"
+# Rollout pilot: only these GitHub logins can sign in. Remove the line (by PR)
+# to open sign-in to everyone with an account in users.ts.
+PILOT_GITHUB_LOGINS = "sambhav"
+
+# Secrets are uploaded by scripts/deploy.sh from GitHub secrets in the
+# `production` environment: OIDC_SIGNING_KEY, OIDC_CLIENT_SECRET and
+# GITHUB_CLIENT_SECRET. OIDC_PREVIOUS_JWK is optional, during key rotation.
