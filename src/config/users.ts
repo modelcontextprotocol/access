@@ -594,8 +594,9 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Ziemski',
     googleEmailPrefix: 'kziemski',
     memberOf: [
-      ROLE_IDS.MEMBERS,
       ROLE_IDS.FILESYSTEMS_WG,
+      ROLE_IDS.FILESYSTEMS_WG_LEADS,
+      ROLE_IDS.MEMBERS,
       ROLE_IDS.GOVERNANCE_WG,
       ROLE_IDS.FINANCIAL_SERVICES_IG,
     ],
