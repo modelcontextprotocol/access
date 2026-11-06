@@ -16,6 +16,8 @@ jobs:
   deploy-production:
     name: Deploy to Production
     runs-on: ubuntu-latest
+    # workflow_dispatch can target any ref; only main is deployed
+    if: github.ref == 'refs/heads/main'
     environment: production
     concurrency:
       group: deploy-production
@@ -59,10 +61,26 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_PROD_SERVICE_ACCOUNT_KEY }}
 
+      # Minted as late as possible: installation tokens expire after one hour.
+      # `owner` is required; without it the token only covers this repository.
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.DEPLOY_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DEPLOY_APP_PRIVATE_KEY }}
+          owner: modelcontextprotocol
+          permission-administration: write
+          permission-members: write
+          permission-metadata: read
+          permission-organization-administration: write
+          permission-organization-custom-org-roles: read
+          permission-pages: read
+
       - name: Deploy to Production
         env:
           PULUMI_PASSPHRASE: ${{ secrets.PULUMI_PROD_PASSPHRASE }}
-          GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           ORG_BILLING_EMAIL: ${{ secrets.ORG_BILLING_EMAIL }}
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
           DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
