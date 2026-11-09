@@ -38,7 +38,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'aditya-scio',
     discord: '1196052678925631498',
-    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'ajribeiro',
@@ -117,7 +117,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Caitie',
     lastName: 'McCaffrey',
     googleEmailPrefix: 'caitie',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TRANSPORT_WG, ROLE_IDS.AGENTS_WG],
+    memberOf: [
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.TRANSPORT_WG,
+      ROLE_IDS.TASKS_EVENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG_LEADS,
+    ],
   },
   {
     github: 'canarik',
@@ -166,11 +171,7 @@ export const MEMBERS: readonly Member[] = [
     // Google returns 400 on refresh of this user since 2026-10-05 (deploy runs
     // #289/#290); the account is active and managed outside Pulumi.
     existingGWSUser: true,
-    memberOf: [
-      ROLE_IDS.CORE_MAINTAINERS,
-      ROLE_IDS.TRIGGERS_EVENTS_WG,
-      ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
-    ],
+    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.TASKS_EVENTS_WG, ROLE_IDS.TASKS_EVENTS_WG_LEADS],
   },
   {
     github: 'cliffhall',
@@ -248,7 +249,7 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Degiorgio',
     discord: '602175181133316105',
     googleEmailPrefix: 'kdegiorgio',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.INTERCEPTORS_WG],
   },
   {
     github: 'dend',
@@ -324,8 +325,9 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.DOCS_MAINTAINERS,
       ROLE_IDS.MODERATORS,
       ROLE_IDS.SERVER_CARD_WG,
-      ROLE_IDS.AGENTS_WG,
+      ROLE_IDS.AGENTS_IG,
       ROLE_IDS.CORE_PRIMITIVE_WG,
+      ROLE_IDS.CORE_PRIMITIVES_WG_LEADS,
       ROLE_IDS.INFRASTRUCTURE_WG,
       ROLE_IDS.APPEALS,
       ROLE_IDS.SECURITY_MANAGERS,
@@ -481,7 +483,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Ukjae',
     lastName: 'Jeong',
     googleEmailPrefix: 'jeongukjae',
-    memberOf: [ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.INTERCEPTORS_WG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'joan-anthropic',
@@ -578,7 +580,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Kurtis',
     lastName: 'Van Gent',
     googleEmailPrefix: 'kvg',
-    memberOf: [ROLE_IDS.CORE_MAINTAINERS, ROLE_IDS.CORE_PRIMITIVE_WG, ROLE_IDS.TRANSPORT_WG],
+    memberOf: [
+      ROLE_IDS.CORE_MAINTAINERS,
+      ROLE_IDS.CORE_PRIMITIVE_WG,
+      ROLE_IDS.CORE_PRIMITIVES_WG_LEADS,
+      ROLE_IDS.TRANSPORT_WG,
+    ],
   },
   {
     github: 'kziemski',
@@ -586,7 +593,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Kryspin',
     lastName: 'Ziemski',
     googleEmailPrefix: 'kziemski',
-    memberOf: [ROLE_IDS.FILESYSTEMS_WG, ROLE_IDS.GOVERNANCE_WG, ROLE_IDS.FINANCIAL_SERVICES_IG],
+    memberOf: [
+      ROLE_IDS.MEMBERS,
+      ROLE_IDS.FILESYSTEMS_WG,
+      ROLE_IDS.GOVERNANCE_WG,
+      ROLE_IDS.FINANCIAL_SERVICES_IG,
+    ],
   },
   {
     github: 'liady',
@@ -639,7 +651,13 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Luca',
     lastName: 'Chang',
     googleEmailPrefix: 'luca',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.AGENTS_WG, ROLE_IDS.WORKING_GROUPS],
+    memberOf: [
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.TASKS_EVENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG_LEADS,
+      ROLE_IDS.AGENTS_IG,
+      ROLE_IDS.WORKING_GROUPS,
+    ],
   },
   {
     github: 'maciej-kisiel',
@@ -711,6 +729,17 @@ export const MEMBERS: readonly Member[] = [
     lastName: 'Campbell',
     googleEmailPrefix: 'monika',
     memberOf: [ROLE_IDS.INTERCEPTORS_WG],
+  },
+  {
+    // Same person as 'morabijn' below (work account); Discord identity lives
+    // on that entry (keyed per person, so only one entry can carry it)
+    github: 'Morabbin',
+    memberOf: [ROLE_IDS.SDK_WG],
+  },
+  {
+    github: 'morabijn',
+    discord: '823210500019453992',
+    memberOf: [ROLE_IDS.SDK_WG],
   },
   {
     github: 'movetz',
@@ -802,6 +831,11 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
+    github: 'panyam',
+    // TODO: add Discord ID once confirmed
+    memberOf: [ROLE_IDS.MEMBERS],
+  },
+  {
     github: 'pcarleton',
     discord: '1354465170969067852',
     npm: 'pcarleton',
@@ -857,9 +891,9 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.SKILLS_OVER_MCP_WG,
       ROLE_IDS.SKILLS_OVER_MCP_WG_LEADS,
       ROLE_IDS.TRANSPORT_WG,
-      ROLE_IDS.TRIGGERS_EVENTS_WG,
-      ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
-      ROLE_IDS.AGENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG_LEADS,
+      ROLE_IDS.AGENTS_IG,
     ],
   },
   {
@@ -875,9 +909,9 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.SKILLS_OVER_MCP_WG,
       ROLE_IDS.SKILLS_OVER_MCP_WG_LEADS,
       ROLE_IDS.TRANSPORT_WG,
-      ROLE_IDS.TRIGGERS_EVENTS_WG,
-      ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
-      ROLE_IDS.AGENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG,
+      ROLE_IDS.TASKS_EVENTS_WG_LEADS,
+      ROLE_IDS.AGENTS_IG,
     ],
   },
   {
@@ -923,10 +957,11 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'rreichel3',
     discord: '1458485333757788273',
-    memberOf: [ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'sambhav',
+    githubUserId: 16130816,
     email: 'sambhavs.email@gmail.com',
     firstName: 'Sambhav',
     lastName: 'Kothari',
@@ -1045,7 +1080,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'tobi-oye',
     discord: '791307404293177354',
-    memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'tobinsouth',
@@ -1071,7 +1106,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'tsarlandie-oai',
     discord: '1516121882297106487',
-    memberOf: [ROLE_IDS.RUST_SDK, ROLE_IDS.TRIGGERS_EVENTS_WG, ROLE_IDS.FILE_UPLOADS_WG],
+    memberOf: [ROLE_IDS.RUST_SDK, ROLE_IDS.TASKS_EVENTS_WG, ROLE_IDS.FILE_UPLOADS_WG],
   },
   {
     github: 'tzolov',
@@ -1082,6 +1117,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'varun06',
     discord: '1327624284499349536',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
+  },
+  {
+    github: 'vijaydeepsinha',
+    // TODO: add Discord ID once confirmed
+    memberOf: [ROLE_IDS.MEMBERS],
   },
   {
     github: 'vinoo999',

@@ -103,6 +103,16 @@ export const ROLES: readonly Role[] = [
     provisionUser: true,
   },
   {
+    id: ROLE_IDS.MEMBERS,
+    description:
+      'Members on the contributor ladder (https://modelcontextprotocol.io/community/contributor-ladder#member)',
+    // No parent team: must not inherit steering-committee repo permissions.
+    // Triage on core public repos is granted per repository in repoAccess.ts,
+    // not via the all_repo_triage org role, which would include private repos.
+    github: { team: 'members' },
+    discord: { role: 'members (synced)' },
+  },
+  {
     id: ROLE_IDS.MODERATORS,
     description: 'Community moderators',
     github: { team: 'moderators', parent: ROLE_IDS.STEERING_COMMITTEE },
@@ -307,7 +317,7 @@ export const ROLES: readonly Role[] = [
     description: 'MCP Working Groups',
     github: { team: 'working-groups', parent: ROLE_IDS.STEERING_COMMITTEE },
     // No discord - organizational container
-    // Covers all working groups via github.parent (e.g. transport-wg, agents-wg)
+    // Covers all working groups via github.parent (e.g. transport-wg, tasks-events-wg)
     provisionUser: true,
   },
   {
@@ -335,15 +345,15 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'transports working group (synced)' },
   },
   {
-    id: ROLE_IDS.TRIGGERS_EVENTS_WG,
-    description: 'Triggers & Events Working Group',
-    github: { team: 'triggers-events-wg', parent: ROLE_IDS.WORKING_GROUPS },
-    discord: { role: 'triggers & events working group (synced)' },
+    id: ROLE_IDS.TASKS_EVENTS_WG,
+    description: 'Tasks and Events Working Group',
+    github: { team: 'tasks-events-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'tasks & events working group (synced)' },
   },
   {
-    id: ROLE_IDS.TRIGGERS_EVENTS_WG_LEADS,
-    description: 'Triggers & Events Working Group leads',
-    github: { team: 'triggers-events-wg-leads', parent: ROLE_IDS.TRIGGERS_EVENTS_WG },
+    id: ROLE_IDS.TASKS_EVENTS_WG_LEADS,
+    description: 'Tasks and Events Working Group leads',
+    github: { team: 'tasks-events-wg-leads', parent: ROLE_IDS.TASKS_EVENTS_WG },
   },
   {
     id: ROLE_IDS.MCP_APPS_WG,
@@ -368,12 +378,6 @@ export const ROLES: readonly Role[] = [
     description: 'File Uploads Working Group',
     github: { team: 'file-uploads-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'file uploads working group (synced)' },
-  },
-  {
-    id: ROLE_IDS.AGENTS_WG,
-    description: 'Agents Working Group',
-    github: { team: 'agents-wg', parent: ROLE_IDS.WORKING_GROUPS },
-    discord: { role: 'agents working group (synced)' },
   },
   {
     id: ROLE_IDS.SKILLS_OVER_MCP_WG,
@@ -404,6 +408,11 @@ export const ROLES: readonly Role[] = [
     discord: { role: 'core primitive working group (synced)' },
   },
   {
+    id: ROLE_IDS.CORE_PRIMITIVES_WG_LEADS,
+    description: 'Core Primitives Working Group leads',
+    github: { team: 'core-primitives-wg-leads', parent: ROLE_IDS.CORE_PRIMITIVE_WG },
+  },
+  {
     id: ROLE_IDS.INFRASTRUCTURE_WG,
     description: 'Infrastructure Working Group',
     github: { team: 'infrastructure-wg', parent: ROLE_IDS.WORKING_GROUPS },
@@ -415,6 +424,12 @@ export const ROLES: readonly Role[] = [
     github: { team: 'governance-wg', parent: ROLE_IDS.WORKING_GROUPS },
     discord: { role: 'governance working group (synced)' },
   },
+  {
+    id: ROLE_IDS.SDK_WG,
+    description: 'SDK Working Group',
+    github: { team: 'sdk-wg', parent: ROLE_IDS.WORKING_GROUPS },
+    discord: { role: 'sdk working group (synced)' },
+  },
 
   // ===================
   // Interest Groups
@@ -424,6 +439,12 @@ export const ROLES: readonly Role[] = [
     description: 'Interest Groups',
     github: { team: 'interest-groups', parent: ROLE_IDS.STEERING_COMMITTEE },
     // No discord - organizational container
+  },
+  {
+    id: ROLE_IDS.AGENTS_IG,
+    description: 'Agents Interest Group',
+    github: { team: 'agents-ig', parent: ROLE_IDS.INTEREST_GROUPS },
+    discord: { role: 'agents interest group (synced)' },
   },
   {
     id: ROLE_IDS.AUTH_IG,

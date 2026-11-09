@@ -4,7 +4,7 @@ Sign in to MCP Google Workspace with GitHub.
 
 A small Cloudflare Worker (Hono, jose, D1) that is the OpenID Connect provider for Google Workspace's custom OIDC SSO profile. Maintainers sign in to Google with their GitHub account; there are no Google passwords.
 
-Accounts stay infrastructure as code. Who has an account, and which address, is `users.ts`: a GitHub user can sign in as `<googleEmailPrefix>@modelcontextprotocol.io` only if their entry has a `googleEmailPrefix`, isn't opted out, and is in a role with `provisionUser`, the same rule Pulumi uses to create the account. The Worker bundles `src/config` and is redeployed on every config change, so removing someone from `users.ts` stops their sign-in on the next deploy.
+Accounts stay infrastructure as code. A member in `users.ts` can sign in as `<googleEmailPrefix>@modelcontextprotocol.io` when the entry declares an existing Workspace account or qualifies for Pulumi provisioning, and the GitHub login and verified numeric `githubUserId` both match. The Worker bundles `src/config` and redeploys on config changes, so removing a member from `users.ts` stops new sign-ins on the next deploy.
 
 The Worker holds no Google credentials and creates nothing in Google.
 
@@ -20,20 +20,20 @@ sequenceDiagram
   G->>W: /authorize (OIDC)
   W->>GH: GitHub App sign-in
   GH-->>W: user ID, login
-  W->>W: login -> address in users.ts
+  W->>W: Verify login and ID against users.ts
   W-->>G: code
   G->>W: /token
   W-->>G: ID token: sub=<GitHub ID>, email=<prefix>@modelcontextprotocol.io
   G-->>M: Signed in
 ```
 
-GitHub users with no account in `users.ts` get a page explaining how to request one.
+GitHub users who cannot sign in get a page explaining the next step.
 
 ## Security
 
-- **Accounts come from `users.ts`**, which only core maintainers can approve (CODEOWNERS). Anyone who can merge a `googleEmailPrefix` change can map a GitHub account to that Workspace address, so treat those changes like credential changes.
-- **GitHub logins are pinned to GitHub user IDs** on first sign-in (`github_identities` in D1). GitHub frees a login when its owner renames, so if someone else registers that name, sign-in is refused until `users.ts` is updated and the pin is cleared (see Operations).
-- **Codes and requests are single-use and short-lived**: pending requests last 10 minutes and authorization codes 2 minutes, stored hashed and consumed with `DELETE ... RETURNING`. PKCE is enforced when Google sends it, and a verifier without a challenge is rejected (RFC 9700). Redirect URIs must match exactly; client credentials are form-decoded (RFC 6749 2.3.1) and compared in constant time.
+- **Accounts come from `users.ts`**, which only core maintainers can approve (CODEOWNERS). Treat changes to `githubUserId` or `googleEmailPrefix` like credential changes.
+- **GitHub accounts are verified before sign-in.** The numeric ID must already be in `users.ts`. A recycled GitHub login cannot claim the original member’s Workspace address, even on its first sign-in.
+- **Codes and requests are single-use and short-lived.** Pending requests last 10 minutes and authorization codes last 2 minutes. D1 stores them hashed and consumes them with `DELETE ... RETURNING`. GitHub OAuth state and S256 PKCE are bound to the same host-only pending request cookie. The Google flow enforces PKCE when sent and rejects a verifier without a challenge (RFC 9700). Redirect URIs must match exactly. Client credentials are form-decoded (RFC 6749 2.3.1) and compared in constant time.
 - **Rate limited**: `/authorize` and `/login` allow 30 requests per minute per IP, so anonymous traffic can't exhaust D1 writes.
 - **Minimal GitHub access**: the GitHub App has no repository or organization permissions, and its user token is revoked right after the user is read.
 - **No Google credentials** in the Worker; it cannot create, change or read Google accounts.
@@ -56,7 +56,7 @@ One-time steps, in order. Secrets go straight from the command line into GitHub 
    ```
 3. **GitHub App** (org owner): create it at <https://github.com/organizations/modelcontextprotocol/settings/apps/new>.
    - Homepage URL `https://access.modelcontextprotocol.io`, callback URL `https://access.modelcontextprotocol.io/login`; leave token expiry on; no device flow; webhook off
-   - Permissions: Account → Email addresses: read-only (the sign-in library reads it; it is not used). Nothing else.
+   - Leave repository, organization, and account permissions unset. The Worker reads only the authenticated GitHub user’s basic profile.
    - Installable only on this account; no need to install it
    - Generate a client secret and store it: `gh secret set ACCESS_SITE_GITHUB_CLIENT_SECRET --env production -R modelcontextprotocol/access` (paste when prompted)
    - Put the client ID (not secret) in `GITHUB_CLIENT_ID` in `wrangler.toml` by PR
@@ -71,20 +71,24 @@ One-time steps, in order. Secrets go straight from the command line into GitHub 
    - Issuer URL `https://access.modelcontextprotocol.io`, client ID `google-workspace`, client secret from step 4
    - Change password URL `https://github.com/settings/security` (passwords now live on GitHub)
    - Copy the **Redirect URI** Google shows into `OIDC_REDIRECT_URIS` in `wrangler.toml` by PR
-   - Assign the profile to a pilot sub-OU holding only the pilot users first, then to **Model Context Protocol**. Super admins always keep Google sign-in, which is the break-glass path.
+   - Assign the profile to a pilot sub-OU holding only the pilot users first. Follow the rollout steps below before assigning it more widely. Super admins always keep Google sign-in, which is the break-glass path.
 
 ## Operations
 
-- **Pilot**: `PILOT_GITHUB_LOGINS` in `wrangler.toml` limits sign-in to the listed GitHub logins (initially `sambhav`); a test checks each one maps to an account. Add logins to widen the pilot, and remove the line by PR to open sign-in to everyone in `users.ts`.
-- **Rotate the signing key**: copy the current key object (`keys[0]`) from `https://access.modelcontextprotocol.io/jwks` into the `ACCESS_SITE_OIDC_PREVIOUS_JWK` secret, replace `ACCESS_SITE_OIDC_SIGNING_KEY` as in setup step 2, and re-run the workflow. A day later set `ACCESS_SITE_OIDC_PREVIOUS_JWK` to `{}` and re-run.
-- **Logs**: sign-ins and refusals are JSON lines in Workers Logs (dashboard, or `npx wrangler tail`). `signin.denied` with `reason: identity_mismatch` means a pinned login came from a different GitHub account.
-- **Clear an identity pin** (after confirming the person, e.g. they recreated their GitHub account): `npx wrangler d1 execute access-site --remote --command "DELETE FROM github_identities WHERE login = '<login>'"`.
+- **Pilot rollout.** `PILOT_GITHUB_LOGINS` in `wrangler.toml` limits sign-in to the listed logins (initially `sambhav`). Before adding anyone, confirm the GitHub account with the maintainer and check its numeric ID against a trusted GitHub record. Add `githubUserId` to their `users.ts` entry in a reviewed PR. Keep the Google profile scoped to users whose IDs are verified and whose GitHub sign-in is enabled. Before removing the pilot allowlist and assigning the profile to the entire **Model Context Protocol** OU, verify IDs and account mappings for everyone affected, including existing Workspace accounts.
+- **GitHub renames.** Confirm the new login against the existing ID, then update the login in `users.ts` and in the pilot list if applicable. A recreated GitHub account has a different ID and requires fresh verification.
+- **Rotate the signing key.**
+  1. Generate a new private key as in setup step 2, and keep it offline until the cutover. Export its public JWK with the same RFC 7638 thumbprint the Worker uses for its `kid`.
+  2. Set `ACCESS_SITE_OIDC_NEXT_JWK` to the new public JWK and re-run the workflow. Check that `/jwks` contains both keys and wait at least five minutes for caches to refresh.
+  3. Set `ACCESS_SITE_OIDC_PREVIOUS_JWK` to the old public JWK, then replace `ACCESS_SITE_OIDC_SIGNING_KEY` with the new private key and deploy. Check that sign-in works and that `/jwks` still lists both keys. The Worker deduplicates the active key while it is also in the next slot.
+  4. After a day, set both `ACCESS_SITE_OIDC_PREVIOUS_JWK` and `ACCESS_SITE_OIDC_NEXT_JWK` to `{}` and re-run the workflow.
+- **Logs.** `signin.denied` with `reason: identity_mismatch` means the returned GitHub ID differed from the configured ID. `identity_unverified` means the account still needs a reviewed ID.
 
 ## Development
 
 ```sh
 npm ci
-npm test         # vitest, Node 22+ (uses node:sqlite in place of D1)
+npm test         # vitest, Node 24+ (uses node:sqlite in place of D1)
 npm run typecheck
 npm run dev      # wrangler dev
 ```

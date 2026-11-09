@@ -95,6 +95,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'interest-groups', permission: 'push' },
       { team: 'java-sdk', permission: 'push' },
       { team: 'kotlin-sdk', permission: 'push' },
+      { team: 'members', permission: 'triage' },
       { team: 'moderators', permission: 'maintain' },
       { team: 'php-sdk', permission: 'push' },
       { team: 'python-sdk', permission: 'push' },
@@ -124,6 +125,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'interest-groups', permission: 'triage' },
       { team: 'java-sdk', permission: 'triage' },
       { team: 'kotlin-sdk', permission: 'triage' },
+      { team: 'members', permission: 'triage' },
       { team: 'moderators', permission: 'maintain' },
       { team: 'php-sdk', permission: 'triage' },
       { team: 'python-sdk', permission: 'triage' },
@@ -151,6 +153,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'go-sdk', permission: 'push' },
       { team: 'java-sdk', permission: 'push' },
       { team: 'kotlin-sdk', permission: 'push' },
+      { team: 'members', permission: 'triage' },
       { team: 'moderators', permission: 'maintain' },
       { team: 'php-sdk', permission: 'push' },
       { team: 'python-sdk', permission: 'push' },
@@ -185,6 +188,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'java-sdk', permission: 'triage' },
       { team: 'kotlin-sdk', permission: 'triage' },
       { team: 'maintainers', permission: 'push' },
+      { team: 'members', permission: 'triage' },
       { team: 'moderators', permission: 'maintain' },
       { team: 'php-sdk', permission: 'triage' },
       { team: 'python-sdk', permission: 'triage' },
@@ -214,6 +218,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'interest-groups', permission: 'push' },
       { team: 'java-sdk', permission: 'push' },
       { team: 'kotlin-sdk', permission: 'push' },
+      { team: 'members', permission: 'triage' },
       { team: 'moderators', permission: 'maintain' },
       { team: 'php-sdk', permission: 'push' },
       { team: 'python-sdk', permission: 'push' },
@@ -242,6 +247,7 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'go-sdk', permission: 'push' },
       { team: 'java-sdk', permission: 'push' },
       { team: 'kotlin-sdk', permission: 'push' },
+      { team: 'members', permission: 'triage' },
       { team: 'moderators', permission: 'maintain' },
       { team: 'php-sdk', permission: 'push' },
       { team: 'python-sdk', permission: 'push' },
@@ -280,6 +286,30 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'php-sdk',
+    teams: [{ team: 'php-sdk', permission: 'admin' }],
+  },
+  {
+    repository: 'php-sdk-schema',
+    settings: {
+      description:
+        'Schema component of the official PHP SDK for Model Context Protocol. Maintained in collaboration with The PHP Foundation.',
+    },
+    teams: [{ team: 'php-sdk', permission: 'admin' }],
+  },
+  {
+    repository: 'php-sdk-client',
+    settings: {
+      description:
+        'Client component of the official PHP SDK for Model Context Protocol. Maintained in collaboration with The PHP Foundation.',
+    },
+    teams: [{ team: 'php-sdk', permission: 'admin' }],
+  },
+  {
+    repository: 'php-sdk-server',
+    settings: {
+      description:
+        'Server component of the official PHP SDK for Model Context Protocol. Maintained in collaboration with The PHP Foundation.',
+    },
     teams: [{ team: 'php-sdk', permission: 'admin' }],
   },
   {
@@ -341,6 +371,17 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   {
     repository: 'static',
     teams: [{ team: 'registry-wg', permission: 'push' }],
+  },
+  {
+    repository: 'core-primitives-wg',
+    settings: {
+      description: 'Coordination and proposals for the MCP Core Primitives Working Group.',
+    },
+    teams: [
+      { team: 'core-maintainers', permission: 'admin' },
+      { team: 'moderators', permission: 'maintain' },
+      { team: 'core-primitive-wg', permission: 'admin' },
+    ],
   },
   {
     repository: 'financial-services-interest-group',
@@ -430,8 +471,8 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     teams: [
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'moderators', permission: 'maintain' },
-      { team: 'triggers-events-wg', permission: 'push' },
-      { team: 'triggers-events-wg-leads', permission: 'admin' },
+      { team: 'tasks-events-wg', permission: 'push' },
+      { team: 'tasks-events-wg-leads', permission: 'admin' },
     ],
   },
   {
@@ -447,7 +488,8 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
     teams: [
       { team: 'core-maintainers', permission: 'admin' },
       { team: 'moderators', permission: 'maintain' },
-      { team: 'agents-wg', permission: 'admin' },
+      { team: 'tasks-events-wg', permission: 'push' },
+      { team: 'tasks-events-wg-leads', permission: 'admin' },
     ],
   },
   {

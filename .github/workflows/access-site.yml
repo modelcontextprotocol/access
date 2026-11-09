@@ -64,8 +64,9 @@ jobs:
           HAS_TOKEN: ${{ secrets.CLOUDFLARE_ACCESS_SITE_TOKEN != '' }}
           HAS_SIGNING_KEY: ${{ secrets.ACCESS_SITE_OIDC_SIGNING_KEY != '' }}
           HAS_CLIENT_SECRET: ${{ secrets.ACCESS_SITE_OIDC_CLIENT_SECRET != '' }}
+          HAS_GITHUB_SECRET: ${{ secrets.ACCESS_SITE_GITHUB_CLIENT_SECRET != '' }}
         run: |
-          if [ "$HAS_TOKEN" = true ] && [ "$HAS_SIGNING_KEY" = true ] && [ "$HAS_CLIENT_SECRET" = true ]; then
+          if [ "$HAS_TOKEN" = true ] && [ "$HAS_SIGNING_KEY" = true ] && [ "$HAS_CLIENT_SECRET" = true ] && [ "$HAS_GITHUB_SECRET" = true ]; then
             echo "ready=true" >> "$GITHUB_OUTPUT"
           else
             echo "::notice::access-site is not set up yet (see access-site/README.md); skipping deploy."
@@ -89,4 +90,5 @@ jobs:
           OIDC_CLIENT_SECRET: ${{ secrets.ACCESS_SITE_OIDC_CLIENT_SECRET }}
           GITHUB_CLIENT_SECRET: ${{ secrets.ACCESS_SITE_GITHUB_CLIENT_SECRET }}
           OIDC_PREVIOUS_JWK: ${{ secrets.ACCESS_SITE_OIDC_PREVIOUS_JWK }}
+          OIDC_NEXT_JWK: ${{ secrets.ACCESS_SITE_OIDC_NEXT_JWK }}
         run: ./scripts/deploy.sh

@@ -11,7 +11,7 @@ export interface Env {
   OIDC_REDIRECT_URIS: string;
   /**
    * Optional comma-separated GitHub logins. When set, only these users can
-   * sign in (rollout pilot); remove it to open sign-in to everyone in users.ts.
+   * sign in (rollout pilot); remove it to open sign-in to verified Workspace accounts in users.ts.
    */
   PILOT_GITHUB_LOGINS?: string;
 
@@ -20,6 +20,8 @@ export interface Env {
   OIDC_SIGNING_KEY: string;
   /** Optional public JWK (JSON) of the previous signing key, published during rotation. */
   OIDC_PREVIOUS_JWK?: string;
+  /** Optional public JWK (JSON) to publish before switching to a new signing key. */
+  OIDC_NEXT_JWK?: string;
   GITHUB_CLIENT_SECRET: string;
 }
 

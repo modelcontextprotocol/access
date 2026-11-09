@@ -6,14 +6,14 @@
 #   2. Applies D1 migrations
 #   3. Deploys the Worker, uploading secrets from the environment
 #
-# Required env: CLOUDFLARE_API_TOKEN, OIDC_SIGNING_KEY, OIDC_CLIENT_SECRET
-# Optional env: GITHUB_CLIENT_SECRET (uploaded when set; the previous value is kept otherwise),
-#               OIDC_PREVIOUS_JWK (previous public JWK during key rotation; uploaded when set, "{}" retires it)
+# Required env: CLOUDFLARE_API_TOKEN, OIDC_SIGNING_KEY, OIDC_CLIENT_SECRET, GITHUB_CLIENT_SECRET
+# Optional env: OIDC_PREVIOUS_JWK and OIDC_NEXT_JWK (public rotation keys; "{}" clears a slot)
 # Non-secret settings (account, GitHub App client ID, Google redirect URI) are in wrangler.toml.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 : "${CLOUDFLARE_API_TOKEN:?missing}" "${OIDC_SIGNING_KEY:?missing}" "${OIDC_CLIENT_SECRET:?missing}"
+: "${GITHUB_CLIENT_SECRET:?missing}"
 
 DB_NAME=access-site
 db_id() { npx wrangler d1 list --json | jq -r --arg n "$DB_NAME" '.[] | select(.name == $n) | .uuid'; }
@@ -41,10 +41,11 @@ chmod 600 "$secrets"
 jq -n \
   --arg signing "$OIDC_SIGNING_KEY" \
   --arg client "$OIDC_CLIENT_SECRET" \
-  --arg github "${GITHUB_CLIENT_SECRET:-}" \
+  --arg github "$GITHUB_CLIENT_SECRET" \
   --arg previous "${OIDC_PREVIOUS_JWK:-}" \
-  '{OIDC_SIGNING_KEY: $signing, OIDC_CLIENT_SECRET: $client}
-   + (if $github == "" then {} else {GITHUB_CLIENT_SECRET: $github} end)
-   + (if $previous == "" then {} else {OIDC_PREVIOUS_JWK: $previous} end)' >"$secrets"
+  --arg next "${OIDC_NEXT_JWK:-}" \
+  '{OIDC_SIGNING_KEY: $signing, OIDC_CLIENT_SECRET: $client, GITHUB_CLIENT_SECRET: $github}
+   + (if $previous == "" then {} else {OIDC_PREVIOUS_JWK: $previous} end)
+   + (if $next == "" then {} else {OIDC_NEXT_JWK: $next} end)' >"$secrets"
 
 npx wrangler deploy --secrets-file "$secrets"

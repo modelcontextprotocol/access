@@ -16,7 +16,11 @@ import {
 import { MEMBERS } from '../src/config/users';
 import { ACCESS_POLICIES } from '../src/config/accessPolicies';
 import { DISCORD_CHANNELS, validateDiscordChannels } from '../src/config/channels';
-import { hasProvisionUserRole, resolveGoogleMemberEmail } from '../src/config/utils';
+import {
+  hasGoogleWorkspaceAccount,
+  hasProvisionUserRole,
+  resolveGoogleMemberEmail,
+} from '../src/config/utils';
 import type { RoleId } from '../src/config/roleIds';
 
 const roleLookup = buildRoleLookup();
@@ -161,9 +165,26 @@ console.log('Validating member ordering in users.ts...');
 console.log('Validating Google Workspace user provisioning fields...');
 {
   const googleEmailPrefixes = new Map<string, string>();
+  const githubUserIds = new Map<number, string>();
 
   for (const member of MEMBERS) {
     const memberId = member.github || member.email || 'unknown';
+
+    if (member.githubUserId !== undefined) {
+      const id = member.githubUserId;
+      const existing = githubUserIds.get(id);
+      if (!Number.isSafeInteger(id) || id <= 0 || !member.github) {
+        console.error(
+          `ERROR: Member "${memberId}" must have a positive, safe-integer GitHub ID and a GitHub login`
+        );
+        hasErrors = true;
+      } else if (existing) {
+        console.error(`ERROR: GitHub ID "${id}" is used by both "${existing}" and "${memberId}"`);
+        hasErrors = true;
+      } else {
+        githubUserIds.set(id, member.github);
+      }
+    }
 
     // Members with googleEmailPrefix must also have firstName and lastName
     if (member.googleEmailPrefix) {
@@ -177,14 +198,14 @@ console.log('Validating Google Workspace user provisioning fields...');
       }
 
       // Check uniqueness of googleEmailPrefix
-      const existing = googleEmailPrefixes.get(member.googleEmailPrefix);
+      const existing = googleEmailPrefixes.get(member.googleEmailPrefix.toLowerCase());
       if (existing) {
         console.error(
           `ERROR: googleEmailPrefix "${member.googleEmailPrefix}" is used by both "${existing}" and "${memberId}"`
         );
         hasErrors = true;
       } else {
-        googleEmailPrefixes.set(member.googleEmailPrefix, memberId);
+        googleEmailPrefixes.set(member.googleEmailPrefix.toLowerCase(), memberId);
       }
     }
 
@@ -201,7 +222,11 @@ console.log('Validating Google Workspace user provisioning fields...');
     // src/google.ts — no account gets created and nothing reports it.
     // Fail loudly instead (members whose account already exists in GWS are
     // exempt; those accounts are not managed by Pulumi).
-    if (member.googleEmailPrefix && !inProvisionUserRole && !member.existingGWSUser) {
+    if (
+      hasProvisioningFields &&
+      !member.skipGoogleUserProvisioning &&
+      !hasGoogleWorkspaceAccount(member, roleLookup)
+    ) {
       console.error(
         `ERROR: Member "${memberId}" has googleEmailPrefix but none of their roles ` +
           `(or parent roles) has provisionUser, so no GWS account would be created. ` +

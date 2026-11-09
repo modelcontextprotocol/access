@@ -9,6 +9,7 @@ export const ROLE_IDS = {
   STEERING_COMMITTEE: 'steering-committee',
   CORE_MAINTAINERS: 'core-maintainers',
   LEAD_MAINTAINERS: 'lead-maintainers',
+  MEMBERS: 'members', // Contributor ladder Member tier
   MODERATORS: 'moderators',
   SECURITY_MANAGERS: 'security-managers', // GitHub only (org security_manager role)
   SECURITY_TEAM: 'security-team', // GitHub only (MCP Security Team; Cloudflare Access to securityroom.modelcontextprotocol.io)
@@ -56,25 +57,27 @@ export const ROLE_IDS = {
   AUTH_TOOL_SCOPES_WG: 'auth-wg-tool-scopes',
   AUTH_FINE_GRAINED_AUTHZ_WG: 'auth-wg-fine-grained-authz',
   TRANSPORT_WG: 'transport-wg',
-  TRIGGERS_EVENTS_WG: 'triggers-events-wg',
-  TRIGGERS_EVENTS_WG_LEADS: 'triggers-events-wg-leads',
+  TASKS_EVENTS_WG: 'tasks-events-wg',
+  TASKS_EVENTS_WG_LEADS: 'tasks-events-wg-leads',
   MCP_APPS_WG: 'mcp-apps-wg',
   SERVER_CARD_WG: 'server-card-wg',
   INTERCEPTORS_WG: 'interceptors-wg',
   FILE_UPLOADS_WG: 'file-uploads-wg',
-  AGENTS_WG: 'agents-wg',
   SKILLS_OVER_MCP_WG: 'skills-over-mcp-wg',
   SKILLS_OVER_MCP_WG_LEADS: 'skills-over-mcp-wg-leads',
   FILESYSTEMS_WG: 'filesystems-wg',
   FILESYSTEMS_WG_LEADS: 'filesystems-wg-leads',
   CORE_PRIMITIVE_WG: 'core-primitive-wg',
+  CORE_PRIMITIVES_WG_LEADS: 'core-primitives-wg-leads',
   INFRASTRUCTURE_WG: 'infrastructure-wg',
   GOVERNANCE_WG: 'governance-wg',
+  SDK_WG: 'sdk-wg',
 
   // ===================
   // Interest Groups
   // ===================
   INTEREST_GROUPS: 'interest-groups',
+  AGENTS_IG: 'agents-ig',
   AUTH_IG: 'auth-ig',
   CLIENT_IMPLEMENTOR_IG: 'client-implementor-ig',
   ENTERPRISE_MANAGED_AUTHORIZATION_IG: 'enterprise-managed-authorization-ig',

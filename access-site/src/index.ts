@@ -3,9 +3,16 @@ import { deleteCookie, getCookie } from 'hono/cookie';
 import { createMiddleware } from 'hono/factory';
 import { HTTPException } from 'hono/http-exception';
 import { secureHeaders } from 'hono/secure-headers';
-import { githubAuth } from '@hono/oauth-providers/github';
 import type { AppEnv, Env } from './env';
 import { takePending } from './db';
+import { timingSafeEqual } from './crypto';
+import {
+  exchangeGitHubCode,
+  githubAuthorizeUrl,
+  githubState,
+  readGitHubIdentity,
+  revokeGitHubToken,
+} from './github';
 import {
   authorize,
   completeAuthorization,
@@ -14,7 +21,6 @@ import {
   PENDING_COOKIE,
   token,
   userinfo,
-  type GitHubIdentity,
 } from './oidc';
 import * as pages from './pages';
 
@@ -30,6 +36,7 @@ app.use(
       baseUri: ["'none'"],
     },
     referrerPolicy: 'no-referrer',
+    crossOriginOpenerPolicy: false,
   })
 );
 
@@ -39,6 +46,7 @@ app.use(
  * work without it; production config always sets it.
  */
 const rateLimited = createMiddleware<AppEnv>(async (c, next) => {
+  c.header('Cache-Control', 'no-store');
   if (c.env.RATE_LIMITER) {
     const ip = c.req.header('CF-Connecting-IP') ?? 'unknown';
     const { success } = await c.env.RATE_LIMITER.limit({ key: ip });
@@ -53,95 +61,79 @@ const rateLimited = createMiddleware<AppEnv>(async (c, next) => {
 
 app.get('/.well-known/openid-configuration', discovery);
 app.get('/jwks', jwks);
-app.get('/authorize', rateLimited, authorize);
+app.on(['GET', 'POST'], '/authorize', rateLimited, authorize);
 app.post('/token', token);
 app.on(['GET', 'POST'], '/userinfo', userinfo);
 
 // --- GitHub sign-in, then back to Google -------------------------------------
 
-/** The GitHub token is only needed to read the user once; revoke it right away. */
-async function revokeGitHubToken(env: Env, accessToken: string): Promise<void> {
+app.get('/login', rateLimited, async (c) => {
+  const pendingId = getCookie(c, PENDING_COOKIE);
+  if (!pendingId) return c.redirect('/');
+
+  const code = c.req.query('code');
+  const error = c.req.query('error');
+  const state = c.req.query('state');
+  const expectedState = await githubState(pendingId);
+  if (code === undefined && error === undefined && state === undefined) {
+    return c.redirect(await githubAuthorizeUrl(c.env, pendingId, expectedState));
+  }
+  if (!state || !timingSafeEqual(state, expectedState)) {
+    return c.html(pages.errorPage('Sign-in was interrupted. Please start again from Google.'), 400);
+  }
+
+  deleteCookie(c, PENDING_COOKIE, { path: '/', secure: true });
+  const pending = await takePending(c.env.DB, pendingId);
+  if (!pending) {
+    return c.html(pages.errorPage('Sign-in expired. Please start again from Google.'), 400);
+  }
+  if (error) {
+    const url = new URL(pending.redirect_uri);
+    url.searchParams.set(
+      'error',
+      error === 'access_denied' ? 'access_denied' : 'temporarily_unavailable'
+    );
+    if (pending.state) url.searchParams.set('state', pending.state);
+    console.log(JSON.stringify({ event: 'signin.denied', reason: 'github_oauth_error' }));
+    return c.redirect(url.toString());
+  }
+  if (!code) return c.html(pages.errorPage('GitHub did not return a code.'), 400);
+  const githubToken = await exchangeGitHubCode(c.env, code, pendingId);
+  let identity;
   try {
-    await fetch(`https://api.github.com/applications/${env.GITHUB_CLIENT_ID}/token`, {
-      method: 'DELETE',
-      headers: {
-        Accept: 'application/vnd.github+json',
-        Authorization: `Basic ${btoa(`${env.GITHUB_CLIENT_ID}:${env.GITHUB_CLIENT_SECRET}`)}`,
-        'Content-Type': 'application/json',
-        'User-Agent': 'access.modelcontextprotocol.io',
-      },
-      body: JSON.stringify({ access_token: accessToken }),
-    });
-  } catch {
-    // best effort; the token expires on its own
+    identity = await readGitHubIdentity(githubToken);
+  } finally {
+    const revoke = revokeGitHubToken(c.env, githubToken);
+    try {
+      c.executionCtx.waitUntil(revoke);
+    } catch {
+      await revoke; // no execution context (tests)
+    }
   }
-}
 
-app.get(
-  '/login',
-  rateLimited,
-  async (c, next) => {
-    // Only start a GitHub sign-in when Google is waiting for one.
-    if (!getCookie(c, PENDING_COOKIE)) return c.redirect('/');
-    return githubAuth({
-      client_id: c.env.GITHUB_CLIENT_ID,
-      client_secret: c.env.GITHUB_CLIENT_SECRET,
-      redirect_uri: `${c.env.ISSUER}/login`,
-    })(c, next);
-  },
-  async (c) => {
-    // The sign-in library's OAuth state cookie is single-use; drop it.
-    deleteCookie(c, 'state', { path: '/', secure: true });
-    const githubToken = c.get('token')?.token;
-    if (githubToken) {
-      const revoke = revokeGitHubToken(c.env, githubToken);
-      try {
-        c.executionCtx.waitUntil(revoke);
-      } catch {
-        await revoke; // no execution context (tests)
-      }
-    }
-
-    const user = c.get('user-github');
-    if (typeof user?.id !== 'number' || typeof user.login !== 'string') {
-      throw new HTTPException(502, { message: 'GitHub did not return a user.' });
-    }
-    const identity: GitHubIdentity = {
-      id: String(user.id),
-      login: user.login,
-      name: user.name ?? null,
-    };
-
-    const pendingId = getCookie(c, PENDING_COOKIE);
-    deleteCookie(c, PENDING_COOKIE, { path: '/', secure: true });
-    const pending = pendingId ? await takePending(c.env.DB, pendingId) : null;
-    if (!pending) {
-      return c.html(pages.errorPage('Sign-in expired. Please start again from Google.'), 400);
-    }
-
-    const result = await completeAuthorization(c.env, identity, pending);
-    const log = { github_id: identity.id, github_login: identity.login };
-    if (!result.ok) {
-      console.log(JSON.stringify({ event: 'signin.denied', reason: result.reason, ...log }));
-      return c.html(
-        result.reason === 'identity_mismatch'
-          ? pages.identityMismatchPage(identity.login)
-          : result.reason === 'not_in_pilot'
-            ? pages.pilotPage(identity.login)
-            : pages.noAccountPage(identity.login, c.env.WORKSPACE_DOMAIN),
-        403
-      );
-    }
-    console.log(JSON.stringify({ event: 'signin', ...log }));
-    return c.redirect(result.location);
+  const result = await completeAuthorization(c.env, identity, pending);
+  const log = { github_id: identity.id, github_login: identity.login };
+  if (!result.ok) {
+    console.log(JSON.stringify({ event: 'signin.denied', reason: result.reason, ...log }));
+    return c.html(
+      result.reason === 'identity_mismatch' || result.reason === 'identity_unverified'
+        ? pages.identityPage(identity.login, result.reason)
+        : result.reason === 'not_in_pilot'
+          ? pages.pilotPage(identity.login)
+          : pages.noAccountPage(identity.login, c.env.WORKSPACE_DOMAIN),
+      403
+    );
   }
-);
+  console.log(JSON.stringify({ event: 'signin', ...log }));
+  return c.redirect(result.location);
+});
 
 app.get('/', (c) => c.html(pages.homePage(c.env.WORKSPACE_DOMAIN)));
 app.get('/healthz', (c) => c.text('ok'));
 
 app.onError((err, c) => {
-  if (err instanceof HTTPException && err.status < 500) {
+  if (err instanceof HTTPException) {
+    if (err.status === 502) console.warn(err.message);
     return c.html(
       pages.errorPage('Sign-in was interrupted. Please start again from Google.'),
       err.status

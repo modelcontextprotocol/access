@@ -1,32 +1,19 @@
-/**
- * Who may sign in, and as which Workspace address, read from the same config
- * Pulumi uses to provision accounts (src/config in this repo). users.ts stays
- * the source of truth; the Worker bundles it and is redeployed on every change.
- */
 import { MEMBERS } from '../../src/config/users';
-import { buildRoleLookup, type Role } from '../../src/config/roles';
-import { hasProvisionUserRole, type Member } from '../../src/config/utils';
-import type { RoleId } from '../../src/config/roleIds';
+import { buildRoleLookup } from '../../src/config/roles';
+import { hasGoogleWorkspaceAccount } from '../../src/config/utils';
 
-const roleLookup: Map<RoleId, Role> = buildRoleLookup();
+const roleLookup = buildRoleLookup();
 
-const membersByLogin = new Map<string, Member>();
+const workspaceAccounts = new Map<string, { prefix: string; githubUserId?: number }>();
 for (const member of MEMBERS) {
-  if (member.github) membersByLogin.set(member.github.toLowerCase(), member);
+  if (member.github && hasGoogleWorkspaceAccount(member, roleLookup)) {
+    workspaceAccounts.set(member.github.toLowerCase(), {
+      prefix: member.googleEmailPrefix.toLowerCase(),
+      githubUserId: member.githubUserId,
+    });
+  }
 }
 
-export function findMember(githubLogin: string): Member | undefined {
-  return membersByLogin.get(githubLogin.toLowerCase());
-}
-
-/**
- * The Workspace address this GitHub user signs in as, or null if they have
- * none: not in users.ts, no googleEmailPrefix, opted out, or no longer in a
- * role that grants an account (same rule Pulumi uses to provision).
- */
-export function workspaceEmailFor(githubLogin: string, domain: string): string | null {
-  const member = findMember(githubLogin);
-  if (!member?.googleEmailPrefix || member.skipGoogleUserProvisioning) return null;
-  if (!hasProvisionUserRole(member.memberOf, roleLookup)) return null;
-  return `${member.googleEmailPrefix.toLowerCase()}@${domain}`;
+export function workspaceAccountFor(githubLogin: string) {
+  return workspaceAccounts.get(githubLogin.toLowerCase());
 }

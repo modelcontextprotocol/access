@@ -58,11 +58,23 @@ jobs:
         with:
           credentials_json: ${{ secrets.GCP_PROD_SERVICE_ACCOUNT_KEY }}
 
+      # Only what a preview without refresh reads: the organization role list.
+      # `owner` is required; without it the token only covers this repository.
+      - name: Create GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        with:
+          client-id: ${{ vars.DEPLOY_APP_CLIENT_ID }}
+          private-key: ${{ secrets.DEPLOY_APP_PRIVATE_KEY }}
+          owner: modelcontextprotocol
+          permission-metadata: read
+          permission-organization-custom-org-roles: read
+
       - name: Preview changes
         id: preview
         env:
           PULUMI_PASSPHRASE: ${{ secrets.PULUMI_PROD_PASSPHRASE }}
-          GITHUB_TOKEN: ${{ secrets.PULUMI_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
           ORG_BILLING_EMAIL: ${{ secrets.ORG_BILLING_EMAIL }}
           DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
           DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
@@ -105,7 +117,7 @@ jobs:
           exit $PREVIEW_EXIT_CODE
 
       - name: Comment on PR
-        if: always() && steps.preview.conclusion != 'skipped'
+        if: ${{ !cancelled() }}
         uses: actions/github-script@v7
         with:
           script: |

@@ -60,20 +60,23 @@ export function noAccountPage(login: string, domain: string): Html {
   return layout(
     html`<p class="error">@${login} has no @${domain} account.</p>
       <p>
-        Accounts are set up in
-        <a href="https://github.com/modelcontextprotocol/access">modelcontextprotocol/access</a>: if
-        you are a maintainer, open a PR adding <code>googleEmailPrefix</code> to your entry in
-        <code>src/config/users.ts</code>.
+        If you expect a Workspace account, ask the Infrastructure WG to check your entry in
+        <a href="https://github.com/modelcontextprotocol/access">modelcontextprotocol/access</a>.
       </p>`
   );
 }
 
-export function identityMismatchPage(login: string): Html {
+export function identityPage(
+  login: string,
+  reason: 'identity_mismatch' | 'identity_unverified'
+): Html {
   return layout(
     html`<p class="error">Sign-in refused for @${login}.</p>
       <p>
-        This GitHub login was previously used by a different GitHub account. If you renamed your
-        account, ask in the Infrastructure WG channel to update your entry in
+        ${reason === 'identity_unverified'
+          ? 'This Workspace account has no verified GitHub ID for sign-in yet.'
+          : 'This GitHub account does not match the verified ID for this Workspace account.'}
+        Ask the Infrastructure WG to check your entry in
         <a href="https://github.com/modelcontextprotocol/access">modelcontextprotocol/access</a>.
       </p>`
   );
