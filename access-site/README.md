@@ -77,11 +77,14 @@ One-time steps, in order. Secrets go straight from the command line into GitHub 
 
 - **Pilot rollout.** `PILOT_GITHUB_LOGINS` in `wrangler.toml` limits sign-in to the listed logins (initially `sambhav`). Before adding anyone, confirm the GitHub account with the maintainer and check its numeric ID against a trusted GitHub record. Add `githubUserId` to their `users.ts` entry in a reviewed PR. Keep the Google profile scoped to users whose IDs are verified and whose GitHub sign-in is enabled. Before removing the pilot allowlist and assigning the profile to the entire **Model Context Protocol** OU, verify IDs and account mappings for everyone affected, including existing Workspace accounts.
 - **GitHub renames.** Confirm the new login against the existing ID, then update the login in `users.ts` and in the pilot list if applicable. A recreated GitHub account has a different ID and requires fresh verification.
-- **Rotate the signing key.**
-  1. Generate a new private key as in setup step 2, and keep it offline until the cutover. Export its public JWK with the same RFC 7638 thumbprint the Worker uses for its `kid`.
-  2. Set `ACCESS_SITE_OIDC_NEXT_JWK` to the new public JWK and re-run the workflow. Check that `/jwks` contains both keys and wait at least five minutes for caches to refresh.
-  3. Set `ACCESS_SITE_OIDC_PREVIOUS_JWK` to the old public JWK, then replace `ACCESS_SITE_OIDC_SIGNING_KEY` with the new private key and deploy. Check that sign-in works and that `/jwks` still lists both keys. The Worker deduplicates the active key while it is also in the next slot.
-  4. After a day, set both `ACCESS_SITE_OIDC_PREVIOUS_JWK` and `ACCESS_SITE_OIDC_NEXT_JWK` to `{}` and re-run the workflow.
+- **Rotate the signing key.** `ACCESS_SITE_OIDC_ROTATION_JWKS` holds a JWK Set (`{"keys": [...]}`) of public keys that `/jwks` publishes alongside the active key.
+  1. Generate a new private key as in setup step 2 and keep it offline until the cutover.
+  2. Set `ACCESS_SITE_OIDC_ROTATION_JWKS` to the new public key and re-run the workflow. Check that `/jwks` lists both keys, then wait at least five minutes for caches to refresh.
+  3. Set `ACCESS_SITE_OIDC_ROTATION_JWKS` to the old public key, replace `ACCESS_SITE_OIDC_SIGNING_KEY` with the new private key, and re-run the workflow. Check that sign-in works and `/jwks` still lists both keys.
+  4. After a day, set `ACCESS_SITE_OIDC_ROTATION_JWKS` to `{}` and re-run the workflow.
+
+  Each `kid` must be the key's RFC 7638 thumbprint, as the Worker computes for the active key, so the old key's entry can be copied from `/jwks` as is.
+
 - **Logs.** `signin.denied` with `reason: identity_mismatch` means the returned GitHub ID differed from the configured ID. `identity_unverified` means the account still needs a reviewed ID.
 
 ## Development

@@ -18,10 +18,11 @@ export interface Env {
   OIDC_CLIENT_SECRET: string;
   /** RSA private key, PKCS#8 PEM. */
   OIDC_SIGNING_KEY: string;
-  /** Optional public JWK (JSON) of the previous signing key, published during rotation. */
-  OIDC_PREVIOUS_JWK?: string;
-  /** Optional public JWK (JSON) to publish before switching to a new signing key. */
-  OIDC_NEXT_JWK?: string;
+  /**
+   * Optional JWK Set (JSON) of public keys published alongside the signing key
+   * during rotation: the next key before cutover, the previous one after.
+   */
+  OIDC_ROTATION_JWKS?: string;
   GITHUB_CLIENT_SECRET: string;
 }
 

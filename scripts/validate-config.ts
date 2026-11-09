@@ -147,11 +147,15 @@ console.log('Validating member ordering in users.ts...');
     }
   }
 
-  // Check that github members are sorted alphabetically (case-insensitive)
+  // Check that github members are sorted alphabetically (case-insensitive) and
+  // listed once (Workspace sign-in maps each login to a single account)
   for (let i = 1; i < githubMembers.length; i++) {
     const prev = githubMembers[i - 1].github!.toLowerCase();
     const curr = githubMembers[i].github!.toLowerCase();
-    if (prev > curr) {
+    if (prev === curr) {
+      console.error(`ERROR: GitHub login "${githubMembers[i].github}" is listed more than once.`);
+      hasErrors = true;
+    } else if (prev > curr) {
       console.error(
         `ERROR: Members are not sorted alphabetically. "${githubMembers[i - 1].github}" should come after "${githubMembers[i].github}".`
       );

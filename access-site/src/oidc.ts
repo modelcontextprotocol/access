@@ -10,7 +10,7 @@ import type { Context } from 'hono';
 import { setCookie } from 'hono/cookie';
 import { SignJWT, createLocalJWKSet, jwtVerify, type JWK } from 'jose';
 import type { AppEnv, Env } from './env';
-import { loadSigningKey, randomToken, timingSafeEqual, verifyPkce } from './crypto';
+import { loadSigningKey, nowSeconds, randomToken, timingSafeEqual, verifyPkce } from './crypto';
 import { saveCode, savePending, takeCode, type PendingAuthorization } from './db';
 import { workspaceAccountFor } from './eligibility';
 
@@ -57,34 +57,22 @@ export function discovery(c: Ctx) {
   });
 }
 
+/** Extra public keys from OIDC_ROTATION_JWKS (a JWK Set); "{}" or bad JSON means none. */
+function rotationKeys(json: string | undefined): JWK[] {
+  try {
+    const keys = (JSON.parse(json || '{}') as { keys?: unknown }).keys;
+    return Array.isArray(keys) ? keys : [];
+  } catch {
+    return []; // Ignore a malformed optional secret rather than breaking sign-in.
+  }
+}
+
 async function publicKeys(env: Env): Promise<JWK[]> {
   const { publicJwk } = await loadSigningKey(env.OIDC_SIGNING_KEY);
   const keys = new Map<string, JWK>([[publicJwk.kid, publicJwk]]);
-  for (const configured of [env.OIDC_PREVIOUS_JWK, env.OIDC_NEXT_JWK]) {
-    if (!configured) continue;
-    try {
-      const key = JSON.parse(configured) as JWK;
-      if (
-        key.kty === 'RSA' &&
-        typeof key.n === 'string' &&
-        typeof key.e === 'string' &&
-        typeof key.kid === 'string' &&
-        key.n &&
-        key.e &&
-        key.kid &&
-        !keys.has(key.kid)
-      ) {
-        keys.set(key.kid, {
-          kty: 'RSA',
-          n: key.n,
-          e: key.e,
-          kid: key.kid,
-          alg: 'RS256',
-          use: 'sig',
-        });
-      }
-    } catch {
-      // Ignore a malformed optional key rather than breaking sign-in.
+  for (const { kty, n, e, kid } of rotationKeys(env.OIDC_ROTATION_JWKS)) {
+    if (kty === 'RSA' && n && e && kid && !keys.has(kid)) {
+      keys.set(kid, { kty, n, e, kid, alg: 'RS256', use: 'sig' });
     }
   }
   return [...keys.values()];
@@ -192,7 +180,7 @@ export async function completeAuthorization(
     email_verified: true,
     name: identity.name || identity.login,
     preferred_username: identity.login,
-    auth_time: Math.floor(Date.now() / 1000),
+    auth_time: nowSeconds(),
   };
   const code = randomToken();
   await saveCode(
