@@ -732,6 +732,17 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.INTERCEPTORS_WG],
   },
   {
+    // Same person as 'morabijn' below (work account); Discord identity lives
+    // on that entry (keyed per person, so only one entry can carry it)
+    github: 'Morabbin',
+    memberOf: [ROLE_IDS.SDK_WG],
+  },
+  {
+    github: 'morabijn',
+    discord: '823210500019453992',
+    memberOf: [ROLE_IDS.SDK_WG],
+  },
+  {
     github: 'movetz',
     discord: '1427569183427919906',
     // Emeritus maintainer of the Swift SDK
