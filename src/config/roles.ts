@@ -87,6 +87,12 @@ export const ROLES: readonly Role[] = [
     // Discord only - no GitHub equivalent
   },
   {
+    id: ROLE_IDS.RELEASE_MANAGERS,
+    description: 'Release managers',
+    discord: { role: 'release managers (synced)' },
+    // Discord only - no GitHub equivalent
+  },
+  {
     id: ROLE_IDS.LEAD_MAINTAINERS,
     description: 'Lead core maintainers',
     github: { team: 'lead-maintainers', parent: ROLE_IDS.STEERING_COMMITTEE },
