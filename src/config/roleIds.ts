@@ -15,6 +15,7 @@ export const ROLE_IDS = {
   SECURITY_TEAM: 'security-team', // GitHub only (MCP Security Team; Cloudflare Access to securityroom.modelcontextprotocol.io)
   ADMINISTRATORS: 'administrators', // Discord only
   COMMUNITY_MANAGERS: 'community-managers', // Discord only
+  RELEASE_MANAGERS: 'release-managers', // Discord only
 
   // ===================
   // Maintainer Groups

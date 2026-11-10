@@ -657,6 +657,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.TASKS_EVENTS_WG_LEADS,
       ROLE_IDS.AGENTS_IG,
       ROLE_IDS.WORKING_GROUPS,
+      ROLE_IDS.RELEASE_MANAGERS,
     ],
   },
   {
