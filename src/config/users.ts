@@ -1045,6 +1045,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
+    github: 't3dotgg',
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS],
+  },
+  {
     github: 'tadasant',
     email: 'tadas@modelcontextprotocol.io',
     discord: '400092503677599754',
