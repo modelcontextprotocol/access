@@ -643,6 +643,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.TRANSPORT_WG,
       ROLE_IDS.TYPESCRIPT_SDK,
       ROLE_IDS.APPEALS,
+      ROLE_IDS.RELEASE_MANAGERS,
     ],
   },
   {
