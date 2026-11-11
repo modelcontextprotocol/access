@@ -1,4 +1,5 @@
 import { ROLE_IDS, type RoleId } from './roleIds';
+import type { DiscordRolePermission } from './discordPermissions';
 
 /**
  * GitHub team configuration
@@ -16,6 +17,13 @@ export interface GitHubConfig {
 export interface DiscordConfig {
   /** Display name in Discord (can have spaces) */
   role: string;
+  /**
+   * Permissions Pulumi grants on this role (allowlist in discordPermissions.ts).
+   * Omit to leave the role's permissions entirely untouched. Pulumi only owns the
+   * bits listed here: other permissions set by hand in Discord are preserved, and
+   * removing an entry later revokes just that permission.
+   */
+  permissions?: readonly DiscordRolePermission[];
 }
 
 /**
@@ -151,7 +159,7 @@ export const ROLES: readonly Role[] = [
     description: 'General maintainers',
     // No parent team: must not inherit steering-committee repo permissions
     github: { team: 'maintainers' },
-    discord: { role: 'maintainers (synced)' },
+    discord: { role: 'maintainers (synced)', permissions: ['USE_EXTERNAL_EMOJIS'] },
     // GWS user accounts are opt-in: maintainers add firstName/lastName/googleEmailPrefix
     // to their entry in users.ts via PR to get an @modelcontextprotocol.io account
     google: { group: 'maintainers', allowExternalMembers: true },

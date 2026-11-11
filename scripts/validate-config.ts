@@ -16,6 +16,7 @@ import {
 import { MEMBERS } from '../src/config/users';
 import { ACCESS_POLICIES } from '../src/config/accessPolicies';
 import { DISCORD_CHANNELS, validateDiscordChannels } from '../src/config/channels';
+import { getDiscordRolePermissionErrors } from '../src/config/discordPermissions';
 import { hasProvisionUserRole, resolveGoogleMemberEmail } from '../src/config/utils';
 import type { RoleId } from '../src/config/roleIds';
 
@@ -409,6 +410,17 @@ console.log('Validating Discord channel entries in channels.ts...');
     console.warn(`WARNING: ${warning}`);
   }
   for (const error of errors) {
+    console.error(`ERROR: ${error}`);
+    hasErrors = true;
+  }
+}
+
+// Validate Discord role permissions in roles.ts
+// Only allowlisted (low-risk) permissions may be granted through config.
+console.log('Validating Discord role permissions in roles.ts...');
+for (const role of ROLES) {
+  if (!role.discord?.permissions) continue;
+  for (const error of getDiscordRolePermissionErrors(role.discord.role, role.discord.permissions)) {
     console.error(`ERROR: ${error}`);
     hasErrors = true;
   }
