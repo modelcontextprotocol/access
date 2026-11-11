@@ -5,7 +5,7 @@ import * as random from '@pulumi/random';
 import { ROLES, type Role, buildRoleLookup } from './config/roles';
 import { MEMBERS } from './config/users';
 import type { RoleId } from './config/roleIds';
-import { hasProvisionUserRole, resolveGoogleMemberEmail } from './config/utils';
+import { hasGoogleWorkspaceAccount, resolveGoogleMemberEmail } from './config/utils';
 
 const roleLookup = buildRoleLookup();
 // Groups keyed by Google group name
@@ -78,16 +78,7 @@ const provisionedUsersByEmail: Record<string, gworkspace.User> = {};
 const newUserPasswords: Record<string, pulumi.Output<string>> = {};
 
 MEMBERS.forEach((member) => {
-  if (
-    !member.firstName ||
-    !member.lastName ||
-    !member.googleEmailPrefix ||
-    member.skipGoogleUserProvisioning
-  )
-    return;
-
-  const needsUser = hasProvisionUserRole(member.memberOf, roleLookup);
-  if (!needsUser) return;
+  if (!hasGoogleWorkspaceAccount(member, roleLookup)) return;
 
   const primaryEmail = `${member.googleEmailPrefix}@modelcontextprotocol.io`;
 
@@ -112,7 +103,7 @@ MEMBERS.forEach((member) => {
       `gws-user-${member.googleEmailPrefix}`,
       {
         primaryEmail,
-        name: { familyName: member.lastName!, givenName: member.firstName! },
+        name: { familyName: member.lastName, givenName: member.firstName },
         password: hashedPassword,
         hashFunction: 'SHA-1',
         changePasswordAtNextLogin: true,
