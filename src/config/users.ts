@@ -721,6 +721,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.TRANSPORT_WG,
       ROLE_IDS.TYPESCRIPT_SDK,
       ROLE_IDS.APPEALS,
+      ROLE_IDS.RELEASE_MANAGERS,
     ],
   },
   {
@@ -736,6 +737,7 @@ export const MEMBERS: readonly Member[] = [
       ROLE_IDS.TASKS_EVENTS_WG_LEADS,
       ROLE_IDS.AGENTS_IG,
       ROLE_IDS.WORKING_GROUPS,
+      ROLE_IDS.RELEASE_MANAGERS,
     ],
   },
   {
@@ -1166,6 +1168,10 @@ export const MEMBERS: readonly Member[] = [
     githubUserId: 5621432,
     discord: '1414713222224941097',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
+  },
+  {
+    github: 't3dotgg',
+    memberOf: [ROLE_IDS.DOCS_MAINTAINERS],
   },
   {
     github: 'tadasant',
