@@ -16,6 +16,10 @@ import {
   type DiscordChannelConfig,
   type DiscordChannelState,
 } from './config/channels';
+import {
+  discordPermissionBitfield,
+  mergeDiscordRolePermissions,
+} from './config/discordPermissions';
 
 const config = new pulumi.Config('discord');
 // Discord integration is optional - only enabled if botToken and guildId are configured
@@ -141,6 +145,11 @@ interface DiscordRoleInputs {
   guildId: string;
   roleName: string;
   token: string;
+  /**
+   * Bitfield (decimal string) of the permissions Pulumi owns on this role. Absent for
+   * roles that declare no permissions: their permissions are never read or written.
+   */
+  permissions?: string;
 }
 
 interface DiscordRoleOutputs extends DiscordRoleInputs {
@@ -158,7 +167,8 @@ const discordRoleProvider: pulumi.dynamic.ResourceProvider = {
         method: 'POST',
         body: JSON.stringify({
           name: inputs.roleName,
-          permissions: '0', // No special permissions - roles are for organization only
+          // Only the declared permissions; '0' (organization only) when none are declared
+          permissions: inputs.permissions ?? '0',
           mentionable: false,
           hoist: false,
         }),
@@ -205,14 +215,33 @@ const discordRoleProvider: pulumi.dynamic.ResourceProvider = {
 
   async update(
     id: string,
-    _olds: DiscordRoleOutputs,
+    olds: DiscordRoleOutputs,
     news: DiscordRoleInputs
   ): Promise<pulumi.dynamic.UpdateResult<DiscordRoleOutputs>> {
+    const body: { name: string; permissions?: string } = { name: news.roleName };
+
+    // Touch permissions only if this role declares them now or did before; otherwise the
+    // PATCH stays name-only, exactly as for every role prior to permission support.
+    if (news.permissions !== undefined || olds.permissions !== undefined) {
+      const liveRoles = await discordFetch<DiscordRoleApiResponse[]>(
+        news.token,
+        `/guilds/${news.guildId}/roles`
+      );
+      const live = liveRoles.find((r) => r.id === id);
+      if (!live) {
+        throw new Error(`Role ${id} not found; refusing to write its permissions`);
+      }
+      // Keep every bit Pulumi does not own; set/clear only the declared ones
+      body.permissions = mergeDiscordRolePermissions(
+        live.permissions,
+        olds.permissions,
+        news.permissions
+      );
+    }
+
     await discordFetch<DiscordRoleApiResponse>(news.token, `/guilds/${news.guildId}/roles/${id}`, {
       method: 'PATCH',
-      body: JSON.stringify({
-        name: news.roleName,
-      }),
+      body: JSON.stringify(body),
     });
 
     return {
@@ -246,6 +275,7 @@ class DiscordRole extends pulumi.dynamic.Resource {
       guildId: pulumi.Input<string>;
       roleName: pulumi.Input<string>;
       token: pulumi.Input<string>;
+      permissions?: pulumi.Input<string>;
     },
     opts?: pulumi.CustomResourceOptions
   ) {
@@ -788,6 +818,11 @@ if (DISCORD_ENABLED) {
       guildId,
       roleName: role.discord.role,
       token: botToken,
+      // Omitted entirely (not undefined-valued) for roles without permissions, so their
+      // resource inputs are byte-for-byte what they were before this field existed
+      ...(role.discord.permissions && {
+        permissions: discordPermissionBitfield(role.discord.permissions),
+      }),
     });
   });
 
