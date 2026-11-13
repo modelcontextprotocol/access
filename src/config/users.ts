@@ -567,7 +567,12 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Marcelo',
     lastName: 'Trylesinski',
     googleEmailPrefix: 'marcelo',
-    memberOf: [ROLE_IDS.PYTHON_SDK, ROLE_IDS.SDK_MAINTAINERS, ROLE_IDS.SECURITY_TEAM],
+    memberOf: [
+      ROLE_IDS.MAINTAINERS,
+      ROLE_IDS.PYTHON_SDK,
+      ROLE_IDS.SDK_MAINTAINERS,
+      ROLE_IDS.SECURITY_TEAM,
+    ],
   },
   {
     github: 'koic',

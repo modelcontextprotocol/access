@@ -35,6 +35,12 @@ import {
   type DiscordChannelConfig,
   type DiscordNewChannelConfig,
 } from '../src/config/channels';
+import {
+  DISCORD_ROLE_PERMISSION_BITS,
+  discordPermissionBitfield,
+  getDiscordRolePermissionErrors,
+  mergeDiscordRolePermissions,
+} from '../src/config/discordPermissions';
 
 let passed = 0;
 let failed = 0;
@@ -671,6 +677,42 @@ test('Tag drift ignores Discord tag IDs and ordering but catches changed tags', 
     getDiscordChannelDrift(renamed, state).join(',') === 'availableTags'
   );
 });
+
+// Discord role permissions
+console.log('\nTesting Discord role permissions...\n');
+const EMOJI = (1n << 18n).toString(); // USE_EXTERNAL_EMOJIS
+const HAND_SET = ((1n << 10n) | (1n << 11n)).toString(); // VIEW_CHANNEL | SEND_MESSAGES
+test('USE_EXTERNAL_EMOJIS is bit 18 (262144)', () =>
+  discordPermissionBitfield(['USE_EXTERNAL_EMOJIS']) === '262144' && EMOJI === '262144');
+test('No permissions bitfield is 0', () => discordPermissionBitfield([]) === '0');
+test('Granting keeps permissions set by hand on the role', () =>
+  mergeDiscordRolePermissions(HAND_SET, undefined, EMOJI) ===
+  (BigInt(HAND_SET) | BigInt(EMOJI)).toString());
+test('Re-applying the same permissions is a no-op', () => {
+  const live = (BigInt(HAND_SET) | BigInt(EMOJI)).toString();
+  return mergeDiscordRolePermissions(live, EMOJI, EMOJI) === live;
+});
+test('Removing a permission from config clears only that bit', () => {
+  const live = (BigInt(HAND_SET) | BigInt(EMOJI)).toString();
+  return mergeDiscordRolePermissions(live, EMOJI, undefined) === HAND_SET;
+});
+test('Permission allowlist has no administrative permissions', () => {
+  const dangerous = [0, 1, 2, 3, 4, 5, 13, 17, 22, 23, 24, 27, 28, 29, 30, 34, 40].map(
+    (bit) => 1n << BigInt(bit)
+  ); // CREATE_INVITE..ADMINISTRATOR, MANAGE_*, MENTION_EVERYONE, MUTE/DEAFEN/MOVE, timeouts
+  return Object.values(DISCORD_ROLE_PERMISSION_BITS).every((bits) => !dangerous.includes(bits));
+});
+test('Unknown and duplicate role permissions are rejected', () =>
+  getDiscordRolePermissionErrors('x', ['ADMINISTRATOR']).length === 1 &&
+  getDiscordRolePermissionErrors('x', ['USE_EXTERNAL_EMOJIS', 'USE_EXTERNAL_EMOJIS']).length ===
+    1 &&
+  getDiscordRolePermissionErrors('x', ['USE_EXTERNAL_EMOJIS']).length === 0);
+test('Configured Discord role permissions are all valid', () =>
+  ROLES.every(
+    (r) =>
+      !r.discord?.permissions ||
+      getDiscordRolePermissionErrors(r.discord.role, r.discord.permissions).length === 0
+  ));
 
 // Summary
 console.log(`\n${passed} passed, ${failed} failed`);
