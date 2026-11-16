@@ -16,6 +16,7 @@ export const ROLE_IDS = {
   ADMINISTRATORS: 'administrators', // Discord only
   COMMUNITY_MANAGERS: 'community-managers', // Discord only
   RELEASE_MANAGERS: 'release-managers', // Discord only
+  SECURITY_AUDIT_2026: 'security-audit-2026', // Discord only (external auditors)
 
   // ===================
   // Maintainer Groups
