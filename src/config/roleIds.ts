@@ -11,7 +11,7 @@ export const ROLE_IDS = {
   LEAD_MAINTAINERS: 'lead-maintainers',
   MEMBERS: 'members', // Contributor ladder Member tier
   MODERATORS: 'moderators',
-  SECURITY_MANAGERS: 'security-managers', // GitHub only (org security_manager role)
+  SECURITY_MANAGERS: 'security-managers', // GitHub (org security_manager role) and the security@ email group
   SECURITY_TEAM: 'security-team', // GitHub only (MCP Security Team; Cloudflare Access to securityroom.modelcontextprotocol.io)
   ADMINISTRATORS: 'administrators', // Discord only
   COMMUNITY_MANAGERS: 'community-managers', // Discord only
