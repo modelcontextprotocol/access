@@ -1,14 +1,11 @@
 /**
- * Eligibility and team membership, computed from the same config Pulumi uses
- * to manage GitHub teams (src/config in this repo). The Worker is redeployed
- * whenever that config changes, so it always agrees with the GitHub teams.
- *
- * Reading the config rather than calling the GitHub teams API also covers
- * provisionUser roles that have no GitHub team (e.g. wg-ig-facilitators).
+ * Who may sign in, and as which Workspace address, read from the same config
+ * Pulumi uses to provision accounts (src/config in this repo). users.ts stays
+ * the source of truth; the Worker bundles it and is redeployed on every change.
  */
 import { MEMBERS } from '../../src/config/users';
-import { ROLES, buildRoleLookup, type Role } from '../../src/config/roles';
-import { githubTeamsFor, hasProvisionUserRole, type Member } from '../../src/config/utils';
+import { buildRoleLookup, type Role } from '../../src/config/roles';
+import { hasProvisionUserRole, type Member } from '../../src/config/utils';
 import type { RoleId } from '../../src/config/roleIds';
 
 const roleLookup: Map<RoleId, Role> = buildRoleLookup();
@@ -22,54 +19,14 @@ export function findMember(githubLogin: string): Member | undefined {
   return membersByLogin.get(githubLogin.toLowerCase());
 }
 
-/** Same rule Pulumi uses to decide who may have a Workspace account. */
-export function isEligible(member: Member | undefined): boolean {
-  if (!member || member.skipGoogleUserProvisioning) return false;
-  return hasProvisionUserRole(member.memberOf, roleLookup);
-}
-
-/** GitHub team slugs the member belongs to, including parent teams. */
-export function teamsFor(member: Member | undefined): string[] {
-  return member ? githubTeamsFor(member.memberOf, roleLookup) : [];
-}
-
-/** Email prefixes that must never be handed to a person. */
-export const RESERVED_PREFIXES: ReadonlySet<string> = (() => {
-  const reserved = new Set([
-    'abuse',
-    'admin',
-    'administrator',
-    'all',
-    'billing',
-    'everyone',
-    'help',
-    'hostmaster',
-    'info',
-    'legal',
-    'mailer-daemon',
-    'no-reply',
-    'noreply',
-    'postmaster',
-    'press',
-    'privacy',
-    'root',
-    'security',
-    'support',
-    'team',
-    'webmaster',
-  ]);
-  for (const role of ROLES) {
-    reserved.add(role.id);
-    if (role.github) reserved.add(role.github.team);
-    if (role.google) reserved.add(role.google.group);
-  }
-  return reserved;
-})();
-
 /**
- * Prefixes already assigned to someone in users.ts. A member may claim their
- * own configured prefix; nobody else may.
+ * The Workspace address this GitHub user signs in as, or null if they have
+ * none: not in users.ts, no googleEmailPrefix, opted out, or no longer in a
+ * role that grants an account (same rule Pulumi uses to provision).
  */
-export function prefixOwner(prefix: string): Member | undefined {
-  return MEMBERS.find((m) => m.googleEmailPrefix?.toLowerCase() === prefix);
+export function workspaceEmailFor(githubLogin: string, domain: string): string | null {
+  const member = findMember(githubLogin);
+  if (!member?.googleEmailPrefix || member.skipGoogleUserProvisioning) return null;
+  if (!hasProvisionUserRole(member.memberOf, roleLookup)) return null;
+  return `${member.googleEmailPrefix.toLowerCase()}@${domain}`;
 }
