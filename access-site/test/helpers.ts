@@ -1,7 +1,6 @@
 /**
  * Test harness: a D1 stand-in over node:sqlite (real SQL, including
- * DELETE ... RETURNING), generated keys, and a fetch mock for GitHub. Picks
- * real members from src/config so tests follow the live rules.
+ * DELETE ... RETURNING), generated keys, and a fetch mock for GitHub.
  */
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -9,9 +8,6 @@ import { DatabaseSync } from 'node:sqlite';
 import { exportPKCS8, generateKeyPair } from 'jose';
 import { vi } from 'vitest';
 import type { Env } from '../src/env';
-import { MEMBERS } from '../../src/config/users';
-import { buildRoleLookup } from '../../src/config/roles';
-import { hasProvisionUserRole } from '../../src/config/utils';
 
 // --- D1 stand-in ---------------------------------------------------------------
 
@@ -78,57 +74,17 @@ export async function createEnv(overrides: Partial<Env> = {}): Promise<Env> {
   };
 }
 
-// --- Config-driven test identities ---------------------------------------------
-
-const roleLookup = buildRoleLookup();
-
-/** A member who has a Workspace account in users.ts. */
-export function memberWithAccount() {
-  const m = MEMBERS.find(
-    (m) =>
-      m.github &&
-      m.googleEmailPrefix &&
-      !m.skipGoogleUserProvisioning &&
-      hasProvisionUserRole(m.memberOf, roleLookup)
-  );
-  if (!m) throw new Error('no member with a Workspace account in config');
-  return m;
-}
-
-/** An eligible member with no googleEmailPrefix (no account yet). */
-export function memberWithoutAccount() {
-  const m = MEMBERS.find(
-    (m) =>
-      m.github &&
-      !m.googleEmailPrefix &&
-      !m.skipGoogleUserProvisioning &&
-      hasProvisionUserRole(m.memberOf, roleLookup)
-  );
-  if (!m) throw new Error('no eligible member without an account in config');
-  return m;
-}
-
-/** A configured member with a prefix but no role that grants an account, if any; else any ineligible member. */
-export function ineligibleMember() {
-  const m = MEMBERS.find((m) => m.github && !hasProvisionUserRole(m.memberOf, roleLookup));
-  if (!m) throw new Error('no ineligible member in config');
-  return m;
-}
-
 // --- GitHub fetch mock --------------------------------------------------------------
 
 export function mockGitHub(user: { id: number; login: string; name: string | null }) {
   const json = (data: unknown) =>
     new Response(JSON.stringify(data), { headers: { 'Content-Type': 'application/json' } });
-  const mock = vi.fn(async (input: RequestInfo | URL) => {
+  const mock = vi.fn(async (input: RequestInfo | URL, _init?: RequestInit) => {
     const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
     if (url === 'https://github.com/login/oauth/access_token') {
       return json({ access_token: 'gh-user-token', token_type: 'bearer', scope: '' });
     }
     if (url === 'https://api.github.com/user') return json({ ...user, email: null });
-    if (url === 'https://api.github.com/user/emails') {
-      return json([{ email: 'person@example.com', primary: true, verified: true }]);
-    }
     if (url === 'https://api.github.com/applications/gh-client/token') {
       return new Response(null, { status: 204 });
     }

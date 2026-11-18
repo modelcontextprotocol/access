@@ -2,7 +2,7 @@
  * Small helpers around jose and WebCrypto. All JWT/JWK work goes through jose;
  * this file only adds key caching and the few primitives jose doesn't cover.
  */
-import { calculateJwkThumbprint, exportJWK, importPKCS8, type JWK } from 'jose';
+import { base64url, calculateJwkThumbprint, exportJWK, importPKCS8, type JWK } from 'jose';
 
 const encoder = new TextEncoder();
 
@@ -10,20 +10,15 @@ export function nowSeconds(): number {
   return Math.floor(Date.now() / 1000);
 }
 
-function base64Url(bytes: ArrayBuffer | Uint8Array): string {
-  const arr = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes);
-  let binary = '';
-  for (const b of arr) binary += String.fromCharCode(b);
-  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-}
-
 export function randomToken(bytes = 32): string {
-  return base64Url(crypto.getRandomValues(new Uint8Array(bytes)));
+  return base64url.encode(crypto.getRandomValues(new Uint8Array(bytes)));
 }
 
 /** SHA-256, base64url. Used for PKCE and to store codes and session IDs hashed. */
 export async function sha256(input: string): Promise<string> {
-  return base64Url(await crypto.subtle.digest('SHA-256', encoder.encode(input)));
+  return base64url.encode(
+    new Uint8Array(await crypto.subtle.digest('SHA-256', encoder.encode(input)))
+  );
 }
 
 /** Constant-time comparison for secrets. */

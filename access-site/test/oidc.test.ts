@@ -5,19 +5,46 @@ import { createLocalJWKSet, jwtVerify } from 'jose';
 import { app } from '../src/index';
 import type { Env } from '../src/env';
 import { sha256 } from '../src/crypto';
-import { workspaceEmailFor } from '../src/eligibility';
-import { MEMBERS } from '../../src/config/users';
+import { workspaceAccountFor } from '../src/eligibility';
+import { buildRoleLookup } from '../../src/config/roles';
+import { hasGoogleWorkspaceAccount, type Member } from '../../src/config/utils';
 import {
   CLIENT_SECRET,
   CookieJar,
   GOOGLE_REDIRECT,
   ISSUER,
   createEnv,
-  ineligibleMember,
-  memberWithAccount,
-  memberWithoutAccount,
   mockGitHub,
 } from './helpers';
+
+const { pilot, existing } = vi.hoisted(() => ({
+  pilot: { id: 4242, login: 'test-pilot' },
+  existing: { id: 4243, login: 'test-existing' },
+}));
+
+vi.mock('../../src/config/users', async () => {
+  const { ROLE_IDS } = await import('../../src/config/roleIds');
+  const name = { firstName: 'Test', lastName: 'Person' };
+  const provisioning = { ...name, memberOf: [ROLE_IDS.CORE_MAINTAINERS] };
+  return {
+    MEMBERS: [
+      { ...provisioning, github: pilot.login, githubUserId: pilot.id, googleEmailPrefix: 'Pilot' },
+      {
+        ...name,
+        github: existing.login,
+        githubUserId: existing.id,
+        googleEmailPrefix: 'existing',
+        memberOf: [],
+        existingGWSUser: true,
+      },
+      { ...provisioning, github: 'unverified', googleEmailPrefix: 'unverified' },
+      { ...provisioning, github: 'missing-prefix' },
+      { ...provisioning, github: 'missing-name', googleEmailPrefix: 'incomplete', firstName: '' },
+      { ...name, github: 'missing-role', googleEmailPrefix: 'missing-role', memberOf: [] },
+      { ...provisioning, github: 'opted-out', skipGoogleUserProvisioning: true },
+    ] satisfies Member[],
+  };
+});
 
 const VERIFIER = 'v'.repeat(43) + '-verifier-for-tests';
 const DOMAIN = 'modelcontextprotocol.io';
@@ -26,20 +53,18 @@ let env: Env;
 let lastJar: CookieJar;
 let lastGitHub: ReturnType<typeof mockGitHub>;
 
-async function call(path: string, jar: CookieJar) {
-  const res = await app.request(`${ISSUER}${path}`, { headers: { Cookie: jar.header() } }, env);
+async function call(path: string, jar: CookieJar, init: RequestInit = {}) {
+  const res = await app.request(
+    `${ISSUER}${path}`,
+    { ...init, headers: { Cookie: jar.header() } },
+    env
+  );
   jar.store(res);
   return res;
 }
 
-/** Runs Google -> /authorize -> GitHub -> back; returns the final response. */
-async function signIn(
-  github: { id: number; login: string },
-  params: Record<string, string | undefined> = {}
-) {
-  lastGitHub = mockGitHub({ ...github, name: 'Test Person' });
+async function startSignIn(params: Record<string, string | undefined> = {}, method = 'GET') {
   const jar = new CookieJar();
-  lastJar = jar;
   const query = new URLSearchParams(
     Object.entries({
       client_id: 'google-workspace',
@@ -53,16 +78,31 @@ async function signIn(
       ...params,
     }).filter((e): e is [string, string] => e[1] !== undefined)
   );
-  const authorize = await call(`/authorize?${query}`, jar);
-  expect(authorize.status).toBe(302);
+  const authorize =
+    method === 'POST'
+      ? await call('/authorize', jar, { method, body: query })
+      : await call(`/authorize?${query}`, jar);
+  expect(authorize.status).toBe(method === 'POST' ? 303 : 302);
   expect(authorize.headers.get('Location')).toBe('/login');
+  expect(authorize.headers.getSetCookie()).toEqual([
+    expect.stringMatching(/^__Host-mcp_pending=.+; Path=\/; .*HttpOnly; Secure; SameSite=Lax$/i),
+  ]);
+  expect(authorize.headers.get('Cross-Origin-Opener-Policy')).toBeNull();
 
   const toGitHub = await call('/login', jar);
   expect(toGitHub.status).toBe(302);
   const githubUrl = new URL(toGitHub.headers.get('Location')!);
   expect(githubUrl.origin).toBe('https://github.com');
+  expect(githubUrl.searchParams.get('redirect_uri')).toBe(`${ISSUER}/login`);
+  return { jar, githubUrl, state: githubUrl.searchParams.get('state')! };
+}
 
-  return call(`/login?code=gh-code&state=${githubUrl.searchParams.get('state')}`, jar);
+/** Runs Google -> /authorize -> GitHub -> back; returns the final response. */
+async function signIn(github = pilot, params: Record<string, string | undefined> = {}) {
+  lastGitHub = mockGitHub({ ...github, name: 'Test Person' });
+  const { jar, state } = await startSignIn(params);
+  lastJar = jar;
+  return call(`/login?code=gh-code&state=${state}`, jar);
 }
 
 function codeFrom(res: Response): string {
@@ -101,16 +141,27 @@ afterEach(() => {
 });
 
 describe('users.ts mapping', () => {
-  it('maps a configured member to their address, case-insensitively', () => {
-    const m = memberWithAccount();
-    expect(workspaceEmailFor(m.github!.toUpperCase(), DOMAIN)).toBe(
-      `${m.googleEmailPrefix!.toLowerCase()}@${DOMAIN}`
-    );
+  it('maps both provisioned and existing Workspace accounts, ignoring login case', () => {
+    expect(workspaceAccountFor(pilot.login.toUpperCase())).toEqual({
+      prefix: 'pilot',
+      githubUserId: pilot.id,
+    });
+    expect(workspaceAccountFor(existing.login)).toEqual({
+      prefix: 'existing',
+      githubUserId: existing.id,
+    });
   });
-  it('returns null without a prefix, without an eligible role, or when unknown', () => {
-    expect(workspaceEmailFor(memberWithoutAccount().github!, DOMAIN)).toBeNull();
-    expect(workspaceEmailFor(ineligibleMember().github!, DOMAIN)).toBeNull();
-    expect(workspaceEmailFor('definitely-not-a-configured-user', DOMAIN)).toBeNull();
+
+  it('does not map unprovisioned, opted-out or unknown members', () => {
+    for (const login of [
+      'missing-prefix',
+      'missing-name',
+      'missing-role',
+      'opted-out',
+      'unknown',
+    ]) {
+      expect(workspaceAccountFor(login), login).toBeUndefined();
+    }
   });
 });
 
@@ -147,12 +198,31 @@ describe('discovery', () => {
     };
     expect(one.keys).toHaveLength(1);
   });
+
+  it('publishes the next key before cutover and keeps both keys across the switch', async () => {
+    const jwks = async (binding: Env) => {
+      const response = await app.request(`${ISSUER}/jwks`, {}, binding);
+      expect(response.headers.get('Cache-Control')).toBe('public, max-age=300');
+      return ((await response.json()) as { keys: { kid: string }[] }).keys;
+    };
+    const next = await createEnv();
+    const [currentKey] = await jwks(env);
+    const [nextKey] = await jwks(next);
+    const nextJwk = JSON.stringify(nextKey);
+    expect(await jwks({ ...env, OIDC_NEXT_JWK: nextJwk })).toEqual([currentKey, nextKey]);
+    expect(
+      await jwks({
+        ...next,
+        OIDC_PREVIOUS_JWK: JSON.stringify(currentKey),
+        OIDC_NEXT_JWK: nextJwk,
+      })
+    ).toEqual([nextKey, currentKey]);
+  });
 });
 
 describe('sign-in', () => {
   it('signs in a configured member with the GitHub ID as subject', async () => {
-    const member = memberWithAccount();
-    const back = await signIn({ id: 4242, login: member.github! });
+    const back = await signIn();
     expect(back.status).toBe(302);
     const location = new URL(back.headers.get('Location')!);
     expect(`${location.origin}${location.pathname}`).toBe(GOOGLE_REDIRECT);
@@ -168,9 +238,9 @@ describe('sign-in', () => {
       audience: 'google-workspace',
     });
     expect(payload.sub).toBe('4242');
-    expect(payload.email).toBe(`${member.googleEmailPrefix!.toLowerCase()}@${DOMAIN}`);
+    expect(payload.email).toBe(`pilot@${DOMAIN}`);
     expect(payload.nonce).toBe('google-nonce');
-    expect(payload.preferred_username).toBe(member.github);
+    expect(payload.preferred_username).toBe(pilot.login);
 
     const info = await app.request(
       `${ISSUER}/userinfo`,
@@ -181,27 +251,29 @@ describe('sign-in', () => {
   });
 
   it('works when the client sends no PKCE challenge', async () => {
-    const back = await signIn(
-      { id: 1, login: memberWithAccount().github! },
-      { code_challenge: undefined, code_challenge_method: undefined }
-    );
+    const back = await signIn(pilot, {
+      code_challenge: undefined,
+      code_challenge_method: undefined,
+    });
     expect((await exchange(codeFrom(back), { code_verifier: '' })).status).toBe(200);
   });
 
   it('refuses GitHub users without an account in users.ts', async () => {
     for (const login of [
-      memberWithoutAccount().github!,
-      ineligibleMember().github!,
-      'definitely-not-a-configured-user',
+      'missing-prefix',
+      'missing-name',
+      'missing-role',
+      'opted-out',
+      'unknown',
     ]) {
       const res = await signIn({ id: 7, login });
       expect(res.status, login).toBe(403);
-      expect(await res.text()).toContain('googleEmailPrefix');
+      expect(await res.text()).toContain('Infrastructure WG');
     }
   });
 
   it('rejects code replay', async () => {
-    const code = codeFrom(await signIn({ id: 2, login: memberWithAccount().github! }));
+    const code = codeFrom(await signIn());
     expect((await exchange(code)).status).toBe(200);
     const replay = await exchange(code);
     expect(replay.status).toBe(400);
@@ -209,11 +281,10 @@ describe('sign-in', () => {
   });
 
   it('rejects a wrong PKCE verifier and a wrong client secret', async () => {
-    const login = memberWithAccount().github!;
-    const code = codeFrom(await signIn({ id: 3, login }));
+    const code = codeFrom(await signIn());
     expect((await exchange(code, { code_verifier: 'x'.repeat(43) })).status).toBe(400);
 
-    const code2 = codeFrom(await signIn({ id: 3, login }));
+    const code2 = codeFrom(await signIn());
     const res = await app.request(
       `${ISSUER}/token`,
       {
@@ -251,15 +322,70 @@ describe('sign-in', () => {
 });
 
 describe('security hardening', () => {
-  it('refuses a login that is pinned to a different GitHub account', async () => {
-    const login = memberWithAccount().github!;
-    expect((await signIn({ id: 100, login })).status).toBe(302);
-    // Same login, different GitHub user ID: a freed and re-registered name.
-    const res = await signIn({ id: 200, login });
+  it('rejects a recycled login on its first sign-in', async () => {
+    const res = await signIn({ id: 999, login: pilot.login });
     expect(res.status).toBe(403);
-    expect(await res.text()).toContain('previously used by a different GitHub account');
-    // The original owner still signs in.
-    expect((await signIn({ id: 100, login: login.toUpperCase() })).status).toBe(302);
+    expect(await res.text()).toContain('does not match the verified ID');
+    expect((await signIn({ ...pilot, login: pilot.login.toUpperCase() })).status).toBe(302);
+  });
+
+  it('refuses an existing account without a reviewed GitHub ID', async () => {
+    const res = await signIn({ id: 7, login: 'unverified' });
+    expect(res.status).toBe(403);
+    expect(await res.text()).toContain('no verified GitHub ID');
+  });
+
+  it('signs in an existing Workspace account without a provisioning role', async () => {
+    const res = await signIn(existing);
+    expect(res.status).toBe(302);
+    expect((await exchange(codeFrom(res))).status).toBe(200);
+  });
+
+  it('returns GitHub cancellation to Google with its original state and consumes the request', async () => {
+    const github = mockGitHub({ ...pilot, name: null });
+    const { jar, state } = await startSignIn();
+    const res = await call(`/login?error=access_denied&state=${state}`, jar);
+    expect(res.status).toBe(302);
+    const redirect = new URL(res.headers.get('Location')!);
+    expect(`${redirect.origin}${redirect.pathname}`).toBe(GOOGLE_REDIRECT);
+    expect(Object.fromEntries(redirect.searchParams)).toEqual({
+      error: 'access_denied',
+      state: 'google-state',
+    });
+    expect(jar.header()).toBe('');
+    expect(github).not.toHaveBeenCalled();
+  });
+
+  it('rejects state from a different browser even if a legacy state cookie matches', async () => {
+    const github = mockGitHub({ ...pilot, name: null });
+    const first = await startSignIn();
+    const second = await startSignIn();
+    expect(first.state).not.toBe(second.state);
+    const injected = await app.request(
+      `${ISSUER}/login?code=gh-code&state=${second.state}`,
+      { headers: { Cookie: `state=${second.state}; ${first.jar.header()}` } },
+      env
+    );
+    expect(injected.status).toBe(400);
+    expect(github).not.toHaveBeenCalled();
+    expect((await call(`/login?code=gh-code&state=${first.state}`, first.jar)).status).toBe(302);
+
+    const exchange = github.mock.calls.find(
+      ([url]) => url === 'https://github.com/login/oauth/access_token'
+    );
+    const form = exchange?.[1]?.body as URLSearchParams;
+    expect(await sha256(form.get('code_verifier')!)).toBe(
+      first.githubUrl.searchParams.get('code_challenge')
+    );
+    expect(first.githubUrl.searchParams.get('code_challenge_method')).toBe('S256');
+    expect(form.get('redirect_uri')).toBe(`${ISSUER}/login`);
+  });
+
+  it('supports form POST /authorize and returns 502 on a malformed GitHub identity', async () => {
+    mockGitHub({ id: 0, login: pilot.login, name: null });
+    vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const { jar, state } = await startSignIn({}, 'POST');
+    expect((await call(`/login?code=gh-code&state=${state}`, jar)).status).toBe(502);
   });
 
   it('rate-limits /authorize per IP when the limiter is bound', async () => {
@@ -276,7 +402,7 @@ describe('security hardening', () => {
 
   it('decodes form-encoded Basic client credentials (RFC 6749 2.3.1)', async () => {
     env = await createEnv({ OIDC_CLIENT_SECRET: 'a b:c+d' });
-    const code = codeFrom(await signIn({ id: 5, login: memberWithAccount().github! }));
+    const code = codeFrom(await signIn());
     const encoded = `google-workspace:${encodeURIComponent('a b:c+d').replace(/%20/g, '+')}`;
     const res = await app.request(
       `${ISSUER}/token`,
@@ -299,23 +425,23 @@ describe('security hardening', () => {
   });
 
   it('rejects a code_verifier when no challenge was sent (PKCE downgrade)', async () => {
-    const back = await signIn(
-      { id: 6, login: memberWithAccount().github! },
-      { code_challenge: undefined, code_challenge_method: undefined }
-    );
+    const back = await signIn(pilot, {
+      code_challenge: undefined,
+      code_challenge_method: undefined,
+    });
     const res = await exchange(codeFrom(back));
     expect(res.status).toBe(400);
     expect(((await res.json()) as { error: string }).error).toBe('invalid_grant');
   });
 
-  it('stamps auth_time at GitHub sign-in, revokes the GitHub token and clears the state cookie', async () => {
+  it('stamps auth_time at GitHub sign-in, revokes the GitHub token and clears the pending cookie', async () => {
     const before = Math.floor(Date.now() / 1000);
-    const back = await signIn({ id: 8, login: memberWithAccount().github! });
+    const back = await signIn();
     expect(lastGitHub).toHaveBeenCalledWith(
       'https://api.github.com/applications/gh-client/token',
       expect.objectContaining({ method: 'DELETE' })
     );
-    expect(lastJar.header()).not.toMatch(/(^|; )state=/);
+    expect(lastJar.header()).toBe('');
 
     const body = (await (await exchange(codeFrom(back))).json()) as { id_token: string };
     const jwks = (await (await app.request(`${ISSUER}/jwks`, {}, env)).json()) as { keys: never[] };
@@ -329,7 +455,9 @@ describe('security hardening', () => {
 });
 
 describe('users.ts invariants the sign-in mapping relies on', () => {
-  it('has no two members with the same GitHub login or email prefix, ignoring case', () => {
+  it('has no two members with the same GitHub login or email prefix, ignoring case', async () => {
+    const { MEMBERS } =
+      await vi.importActual<typeof import('../../src/config/users')>('../../src/config/users');
     const logins = MEMBERS.flatMap((m) => (m.github ? [m.github.toLowerCase()] : []));
     expect(new Set(logins).size).toBe(logins.length);
     const prefixes = MEMBERS.flatMap((m) =>
@@ -341,26 +469,29 @@ describe('users.ts invariants the sign-in mapping relies on', () => {
 
 describe('rollout pilot', () => {
   it('only lets the pilot logins sign in when PILOT_GITHUB_LOGINS is set', async () => {
-    const withAccount = MEMBERS.filter((m) => m.github && workspaceEmailFor(m.github, DOMAIN));
-    const [pilot, other] = withAccount;
-    env = await createEnv({ PILOT_GITHUB_LOGINS: ` ${pilot!.github!.toUpperCase()} ` });
+    env = await createEnv({ PILOT_GITHUB_LOGINS: ` ${pilot.login.toUpperCase()} ` });
+    expect((await signIn()).status).toBe(302);
 
-    expect((await signIn({ id: 11, login: pilot!.github! })).status).toBe(302);
-
-    const res = await signIn({ id: 12, login: other!.github! });
+    const res = await signIn(existing);
     expect(res.status).toBe(403);
     expect(await res.text()).toContain("isn't enabled");
   });
 
-  it('maps every pilot login in wrangler.toml to a Workspace account', () => {
+  it('maps every live pilot login to a Workspace account with a verified GitHub ID', async () => {
+    const { MEMBERS } =
+      await vi.importActual<typeof import('../../src/config/users')>('../../src/config/users');
+    const roleLookup = buildRoleLookup();
     const toml = readFileSync(join(import.meta.dirname, '../wrangler.toml'), 'utf8');
     const match = toml.match(/^PILOT_GITHUB_LOGINS\s*=\s*"([^"]*)"/m);
     const logins = (match?.[1] ?? '')
       .split(',')
-      .map((l) => l.trim())
+      .map((l) => l.trim().toLowerCase())
       .filter(Boolean);
     for (const login of logins) {
-      expect(workspaceEmailFor(login, DOMAIN), login).not.toBeNull();
+      const member = MEMBERS.find((m) => m.github?.toLowerCase() === login);
+      expect(member && hasGoogleWorkspaceAccount(member, roleLookup), login).toBe(true);
+      expect(member?.githubUserId, login).toBeGreaterThan(0);
+      expect(Number.isSafeInteger(member?.githubUserId), login).toBe(true);
     }
   });
 });
