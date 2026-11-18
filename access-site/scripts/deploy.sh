@@ -7,7 +7,7 @@
 #   3. Deploys the Worker, uploading secrets from the environment
 #
 # Required env: CLOUDFLARE_API_TOKEN, OIDC_SIGNING_KEY, OIDC_CLIENT_SECRET, GITHUB_CLIENT_SECRET
-# Optional env: OIDC_PREVIOUS_JWK and OIDC_NEXT_JWK (public rotation keys; "{}" clears a slot)
+# Optional env: OIDC_ROTATION_JWKS (JWK Set of public keys during rotation; "{}" clears it)
 # Non-secret settings (account, GitHub App client ID, Google redirect URI) are in wrangler.toml.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -42,10 +42,8 @@ jq -n \
   --arg signing "$OIDC_SIGNING_KEY" \
   --arg client "$OIDC_CLIENT_SECRET" \
   --arg github "$GITHUB_CLIENT_SECRET" \
-  --arg previous "${OIDC_PREVIOUS_JWK:-}" \
-  --arg next "${OIDC_NEXT_JWK:-}" \
-  '{OIDC_SIGNING_KEY: $signing, OIDC_CLIENT_SECRET: $client, GITHUB_CLIENT_SECRET: $github}
-   + (if $previous == "" then {} else {OIDC_PREVIOUS_JWK: $previous} end)
-   + (if $next == "" then {} else {OIDC_NEXT_JWK: $next} end)' >"$secrets"
+  --arg rotation "${OIDC_ROTATION_JWKS:-"{}"}" \
+  '{OIDC_SIGNING_KEY: $signing, OIDC_CLIENT_SECRET: $client, GITHUB_CLIENT_SECRET: $github,
+    OIDC_ROTATION_JWKS: $rotation}' >"$secrets"
 
 npx wrangler deploy --secrets-file "$secrets"

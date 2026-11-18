@@ -38,5 +38,5 @@ OIDC_REDIRECT_URIS = "REPLACE_WITH_GOOGLE_SSO_REDIRECT_URI"
 PILOT_GITHUB_LOGINS = "sambhav"
 
 # Secrets are uploaded by scripts/deploy.sh from GitHub secrets in the
-# `production` environment: OIDC_SIGNING_KEY, OIDC_CLIENT_SECRET and
-# GITHUB_CLIENT_SECRET. OIDC_PREVIOUS_JWK is optional, during key rotation.
+# `production` environment: OIDC_SIGNING_KEY, OIDC_CLIENT_SECRET,
+# GITHUB_CLIENT_SECRET and, during key rotation, OIDC_ROTATION_JWKS.
