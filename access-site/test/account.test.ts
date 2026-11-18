@@ -69,6 +69,7 @@ describe('account page', () => {
     const page = await (await go('/')).text();
     expect(page).toContain('Create account');
 
+    const log = vi.spyOn(console, 'log').mockImplementation(() => {});
     const res = await go(
       '/account',
       post({ firstName: 'Ada', lastName: 'Lovelace', prefix: 'ada.test' })
@@ -80,11 +81,16 @@ describe('account page', () => {
     expect(created.orgUnitPath).toBe('/Model Context Protocol');
     expect(created.externalIds).toEqual([{ type: 'custom', customType: 'github', value: '777' }]);
 
-    const log = await env.DB.prepare(`SELECT action, subject FROM audit_log`).first<{
-      action: string;
-      subject: string;
-    }>();
-    expect(log).toEqual({ action: 'account.create', subject: 'ada.test@modelcontextprotocol.io' });
+    // The creation is logged as one JSON line.
+    expect(log).toHaveBeenCalledWith(
+      JSON.stringify({
+        event: 'account.create',
+        email: 'ada.test@modelcontextprotocol.io',
+        github_id: '777',
+        github_login: member.github,
+      })
+    );
+    log.mockRestore();
 
     // Second visit shows the account instead of the form.
     expect(await (await go('/')).text()).toContain('Open Gmail');

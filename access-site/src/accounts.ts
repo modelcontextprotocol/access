@@ -6,20 +6,27 @@ import type { Env } from './env';
 import {
   type Account,
   acquireCreationLock,
-  audit,
   getAccount,
   releaseCreationLock,
   upsertAccount,
 } from './db';
 import { findMember, isEligible, prefixOwner } from './eligibility';
 import { createUser, findUserByGithubId, getUser, githubIdOf, linkGithubId } from './google';
-import { notify } from './notify';
 import { validateName, validatePrefix } from './validation';
 
 export interface GitHubIdentity {
   id: string;
   login: string;
   name: string | null;
+}
+
+/** One JSON line per account change, visible in Workers logs. */
+function logAccountEvent(
+  event: 'account.create' | 'account.link',
+  email: string,
+  who: GitHubIdentity
+) {
+  console.log(JSON.stringify({ event, email, github_id: who.id, github_login: who.login }));
 }
 
 /** The user's Workspace account: D1 cache first, then the Directory. */
@@ -106,7 +113,7 @@ export async function ensureAccount(
         email,
         suspended: !!current.suspended,
       });
-      await audit(env.DB, identity.login, 'account.link', email, { github_id: identity.id });
+      logAccountEvent('account.link', email, identity);
       return { ok: true, email, created: false };
     }
 
@@ -118,8 +125,7 @@ export async function ensureAccount(
     });
     if (result.status === 'conflict') return { ok: false, error: `${email} is already taken.` };
     await upsertAccount(env.DB, { github_id: identity.id, email, suspended: false });
-    await audit(env.DB, identity.login, 'account.create', email, { github_id: identity.id });
-    await notify(env, `New Workspace account ${email} for @${identity.login}`);
+    logAccountEvent('account.create', email, identity);
     return { ok: true, email, created: true };
   } finally {
     await releaseCreationLock(env.DB, identity.id);
