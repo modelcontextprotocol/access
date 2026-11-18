@@ -421,6 +421,11 @@ describe('security hardening', () => {
   it('stamps auth_time at GitHub sign-in, revokes the GitHub token and clears the pending cookie', async () => {
     const before = Math.floor(Date.now() / 1000);
     const back = await signIn();
+    expect(lastGitHub.mock.calls.map(([, init]) => init?.redirect)).toEqual([
+      'manual',
+      'manual',
+      'manual',
+    ]);
     expect(lastGitHub).toHaveBeenCalledWith(
       'https://api.github.com/applications/gh-client/token',
       expect.objectContaining({ method: 'DELETE' })
@@ -439,6 +444,14 @@ describe('security hardening', () => {
 });
 
 describe('rollout pilot', () => {
+  it.each([undefined, '', '  ', ' , ', 'someone,*'])(
+    'denies an unlisted pilot when the setting is %j',
+    async (setting) => {
+      env.PILOT_GITHUB_LOGINS = setting;
+      expect((await signIn()).status).toBe(403);
+    }
+  );
+
   it('only lets the pilot logins sign in when PILOT_GITHUB_LOGINS is set', async () => {
     env = await createEnv({ PILOT_GITHUB_LOGINS: ` ${pilot.login.toUpperCase()} ` });
     expect((await signIn()).status).toBe(302);
@@ -454,10 +467,16 @@ describe('rollout pilot', () => {
     const roleLookup = buildRoleLookup();
     const toml = readFileSync(join(import.meta.dirname, '../wrangler.toml'), 'utf8');
     const match = toml.match(/^PILOT_GITHUB_LOGINS\s*=\s*"([^"]*)"/m);
-    const logins = (match?.[1] ?? '')
-      .split(',')
-      .map((l) => l.trim().toLowerCase())
-      .filter(Boolean);
+    const configured = match?.[1]?.trim() ?? '';
+    const logins =
+      configured === '*'
+        ? MEMBERS.filter((m) => m.github && hasGoogleWorkspaceAccount(m, roleLookup)).map((m) =>
+            m.github!.toLowerCase()
+          )
+        : configured
+            .split(',')
+            .map((l) => l.trim().toLowerCase())
+            .filter(Boolean);
     for (const login of logins) {
       const member = MEMBERS.find((m) => m.github?.toLowerCase() === login);
       expect(member && hasGoogleWorkspaceAccount(member, roleLookup), login).toBe(true);

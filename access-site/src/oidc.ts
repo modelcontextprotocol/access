@@ -148,11 +148,13 @@ export async function authorize(c: Ctx) {
 
 /** During the rollout pilot, only the listed GitHub logins may sign in. */
 function inPilot(env: Env, login: string): boolean {
-  const pilot = (env.PILOT_GITHUB_LOGINS ?? '')
+  const configured = env.PILOT_GITHUB_LOGINS?.trim() ?? '';
+  if (configured === '*') return true;
+  const pilot = configured
     .split(',')
     .map((l) => l.trim().toLowerCase())
     .filter(Boolean);
-  return pilot.length === 0 || pilot.includes(login.toLowerCase());
+  return pilot.includes(login.toLowerCase());
 }
 
 export type AuthorizationResult =

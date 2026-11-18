@@ -35,7 +35,7 @@ export async function revokeGitHubToken(env: Env, accessToken: string): Promise<
   try {
     await fetch(`https://api.github.com/applications/${env.GITHUB_CLIENT_ID}/token`, {
       method: 'DELETE',
-      redirect: 'error',
+      redirect: 'manual',
       headers: {
         ...githubHeaders,
         Authorization: `Basic ${btoa(`${env.GITHUB_CLIENT_ID}:${env.GITHUB_CLIENT_SECRET}`)}`,
@@ -56,7 +56,7 @@ export async function exchangeGitHubCode(
   try {
     const response = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
-      redirect: 'error',
+      redirect: 'manual',
       headers: { Accept: 'application/json' },
       body: new URLSearchParams({
         client_id: env.GITHUB_CLIENT_ID,
@@ -79,7 +79,7 @@ export async function exchangeGitHubCode(
 export async function readGitHubIdentity(accessToken: string): Promise<GitHubIdentity> {
   try {
     const response = await fetch('https://api.github.com/user', {
-      redirect: 'error',
+      redirect: 'manual',
       headers: { ...githubHeaders, Authorization: `Bearer ${accessToken}` },
     });
     if (response.ok) {
