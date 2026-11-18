@@ -59,7 +59,25 @@ export function discovery(c: Ctx) {
 
 async function publicKeys(env: Env): Promise<JWK[]> {
   const keys: JWK[] = [(await loadSigningKey(env.OIDC_SIGNING_KEY)).publicJwk];
-  if (env.OIDC_PREVIOUS_JWK) keys.push(JSON.parse(env.OIDC_PREVIOUS_JWK) as JWK);
+  // During rotation, also publish the previous public key. "{}" (or anything
+  // that isn't an RSA JWK) means there is none.
+  if (env.OIDC_PREVIOUS_JWK) {
+    try {
+      const previous = JSON.parse(env.OIDC_PREVIOUS_JWK) as JWK;
+      if (previous.kty === 'RSA' && previous.n && previous.e && previous.kid) {
+        keys.push({
+          kty: 'RSA',
+          n: previous.n,
+          e: previous.e,
+          kid: previous.kid,
+          alg: 'RS256',
+          use: 'sig',
+        });
+      }
+    } catch {
+      // ignore a malformed value rather than breaking sign-in
+    }
+  }
   return keys;
 }
 
