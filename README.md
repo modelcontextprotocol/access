@@ -13,11 +13,15 @@ Infrastructure as Code for managing access to MCP community resources using Pulu
 - **Google Workspace Groups**: Automatically syncs group memberships for @modelcontextprotocol.io email accounts
   - **Email Groups**: Groups with `isEmailGroup: true` accept emails from anyone (including external users) and notify all members. External posts are moderated for security.
 - **Google Workspace User Accounts**: Provisions @modelcontextprotocol.io accounts for members of roles with `provisionUser: true` (directly, or via a role nested under one through `github.parent` — e.g. SDK teams under `sdk-maintainers`, working groups under `working-groups`)
+- **GitHub sign-in and self-service accounts** ([`access-site/`](access-site/README.md)): [access.modelcontextprotocol.io](https://access.modelcontextprotocol.io) is the OIDC identity provider for Google Workspace, so maintainers sign in to Google with GitHub. Eligible members create or link their own account there, and accounts of people who leave eligible teams are suspended (never deleted).
+- **Team Google groups** ([`scripts/sync-team-groups.ts`](scripts/sync-team-groups.ts)): every GitHub team without a Pulumi-managed group is mirrored as `<team>@modelcontextprotocol.io`, synced nightly from the team's Workspace accounts.
 - **Discord**: Syncs the Discord roles declared in [`src/config/roles.ts`](src/config/roles.ts) to the members' Discord IDs in `users.ts`, and manages the settings of the channels declared in [`src/config/channels.ts`](src/config/channels.ts), including thread-only forum/media channels. See [Discord channels](#discord-channels) below.
 - **Cloudflare Access (security-room)**: Syncs the Cloudflare Zero Trust Access policy that decides who can sign in to `securityroom.modelcontextprotocol.io` from the roles declared in [`src/config/accessPolicies.ts`](src/config/accessPolicies.ts). See [Cloudflare Access (security-room)](#cloudflare-access-security-room) below.
 - **npm & PyPI Package Publishing Access** (declared, not applied): Expected registry access is declared in [`src/config/packageAccess.ts`](src/config/packageAccess.ts) and drift against the live npm registry is detected by CI — but changes are applied manually by a maintainer. See [npm & PyPI Package Publishing Access](#npm--pypi-package-publishing-access) below for why and how.
 
 ### Opting in to a Google Workspace account (maintainers)
+
+Once [access.modelcontextprotocol.io](https://access.modelcontextprotocol.io) is live, sign in there with GitHub and create your account; no PR or password needed. Until then, or if you prefer to reserve a specific address in config:
 
 If you're a maintainer — explicitly or implicitly (SDK maintainers, working group members, etc.) — and want an `@modelcontextprotocol.io` account, open a PR adding the following fields to your entry in [`src/config/users.ts`](src/config/users.ts):
 
