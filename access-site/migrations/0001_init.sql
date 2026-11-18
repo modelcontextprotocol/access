@@ -19,3 +19,12 @@ CREATE TABLE authorization_codes (
   claims TEXT NOT NULL,
   expires_at INTEGER NOT NULL
 );
+
+-- First GitHub user ID seen signing in with each login (trust on first use).
+-- A different ID for the same login means the login was freed by a rename
+-- and registered by someone else, so sign-in is refused.
+CREATE TABLE github_identities (
+  login TEXT PRIMARY KEY,
+  github_id TEXT NOT NULL,
+  first_seen INTEGER NOT NULL
+);
