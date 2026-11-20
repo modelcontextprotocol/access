@@ -138,7 +138,10 @@ export const ROLES: readonly Role[] = [
     id: ROLE_IDS.SECURITY_MANAGERS,
     description: 'Organization security managers (security_manager org role via orgRoles.ts)',
     github: { team: 'security-managers' },
-    // GitHub only - grants org-wide visibility into security alerts and draft advisories
+    // security@ is a contact address, mainly for security tooling. Vulnerability reports go
+    // through GitHub Security Advisories.
+    google: { group: 'security', isEmailGroup: true },
+    // GitHub team grants org-wide visibility into security alerts and draft advisories
   },
   {
     id: ROLE_IDS.SECURITY_TEAM,
