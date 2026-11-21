@@ -160,7 +160,20 @@ export type DiscordChannelConfig = DiscordAdoptedChannelConfig | DiscordNewChann
  *     defaultSortOrder: 'creation_date',
  *   },
  */
-export const DISCORD_CHANNELS: readonly DiscordChannelConfig[] = [];
+export const DISCORD_CHANNELS: readonly DiscordChannelConfig[] = [
+  // Thread-only replacement for the #general text channel: a new forum channel, because
+  // Discord cannot convert the existing text channel. The old #general is left in place
+  // and must be retired by hand once people have moved over.
+  {
+    name: 'general',
+    type: 'forum',
+    parentId: '1358869848138059967', // General
+    topic: 'General discussion. Every post opens a thread, so start one per topic.',
+    defaultSortOrder: 'latest_activity',
+    defaultForumLayout: 'list',
+    defaultAutoArchiveDuration: 10080,
+  },
+];
 
 /** Pulumi resource name for a channel entry (stable across deploys). */
 export function discordChannelResourceName(channel: DiscordChannelConfig): string {
