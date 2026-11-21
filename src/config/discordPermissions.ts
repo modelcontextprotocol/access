@@ -48,6 +48,62 @@ export function mergeDiscordRolePermissions(
   return ((BigInt(live) & ~previous) | next).toString();
 }
 
+/**
+ * Permissions that may be allowed or denied per channel through `permissionOverwrites`
+ * in channels.ts. Separate from the role allowlist above: these are only ever applied
+ * to one channel, never granted server-wide on a role. Limited to the posting
+ * permissions needed to make a text channel thread-only; extend in a reviewed PR.
+ */
+export const DISCORD_CHANNEL_PERMISSION_BITS = {
+  SEND_MESSAGES: 1n << 11n,
+  CREATE_PUBLIC_THREADS: 1n << 35n,
+  CREATE_PRIVATE_THREADS: 1n << 36n,
+  SEND_MESSAGES_IN_THREADS: 1n << 38n,
+} as const;
+
+export type DiscordChannelPermission = keyof typeof DISCORD_CHANNEL_PERMISSION_BITS;
+
+export function isDiscordChannelPermission(value: string): value is DiscordChannelPermission {
+  return Object.prototype.hasOwnProperty.call(DISCORD_CHANNEL_PERMISSION_BITS, value);
+}
+
+/** Bitfield for a list of channel permission names, as a decimal string. */
+export function discordChannelPermissionBitfield(
+  permissions: readonly DiscordChannelPermission[]
+): string {
+  return permissions
+    .reduce((bits, name) => bits | DISCORD_CHANNEL_PERMISSION_BITS[name], 0n)
+    .toString();
+}
+
+/** The allow/deny bitfields (decimal strings) of one channel permission overwrite */
+export interface DiscordPermissionOverwriteBits {
+  allow: string;
+  deny: string;
+}
+
+/**
+ * The allow/deny values to write to a channel permission overwrite so that Pulumi owns
+ * only the bits it declared, following the same rules as mergeDiscordRolePermissions:
+ * bits never managed are left as they are live, bits declared now are set, and bits
+ * declared previously but no longer are cleared. A bit declared on one side is also
+ * cleared from the other, since a permission cannot be both allowed and denied.
+ */
+export function mergeDiscordPermissionOverwrite(
+  live: DiscordPermissionOverwriteBits,
+  previouslyManaged: DiscordPermissionOverwriteBits | undefined,
+  managed: DiscordPermissionOverwriteBits | undefined
+): DiscordPermissionOverwriteBits {
+  const previousAllow = BigInt(previouslyManaged?.allow ?? '0');
+  const previousDeny = BigInt(previouslyManaged?.deny ?? '0');
+  const nextAllow = BigInt(managed?.allow ?? '0');
+  const nextDeny = BigInt(managed?.deny ?? '0');
+  return {
+    allow: ((BigInt(live.allow) & ~previousAllow & ~nextDeny) | nextAllow).toString(),
+    deny: ((BigInt(live.deny) & ~previousDeny & ~nextAllow) | nextDeny).toString(),
+  };
+}
+
 /** Errors for permission names that are duplicated or not on the allowlist. */
 export function getDiscordRolePermissionErrors(
   roleName: string,

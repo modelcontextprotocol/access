@@ -1,11 +1,15 @@
 // Discord channels managed by Pulumi (the DiscordChannel resource in src/discord.ts).
 //
 // Thread-only channels: Discord has no "require threads" switch on a text channel.
-// Thread-only behaviour exists only as the GUILD_FORUM (15) and GUILD_MEDIA (16)
-// channel types, where every post opens a thread. The API converts text <->
-// announcement channels only, so an existing text channel can NEVER become a forum.
-// To make an existing channel thread-only, declare a NEW forum/media channel here
-// (without `id`) and retire the old channel by hand once people have moved over.
+// There are two ways to get one:
+//   - Channel type: GUILD_FORUM (15) and GUILD_MEDIA (16) channels, where every post
+//     opens a thread. The API converts text <-> announcement channels only, so an
+//     existing text channel can NEVER become a forum; declare a NEW forum/media channel
+//     here (without `id`) and retire the old channel by hand once people have moved over.
+//   - Channel policy: adopt the existing text channel and declare `permissionOverwrites`
+//     that deny SEND_MESSAGES to @everyone while allowing CREATE_PUBLIC_THREADS and
+//     SEND_MESSAGES_IN_THREADS. The channel keeps its ID and history; members can only
+//     start threads and talk inside them.
 //
 // Each entry works in one of two modes:
 //   - `id` set: the existing channel with that snowflake is adopted and the settings
@@ -25,7 +29,35 @@
 // (`discord-channel-<id ?? name>`), so renaming a channel created without `id` creates
 // a second channel. Adopt it by its `id` first if you want to rename it in place.
 
+import {
+  DISCORD_CHANNEL_PERMISSION_BITS,
+  discordChannelPermissionBitfield,
+  isDiscordChannelPermission,
+  mergeDiscordPermissionOverwrite,
+  type DiscordChannelPermission,
+} from './discordPermissions';
+import { ROLE_IDS, type RoleId } from './roleIds';
+import { ROLES } from './roles';
+
 export type DiscordChannelType = 'text' | 'forum' | 'media';
+
+/** Overwrite target for the guild's @everyone role (every member) */
+export const DISCORD_EVERYONE_ROLE = '@everyone';
+
+/**
+ * Channel-level permissions for one role. Pulumi owns only the permissions listed here:
+ * other permissions on the same overwrite, and overwrites for other roles or members,
+ * are left as they are on Discord. Removing an entry or a permission later clears just
+ * those bits (back to inheriting), it does not flip them.
+ */
+export interface DiscordPermissionOverwriteConfig {
+  /** A role from roles.ts that has a Discord role, or DISCORD_EVERYONE_ROLE */
+  role: RoleId | typeof DISCORD_EVERYONE_ROLE;
+  /** Permissions granted in this channel (allowlist in discordPermissions.ts) */
+  allow?: readonly DiscordChannelPermission[];
+  /** Permissions denied in this channel */
+  deny?: readonly DiscordChannelPermission[];
+}
 
 /** Allowed values (minutes) for defaultAutoArchiveDuration. */
 export const DISCORD_AUTO_ARCHIVE_DURATIONS = [60, 1440, 4320, 10080] as const;
@@ -75,6 +107,11 @@ interface DiscordChannelSettings {
   defaultAutoArchiveDuration?: DiscordAutoArchiveDuration;
   /** Slowmode (seconds) applied to newly created threads */
   defaultThreadRateLimitPerUser?: number;
+  /**
+   * Per-role permission overwrites on this channel. Omit to leave the channel's
+   * permissions entirely untouched. The bot needs Manage Roles to apply them.
+   */
+  permissionOverwrites?: readonly DiscordPermissionOverwriteConfig[];
 
   // --- forum/media only ---
   /**
@@ -131,6 +168,20 @@ export type DiscordChannelConfig = DiscordAdoptedChannelConfig | DiscordNewChann
  *     defaultAutoArchiveDuration: 4320,
  *   },
  *
+ *   // Make an existing text channel thread-only by policy: nobody posts at the top
+ *   // level, everyone can start threads and reply in them
+ *   {
+ *     id: '1234567890123456789',
+ *     type: 'text',
+ *     permissionOverwrites: [
+ *       {
+ *         role: DISCORD_EVERYONE_ROLE,
+ *         deny: ['SEND_MESSAGES'],
+ *         allow: ['CREATE_PUBLIC_THREADS', 'SEND_MESSAGES_IN_THREADS'],
+ *       },
+ *     ],
+ *   },
+ *
  *   // Create a new thread-only forum channel (an existing text channel cannot be
  *   // converted; create the forum, then retire the old channel by hand)
  *   {
@@ -161,17 +212,21 @@ export type DiscordChannelConfig = DiscordAdoptedChannelConfig | DiscordNewChann
  *   },
  */
 export const DISCORD_CHANNELS: readonly DiscordChannelConfig[] = [
-  // Thread-only replacement for the #general text channel: a new forum channel, because
-  // Discord cannot convert the existing text channel. The old #general is left in place
-  // and must be retired by hand once people have moved over.
+  // #general is thread-only by policy: members cannot post at the top level, only start
+  // threads and reply in them. Moderators and community managers can still post there
+  // (announcements, redirects); administrators bypass overwrites anyway.
   {
-    name: 'general',
-    type: 'forum',
-    parentId: '1358869848138059967', // General
-    topic: 'General discussion. Every post opens a thread, so start one per topic.',
-    defaultSortOrder: 'latest_activity',
-    defaultForumLayout: 'list',
-    defaultAutoArchiveDuration: 10080,
+    id: '1358869848138059969',
+    type: 'text',
+    permissionOverwrites: [
+      {
+        role: DISCORD_EVERYONE_ROLE,
+        deny: ['SEND_MESSAGES'],
+        allow: ['CREATE_PUBLIC_THREADS', 'SEND_MESSAGES_IN_THREADS'],
+      },
+      { role: ROLE_IDS.MODERATORS, allow: ['SEND_MESSAGES'] },
+      { role: ROLE_IDS.COMMUNITY_MANAGERS, allow: ['SEND_MESSAGES'] },
+    ],
   },
 ];
 
@@ -350,6 +405,54 @@ export function validateDiscordChannels(
       );
     }
 
+    if (channel.permissionOverwrites !== undefined) {
+      const seenRoles = new Set<string>();
+      for (const overwrite of channel.permissionOverwrites) {
+        const overwriteLabel = `${label} permission overwrite for "${overwrite.role}"`;
+        if (
+          overwrite.role !== DISCORD_EVERYONE_ROLE &&
+          !ROLES.some((role) => role.id === overwrite.role && role.discord !== undefined)
+        ) {
+          errors.push(
+            `${overwriteLabel} names a role that is not in roles.ts or has no Discord role`
+          );
+        }
+        if (seenRoles.has(overwrite.role)) {
+          errors.push(`${overwriteLabel} is declared twice; merge them into one entry`);
+        }
+        seenRoles.add(overwrite.role);
+
+        const allow: readonly string[] = overwrite.allow ?? [];
+        const deny: readonly string[] = overwrite.deny ?? [];
+        if (allow.length === 0 && deny.length === 0) {
+          errors.push(`${overwriteLabel} allows and denies nothing; remove it or add permissions`);
+        }
+        for (const [side, permissions] of [
+          ['allow', allow],
+          ['deny', deny],
+        ] as const) {
+          const seenPermissions = new Set<string>();
+          for (const permission of permissions) {
+            if (!isDiscordChannelPermission(permission)) {
+              errors.push(
+                `${overwriteLabel} has ${side} permission "${permission}" which is not allowed ` +
+                  `(allowed: ${Object.keys(DISCORD_CHANNEL_PERMISSION_BITS).join(', ')})`
+              );
+            }
+            if (seenPermissions.has(permission)) {
+              errors.push(`${overwriteLabel} lists ${side} permission "${permission}" twice`);
+            }
+            seenPermissions.add(permission);
+          }
+        }
+        for (const permission of allow) {
+          if (deny.includes(permission)) {
+            errors.push(`${overwriteLabel} both allows and denies "${permission}"`);
+          }
+        }
+      }
+    }
+
     if (!threadOnly) {
       for (const field of [
         'requireTag',
@@ -488,6 +591,29 @@ export interface DiscordChannelApiResponse {
   default_reaction_emoji?: DiscordEmojiApi | null;
   default_sort_order?: number | null;
   default_forum_layout?: number | null;
+  permission_overwrites?: DiscordPermissionOverwriteApi[];
+}
+
+export interface DiscordPermissionOverwriteApi {
+  /** Role or user snowflake; the @everyone role has the guild's ID */
+  id: string;
+  /** 0 for a role, 1 for a member */
+  type: number;
+  allow: string;
+  deny: string;
+}
+
+/** Overwrite type for a role, the only kind this config declares */
+export const DISCORD_OVERWRITE_TYPE_ROLE = 0;
+
+/**
+ * A declared overwrite with its role resolved to a Discord role ID and its permissions
+ * to decimal-string bitfields: what the DiscordChannel resource takes as input.
+ */
+export interface DiscordResolvedPermissionOverwrite {
+  id: string;
+  allow: string;
+  deny: string;
 }
 
 export interface DiscordForumTagApi {
@@ -539,6 +665,8 @@ export interface DiscordChannelState {
   defaultReactionEmoji: DiscordEmojiState | null;
   defaultSortOrder: DiscordSortOrder | null;
   defaultForumLayout: DiscordForumLayout | null;
+  /** Every overwrite on the channel, managed or not */
+  permissionOverwrites: DiscordPermissionOverwriteApi[];
 }
 
 function emojiStateFromApi(emoji: DiscordEmojiApi | null | undefined): DiscordEmojiState | null {
@@ -579,7 +707,69 @@ export function discordChannelStateFromApi(
     defaultReactionEmoji: emojiStateFromApi(channel.default_reaction_emoji),
     defaultSortOrder: keyForValue(DISCORD_SORT_ORDER_IDS, channel.default_sort_order),
     defaultForumLayout: keyForValue(DISCORD_FORUM_LAYOUT_IDS, channel.default_forum_layout),
+    permissionOverwrites: (channel.permission_overwrites ?? []).map((overwrite) => ({
+      id: overwrite.id,
+      type: overwrite.type,
+      allow: overwrite.allow,
+      deny: overwrite.deny,
+    })),
   };
+}
+
+/**
+ * Resolve a declared overwrite for the role with the given Discord role ID (the guild
+ * ID for DISCORD_EVERYONE_ROLE).
+ */
+export function resolveDiscordPermissionOverwrite(
+  overwrite: DiscordPermissionOverwriteConfig,
+  discordRoleId: string
+): DiscordResolvedPermissionOverwrite {
+  return {
+    id: discordRoleId,
+    allow: discordChannelPermissionBitfield(overwrite.allow ?? []),
+    deny: discordChannelPermissionBitfield(overwrite.deny ?? []),
+  };
+}
+
+/**
+ * The overwrites to write (PUT /channels/{id}/permissions/{overwrite id}) so the live
+ * channel carries the declared permissions, with the full allow/deny value for each.
+ * Only overwrites declared now or previously are considered, and only those whose live
+ * value would change are returned, so an empty result means in sync. `previous` is what
+ * Pulumi declared on the last deploy; bits dropped since then are cleared.
+ */
+export function planDiscordPermissionOverwrites(
+  live: readonly DiscordPermissionOverwriteApi[],
+  previous: readonly DiscordResolvedPermissionOverwrite[] | undefined,
+  next: readonly DiscordResolvedPermissionOverwrite[] | undefined
+): DiscordResolvedPermissionOverwrite[] {
+  const ids = new Set([...(previous ?? []), ...(next ?? [])].map((overwrite) => overwrite.id));
+  const changes: DiscordResolvedPermissionOverwrite[] = [];
+  for (const id of ids) {
+    const current = live.find((overwrite) => overwrite.id === id) ?? { allow: '0', deny: '0' };
+    const merged = mergeDiscordPermissionOverwrite(
+      current,
+      previous?.find((overwrite) => overwrite.id === id),
+      next?.find((overwrite) => overwrite.id === id)
+    );
+    if (merged.allow !== current.allow || merged.deny !== current.deny) {
+      changes.push({ id, ...merged });
+    }
+  }
+  return changes;
+}
+
+/**
+ * IDs of the declared overwrites whose live value lacks a declared permission. Empty
+ * means in sync; permissions the config does not declare never count as drift.
+ */
+export function getDiscordPermissionOverwriteDrift(
+  overwrites: readonly DiscordResolvedPermissionOverwrite[] | undefined,
+  state: DiscordChannelState
+): string[] {
+  // `permissionOverwrites` is missing from state written before overwrites were managed
+  const live = state.permissionOverwrites ?? [];
+  return planDiscordPermissionOverwrites(live, undefined, overwrites).map((change) => change.id);
 }
 
 /**

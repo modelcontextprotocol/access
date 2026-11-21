@@ -31,14 +31,20 @@ import {
   getDiscordChannelConfigErrors,
   getDiscordChannelConfigWarnings,
   getDiscordChannelDrift,
+  getDiscordPermissionOverwriteDrift,
+  planDiscordPermissionOverwrites,
+  resolveDiscordPermissionOverwrite,
+  DISCORD_EVERYONE_ROLE,
   type DiscordChannelApiResponse,
   type DiscordChannelConfig,
   type DiscordNewChannelConfig,
 } from '../src/config/channels';
 import {
   DISCORD_ROLE_PERMISSION_BITS,
+  discordChannelPermissionBitfield,
   discordPermissionBitfield,
   getDiscordRolePermissionErrors,
+  mergeDiscordPermissionOverwrite,
   mergeDiscordRolePermissions,
 } from '../src/config/discordPermissions';
 
@@ -675,6 +681,146 @@ test('Tag drift ignores Discord tag IDs and ordering but catches changed tags', 
   return (
     getDiscordChannelDrift(reordered, state).length === 0 &&
     getDiscordChannelDrift(renamed, state).join(',') === 'availableTags'
+  );
+});
+
+// Discord channel permission overwrites
+console.log('\nTesting Discord channel permission overwrites...\n');
+const SEND = (1n << 11n).toString(); // SEND_MESSAGES
+const THREADS = ((1n << 35n) | (1n << 38n)).toString(); // CREATE_PUBLIC_THREADS | SEND_MESSAGES_IN_THREADS
+const VIEW = (1n << 10n).toString(); // VIEW_CHANNEL, not managed
+const THREAD_ONLY = resolveDiscordPermissionOverwrite(
+  {
+    role: DISCORD_EVERYONE_ROLE,
+    deny: ['SEND_MESSAGES'],
+    allow: ['CREATE_PUBLIC_THREADS', 'SEND_MESSAGES_IN_THREADS'],
+  },
+  OTHER_SNOWFLAKE
+);
+test('Channel permission bits match the Discord API', () =>
+  discordChannelPermissionBitfield(['SEND_MESSAGES']) === '2048' &&
+  discordChannelPermissionBitfield(['CREATE_PUBLIC_THREADS']) === '34359738368' &&
+  discordChannelPermissionBitfield(['CREATE_PRIVATE_THREADS']) === '68719476736' &&
+  discordChannelPermissionBitfield(['SEND_MESSAGES_IN_THREADS']) === '274877906944' &&
+  discordChannelPermissionBitfield([]) === '0');
+test('An overwrite resolves to the role ID and allow/deny bitfields', () =>
+  THREAD_ONLY.id === OTHER_SNOWFLAKE && THREAD_ONLY.deny === SEND && THREAD_ONLY.allow === THREADS);
+test('Overwrite merge keeps unmanaged bits and moves a bit declared on the other side', () => {
+  // VIEW_CHANNEL denied by hand stays; SEND_MESSAGES allowed by hand becomes denied
+  const live = { allow: SEND, deny: VIEW };
+  const merged = mergeDiscordPermissionOverwrite(live, undefined, { allow: THREADS, deny: SEND });
+  return merged.allow === THREADS && merged.deny === (BigInt(VIEW) | BigInt(SEND)).toString();
+});
+test('Overwrite merge clears bits that were declared before and no longer are', () => {
+  const live = { allow: THREADS, deny: (BigInt(VIEW) | BigInt(SEND)).toString() };
+  const merged = mergeDiscordPermissionOverwrite(live, THREAD_ONLY, undefined);
+  return merged.allow === '0' && merged.deny === VIEW;
+});
+test('Overwrite plan writes a missing overwrite and nothing once it is live', () => {
+  const plan = planDiscordPermissionOverwrites([], undefined, [THREAD_ONLY]);
+  const live = [{ ...THREAD_ONLY, type: 0 }];
+  return (
+    plan.length === 1 &&
+    plan[0].id === OTHER_SNOWFLAKE &&
+    plan[0].allow === THREADS &&
+    plan[0].deny === SEND &&
+    planDiscordPermissionOverwrites(live, [THREAD_ONLY], [THREAD_ONLY]).length === 0
+  );
+});
+test('Overwrite plan leaves overwrites that were never declared alone', () => {
+  const live = [
+    { id: SNOWFLAKE, type: 1, allow: SEND, deny: '0' },
+    { ...THREAD_ONLY, type: 0 },
+  ];
+  return planDiscordPermissionOverwrites(live, [THREAD_ONLY], [THREAD_ONLY]).length === 0;
+});
+test('Overwrite plan clears an overwrite that was removed from config', () => {
+  const live = [{ id: OTHER_SNOWFLAKE, type: 0, allow: THREADS, deny: SEND }];
+  const plan = planDiscordPermissionOverwrites(live, [THREAD_ONLY], undefined);
+  return plan.length === 1 && plan[0].allow === '0' && plan[0].deny === '0';
+});
+test('Overwrite drift fires only when a declared permission is missing live', () => {
+  const drift = (permission_overwrites: DiscordChannelApiResponse['permission_overwrites']) => {
+    const state = discordChannelStateFromApi({ ...TEXT_API, permission_overwrites });
+    return getDiscordPermissionOverwriteDrift([THREAD_ONLY], state).join(',');
+  };
+  const live = (allow: string, deny: string) => [{ id: OTHER_SNOWFLAKE, type: 0, allow, deny }];
+  const withHandSetBits = (BigInt(VIEW) | BigInt(SEND)).toString();
+  const bare = discordChannelStateFromApi(TEXT_API);
+  return (
+    drift(live(THREADS, SEND)) === '' &&
+    // Extra bits set by hand are not drift
+    drift(live(THREADS, withHandSetBits)) === '' &&
+    drift(live(THREADS, '0')) === OTHER_SNOWFLAKE &&
+    drift(undefined) === OTHER_SNOWFLAKE &&
+    getDiscordPermissionOverwriteDrift(undefined, bare).length === 0
+  );
+});
+test('Channel payloads never contain permission overwrites', () => {
+  const config: DiscordNewChannelConfig = {
+    name: 'a',
+    type: 'text',
+    permissionOverwrites: [{ role: DISCORD_EVERYONE_ROLE, deny: ['SEND_MESSAGES'] }],
+  };
+  return (
+    !('permission_overwrites' in discordChannelPayloadFromConfig(config)) &&
+    !('permission_overwrites' in discordChannelCreatePayloadFromConfig(config))
+  );
+});
+test('Channel validation accepts thread-only overwrites on an adopted text channel', () =>
+  isClean([
+    {
+      id: SNOWFLAKE,
+      type: 'text',
+      permissionOverwrites: [
+        {
+          role: DISCORD_EVERYONE_ROLE,
+          deny: ['SEND_MESSAGES'],
+          allow: ['CREATE_PUBLIC_THREADS', 'SEND_MESSAGES_IN_THREADS'],
+        },
+        { role: ROLE_IDS.MODERATORS, allow: ['SEND_MESSAGES'] },
+      ],
+    },
+  ]));
+test('Channel validation rejects bad permission overwrites', () => {
+  const withOverwrites = (permissionOverwrites: unknown): DiscordChannelConfig[] => [
+    { id: SNOWFLAKE, type: 'text', permissionOverwrites } as unknown as DiscordChannelConfig,
+  ];
+  return (
+    hasErrorMatching(
+      withOverwrites([{ role: 'no-such-role', deny: ['SEND_MESSAGES'] }]),
+      /"no-such-role" names a role that is not in roles.ts or has no Discord role/
+    ) &&
+    // GitHub-only role: no Discord role to attach the overwrite to
+    hasErrorMatching(
+      withOverwrites([{ role: ROLE_IDS.SECURITY_TEAM, deny: ['SEND_MESSAGES'] }]),
+      /has no Discord role/
+    ) &&
+    hasErrorMatching(
+      withOverwrites([
+        { role: DISCORD_EVERYONE_ROLE, deny: ['SEND_MESSAGES'] },
+        { role: DISCORD_EVERYONE_ROLE, allow: ['CREATE_PUBLIC_THREADS'] },
+      ]),
+      /"@everyone" is declared twice/
+    ) &&
+    hasErrorMatching(
+      withOverwrites([{ role: DISCORD_EVERYONE_ROLE }]),
+      /allows and denies nothing/
+    ) &&
+    hasErrorMatching(
+      withOverwrites([{ role: DISCORD_EVERYONE_ROLE, deny: ['ADMINISTRATOR'] }]),
+      /deny permission "ADMINISTRATOR" which is not allowed/
+    ) &&
+    hasErrorMatching(
+      withOverwrites([{ role: DISCORD_EVERYONE_ROLE, allow: ['SEND_MESSAGES', 'SEND_MESSAGES'] }]),
+      /lists allow permission "SEND_MESSAGES" twice/
+    ) &&
+    hasErrorMatching(
+      withOverwrites([
+        { role: DISCORD_EVERYONE_ROLE, allow: ['SEND_MESSAGES'], deny: ['SEND_MESSAGES'] },
+      ]),
+      /both allows and denies "SEND_MESSAGES"/
+    )
   );
 });
 
