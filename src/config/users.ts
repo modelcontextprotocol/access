@@ -727,10 +727,6 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.FILESYSTEMS_WG],
   },
   {
-    github: 'michaelneale',
-    memberOf: [ROLE_IDS.RUST_SDK],
-  },
-  {
     github: 'monikaicampbell',
     discord: '1545020658730401813',
     firstName: 'Monika',
