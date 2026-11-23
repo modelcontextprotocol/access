@@ -444,6 +444,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jamadeo',
+    discord: '1349064162848018472',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
@@ -724,10 +725,6 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Michael',
     lastName: 'Cheah',
     memberOf: [ROLE_IDS.FILESYSTEMS_WG],
-  },
-  {
-    github: 'michaelneale',
-    memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'monikaicampbell',
