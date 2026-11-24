@@ -122,6 +122,25 @@ describe('discovery', () => {
     expect(jwks.keys[0]!.kid).toBeTruthy();
     expect(jwks.keys[0]!.d).toBeUndefined();
   });
+
+  it('publishes the previous key during rotation, and ignores "{}"', async () => {
+    const current = (await (await app.request(`${ISSUER}/jwks`, {}, env)).json()) as {
+      keys: Record<string, string>[];
+    };
+    const previous = { ...current.keys[0]!, kid: 'previous-kid' };
+    const rotating = await createEnv({ OIDC_PREVIOUS_JWK: JSON.stringify(previous) });
+    const both = (await (await app.request(`${ISSUER}/jwks`, {}, rotating)).json()) as {
+      keys: { kid: string }[];
+    };
+    expect(both.keys.map((k) => k.kid)).toContain('previous-kid');
+    expect(both.keys).toHaveLength(2);
+
+    const retired = await createEnv({ OIDC_PREVIOUS_JWK: '{}' });
+    const one = (await (await app.request(`${ISSUER}/jwks`, {}, retired)).json()) as {
+      keys: unknown[];
+    };
+    expect(one.keys).toHaveLength(1);
+  });
 });
 
 describe('sign-in', () => {
