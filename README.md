@@ -80,7 +80,7 @@ The [contributor ladder](https://modelcontextprotocol.io/community/contributor-l
 Things to know when reading the config against the ladder:
 
 - **GitHub child teams inherit their parent's repository access.** WG, IG, and SDK teams nest under `steering-committee` (via `working-groups`, `interest-groups`, and `sdk-maintainers`). Their members therefore get `steering-committee`'s grants, which include `triage` on `modelcontextprotocol` and `.github`, and `push` on `docs`, `inspector`, `quickstart-resources`, and `servers`. This is independent of ladder rank. Roles that must not inherit these grants (`members`, `maintainers`, `security-team`) have no parent.
-- **Some roles have no ladder counterpart.** These are functional or operational roles: `security-managers`, `security-team`, CODEOWNERS teams (`*-auth`, `conformance-auth`), collaborator teams (`registry-collaborators`, `typescript-sdk-collaborators`), `csharp-sdk-admin`, Discord-only `administrators` and `community-managers`, and Google email groups.
+- **Some roles have no ladder counterpart.** These are functional or operational roles: `security-managers`, `security-team`, CODEOWNERS teams (`*-auth`, `conformance-auth`), collaborator teams (`registry-collaborators`, `typescript-sdk-collaborators`), `auth-contributors` (`push` on `ext-auth` only, no parent team), `csharp-sdk-admin`, Discord-only `administrators` and `community-managers`, and Google email groups.
 - **Per-user grants** in `repoAccess.ts` (the `users` lists) are not tied to any ladder role.
 - **`security-ig` has `admin` on six repositories** (`docs`, `.github`, `inspector`, `modelcontextprotocol`, `quickstart-resources`, `servers`). This was carried over unchanged from `security-wg` in #170, and reviewing it is tracked as a separate workstream.
 
@@ -121,7 +121,7 @@ Channels listed in [`src/config/channels.ts`](src/config/channels.ts) are manage
 ### One-time setup
 
 1. In the Cloudflare dashboard for the **MCP Domain Account**, create a token dedicated to Access policy role management. Give it a descriptive name so it does not read as a generic API token, e.g. `mcp-access: Access policy role management`, and scope it to only **Account → Access: Apps and Policies → Edit** on the MCP Domain Account. Do not reuse this token for anything else.
-2. Add it as the GitHub Actions secret `CLOUDFLARE_ROLE_MANAGEMENT_TOKEN` in the `production` environment (repository settings → Environments → production). The deploy workflow passes it to Pulumi as `cloudflare:roleManagementToken`. Until the secret exists, the Cloudflare module logs "Cloudflare integration disabled: roleManagementToken not configured" and creates nothing, so previews stay green.
+2. Add it as the GitHub Actions secret `CLOUDFLARE_ROLE_MANAGEMENT_TOKEN` in the `production` and `preview` environments (repository settings → Environments). The deploy workflow passes it to Pulumi as `cloudflare:roleManagementToken`. Until the secret exists, the Cloudflare module logs "Cloudflare integration disabled: roleManagementToken not configured" and creates nothing, so previews stay green.
 3. The account ID and GitHub identity-provider ID are non-secret and live in [`Pulumi.prod.yaml`](Pulumi.prod.yaml).
 4. **Adopting the existing policy.** Pulumi's `import` resource option only succeeds when the program's inputs match the live resource, so adoption is two deploys:
    - With `cloudflare:importExistingPolicies: "true"` in `Pulumi.prod.yaml`, the first deploy imports the existing `Maintainers` policy (by its `cloudflarePolicyId`) as-is, ignoring its rule lists.
@@ -200,15 +200,26 @@ The private key is equivalent to organization admin. Store it as an environment 
 gh secret set DEPLOY_APP_PRIVATE_KEY --env production -R modelcontextprotocol/access < key.pem
 ```
 
+Preview runs in the `preview` environment and reads `DEPLOY_APP_CLIENT_ID` and `DEPLOY_APP_PRIVATE_KEY` from there. That environment accepts pull request branches, so give it the credentials of a separate App that has only **Metadata: read** and **Custom organization roles: read**, not the deploy App's. The token Preview requests is limited to those two permissions, but the private key behind it is not.
+
 Do not use a refresh (`make refresh`, `pulumi preview --refresh`) as a read-only check: the Discord member sync corrects role drift during `read()`, so any refresh can change live Discord roles.
 
 ### Required GitHub Secrets (for CI/CD)
 
-The following secrets must be configured in GitHub Actions for automated deployments:
+The workflows run in two GitHub environments (repository settings → Environments):
 
-- **`DEPLOY_APP_PRIVATE_KEY`** (secret, `production` environment): private key of the deploy GitHub App
+| Environment  | Used by                                                         | Deployment branches                                                                                 |
+| ------------ | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `production` | [`deploy.yml`](.github/workflows/deploy.yml) on `main`          | `main` only                                                                                         |
+| `preview`    | [`preview.yml`](.github/workflows/preview.yml) on pull requests | No restriction. Pull request runs use `refs/pull/<number>/merge`, which a `main`-only rule rejects. |
 
-- **`DEPLOY_APP_CLIENT_ID`** (a **variable**, not a secret, `production` environment): client ID of the deploy GitHub App
+A secret or variable stored in an environment is visible only to jobs that declare that environment. One stored at repository level is visible to both. Anyone who can push a branch to this repository can run a workflow in `preview`, so keep the deploy App's private key out of it.
+
+The following secrets must be configured in GitHub Actions for automated deployments. Both workflows read all of them. Apart from the App credentials, Preview needs the same values as Deploy: it fails without the billing email, and it shows the Discord and Cloudflare resources as deletes when their values are missing.
+
+- **`DEPLOY_APP_PRIVATE_KEY`** (secret, set in each environment): private key of the deploy GitHub App in `production`, and of the read-only preview App in `preview`
+
+- **`DEPLOY_APP_CLIENT_ID`** (a **variable**, not a secret, set in each environment): client ID of the App whose private key that environment holds
 
 - **`ORG_BILLING_EMAIL`**, **`DISCORD_BOT_TOKEN`**, **`DISCORD_GUILD_ID`**: passed to Pulumi config by the workflows
 
@@ -221,7 +232,7 @@ The following secrets must be configured in GitHub Actions for automated deploym
   - Used to decrypt encrypted values in Pulumi stack configuration
   - Keep this secure - if lost, you cannot decrypt your Pulumi state
 
-- **`CLOUDFLARE_ROLE_MANAGEMENT_TOKEN`** (optional, `production` environment): Cloudflare token dedicated to Access policy role management, scoped only to **Account → Access: Apps and Policies → Edit** on the MCP Domain Account (not a general-purpose API token)
+- **`CLOUDFLARE_ROLE_MANAGEMENT_TOKEN`** (optional, `production` and `preview` environments): Cloudflare token dedicated to Access policy role management, scoped only to **Account → Access: Apps and Policies → Edit** on the MCP Domain Account (not a general-purpose API token)
   - Used to manage the Cloudflare Access policy for `securityroom.modelcontextprotocol.io` (see [Cloudflare Access (security-room)](#cloudflare-access-security-room))
 
 ## Initial Setup
@@ -285,4 +296,4 @@ Add the CI/CD secrets to GitHub Actions (repository settings → Secrets and var
 
 - `GCP_PROD_SERVICE_ACCOUNT_KEY`: Content of `sa-key.json`
 - `PULUMI_PROD_PASSPHRASE`: The passphrase you set above
-- `DEPLOY_APP_CLIENT_ID` and `DEPLOY_APP_PRIVATE_KEY` (in the `production` environment, not at repository level): see [Deploy GitHub App](#deploy-github-app)
+- `DEPLOY_APP_CLIENT_ID` and `DEPLOY_APP_PRIVATE_KEY` (in the `production` and `preview` environments, not at repository level): see [Deploy GitHub App](#deploy-github-app)

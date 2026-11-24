@@ -790,6 +790,11 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'max-stytch',
+    discord: '1099364476354035832',
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.AUTH_CONTRIBUTORS],
+  },
+  {
     github: 'maxisbey',
     githubUserId: 224885523,
     discord: '1404871241738748058',
@@ -852,7 +857,7 @@ export const MEMBERS: readonly Member[] = [
     github: 'nbarbettini',
     githubUserId: 7525482,
     discord: '784552628930478090',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.WG_IG_FACILITATORS, ROLE_IDS.AUTH_CONTRIBUTORS],
   },
   {
     github: 'nickcoai',
@@ -989,6 +994,11 @@ export const MEMBERS: readonly Member[] = [
     github: 'petery-ant',
     githubUserId: 173851638,
     memberOf: [ROLE_IDS.SECURITY_IG],
+  },
+  {
+    github: 'PieterKas',
+    discord: '1065355335696658472',
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.AUTH_CONTRIBUTORS],
   },
   {
     // Same person as 'Poita' below; Discord and Google Workspace identity live

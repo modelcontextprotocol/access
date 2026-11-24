@@ -18,7 +18,10 @@ jobs:
     runs-on: ubuntu-latest
     # Skip preview for fork PRs and Dependabot - they don't have access to Actions secrets
     if: github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]'
-    environment: production
+    # `production` only deploys from main, so it rejects pull request refs.
+    # `preview` accepts them and holds its own credentials. See README.md
+    # "Required GitHub Secrets (for CI/CD)".
+    environment: preview
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
