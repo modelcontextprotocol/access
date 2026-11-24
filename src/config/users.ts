@@ -4,6 +4,7 @@ import { ROLE_IDS } from './roleIds';
 export const MEMBERS: readonly Member[] = [
   {
     github: '000-000-000-000-000',
+    githubUserId: 143567668,
     discord: '1360717264051241071',
     firstName: 'Nick',
     lastName: 'Aldridge',
@@ -16,6 +17,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'a-akimov',
+    githubUserId: 22469605,
     discord: '1365254196621738116',
     firstName: 'Alex',
     lastName: 'Akimov',
@@ -24,6 +26,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'aaronpk',
+    githubUserId: 113001,
     discord: '324624369428987905',
     memberOf: [
       ROLE_IDS.AUTH_MAINTAINERS,
@@ -37,11 +40,13 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'aditya-scio',
+    githubUserId: 91730278,
     discord: '1196052678925631498',
     memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'ajribeiro',
+    githubUserId: 871694,
     firstName: 'AJ',
     lastName: 'Ribeiro',
     googleEmailPrefix: 'ajr',
@@ -50,11 +55,13 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'akhilcb',
+    githubUserId: 11095693,
     discord: '916141121925677137',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'alexhancock',
+    githubUserId: 427516,
     discord: '1325885093343924316',
     firstName: 'Alex',
     lastName: 'Hancock',
@@ -63,35 +70,42 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'an-dustin',
+    githubUserId: 112589654,
     memberOf: [ROLE_IDS.SECURITY_IG],
   },
   {
     github: 'andreyvelich',
+    githubUserId: 31112157,
     discord: '1073334676153970699',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'antonpk1',
+    githubUserId: 105124934,
     discord: '738474760480227358',
     memberOf: [ROLE_IDS.MCP_APPS_SDK],
   },
   {
     github: 'asklar',
+    githubUserId: 22989529,
     discord: '633837375734153216',
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'atesgoral',
+    githubUserId: 50832,
     discord: '201179934775836672',
     memberOf: [ROLE_IDS.RUBY_SDK],
   },
   {
     github: 'baxen',
+    githubUserId: 7858054,
     discord: '360224027769307136',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'bhosmer-ant',
+    githubUserId: 177685734,
     discord: '1272295077074567242',
     memberOf: [
       ROLE_IDS.DOCS_MAINTAINERS,
@@ -103,6 +117,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'BobDickinson',
+    githubUserId: 51585,
     email: 'bob.dickinson@gmail.com',
     discord: '1175893001202045139',
     firstName: 'Bob',
@@ -112,6 +127,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'caitiem20',
+    githubUserId: 3310141,
     email: 'caitie.mccaffrey@microsoft.com',
     discord: '1425586366288494722',
     firstName: 'Caitie',
@@ -126,20 +142,24 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'canarik',
+    githubUserId: 51276149,
     discord: '409814689095352320',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'caseychow-oai',
+    githubUserId: 213687408,
     memberOf: [ROLE_IDS.FILE_UPLOADS_WG],
   },
   {
     github: 'chemicL',
+    githubUserId: 2554306,
     discord: '1346243721271971923',
     memberOf: [ROLE_IDS.JAVA_SDK],
   },
   {
     github: 'chr-hertel',
+    githubUserId: 2852185,
     email: 'mail@christopher-hertel.de',
     discord: '633566986827464704',
     firstName: 'Christopher',
@@ -149,6 +169,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'chughtapan',
+    githubUserId: 3305567,
     email: 'chugh.tapan@gmail.com',
     discord: '941245973357793340',
     firstName: 'Tapan',
@@ -163,6 +184,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'clareliguori',
+    githubUserId: 484245,
     email: 'liguori@amazon.com',
     discord: '1109135863843143700',
     firstName: 'Clare',
@@ -175,6 +197,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'cliffhall',
+    githubUserId: 871933,
     email: 'cliff@futurescale.com',
     discord: '501498061965754380',
     npm: 'cliffhall',
@@ -197,25 +220,30 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'CodeWithKyrian',
+    githubUserId: 48791154,
     discord: '951883230250946633',
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'connor4312',
+    githubUserId: 2230985,
     discord: '141305677485309952',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'crondinini-ant',
+    githubUserId: 224883180,
     memberOf: [],
   },
   {
     github: 'D-McAdams',
+    githubUserId: 132293784,
     discord: '1364696680980545697',
     memberOf: [ROLE_IDS.AUTH_MAINTAINERS, ROLE_IDS.AUTH_IG],
   },
   {
     github: 'daleseo',
+    githubUserId: 5466341,
     discord: '267646459187298305',
     firstName: 'Dale',
     lastName: 'Seo',
@@ -224,6 +252,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'DanielTemesgen',
+    githubUserId: 40549299,
     discord: '1537229954272600064',
     firstName: 'Daniel',
     lastName: 'Temesgen',
@@ -237,6 +266,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'davidortinau',
+    githubUserId: 41873,
     firstName: 'David',
     lastName: 'Ortinau',
     discord: '572162392876646401',
@@ -244,6 +274,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'degiorgio',
+    githubUserId: 7044884,
     email: 'degiorgiokurt@outlook.com',
     firstName: 'Kurt',
     lastName: 'Degiorgio',
@@ -253,6 +284,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'dend',
+    githubUserId: 1389609,
     skipGoogleUserProvisioning: true,
     memberOf: [
       ROLE_IDS.AUTH_MAINTAINERS,
@@ -275,10 +307,12 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'devcrocod',
+    githubUserId: 19648120,
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'domdomegg',
+    githubUserId: 4953590,
     email: 'adam@modelcontextprotocol.io',
     discord: '102128241715716096',
     firstName: 'Adam',
@@ -289,6 +323,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'dsp',
+    githubUserId: 14013,
     pypi: 'dsp',
     skipGoogleUserProvisioning: true,
     memberOf: [
@@ -311,6 +346,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'dsp-ant',
+    githubUserId: 167242713,
     email: 'david@modelcontextprotocol.io',
     discord: '166107790262272000',
     npm: 'thedsp',
@@ -336,26 +372,31 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'e5l',
+    githubUserId: 4290035,
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'eiriktsarpalis',
+    githubUserId: 2813363,
     firstName: 'Eirik',
     lastName: 'Tsarpalis',
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
     github: 'EmLauber',
+    githubUserId: 56414377,
     discord: '1408222390361657426',
     memberOf: [ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'erain',
+    githubUserId: 767427,
     discord: '797226095874539539',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'evalstate',
+    githubUserId: 1936278,
     discord: '779268016121577492',
     firstName: 'Shaun',
     lastName: 'Smith',
@@ -371,14 +412,17 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'fabpot',
+    githubUserId: 47313,
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'felixrieseberg',
+    githubUserId: 1426799,
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'felixweinberger',
+    githubUserId: 3823880,
     discord: '1377138523492057212',
     npm: 'fweinberger',
     firstName: 'Felix',
@@ -394,21 +438,25 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'findleyr',
+    githubUserId: 57144380,
     discord: '776094836796424213',
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'gocamille',
+    githubUserId: 1258853,
     discord: '259396562625495040',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'guglielmo-san',
+    githubUserId: 237713243,
     discord: '1432786987072622613',
     memberOf: [ROLE_IDS.GO_SDK, ROLE_IDS.SECURITY_TEAM],
   },
   {
     github: 'halter73',
+    githubUserId: 54385,
     discord: '340718902096953344',
     firstName: 'Stephen',
     lastName: 'Halter',
@@ -416,11 +464,13 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'herczyn',
+    githubUserId: 4989944,
     discord: '1001427188068917279',
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'idosal',
+    githubUserId: 18148989,
     discord: '593070927202484244',
     googleEmailPrefix: 'ido',
     firstName: 'Ido',
@@ -429,14 +479,17 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'ignatov',
+    githubUserId: 426890,
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'ihrpr',
+    githubUserId: 21148364,
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.PYTHON_SDK, ROLE_IDS.TYPESCRIPT_SDK],
   },
   {
     github: 'imfing',
+    githubUserId: 5097752,
     firstName: 'Xin',
     lastName: 'Fu',
     googleEmailPrefix: 'xin',
@@ -444,41 +497,49 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jamadeo',
+    githubUserId: 5307860,
     discord: '1349064162848018472',
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'JAORMX',
+    githubUserId: 145564,
     discord: '1185152774674055193',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'jayzuccarelli',
+    githubUserId: 11176606,
     discord: '740214858930323548',
     memberOf: [ROLE_IDS.FILESYSTEMS_WG],
   },
   {
     github: 'jba',
+    githubUserId: 18483045,
     discord: '773276903364755518',
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'jeanmatthieu',
+    githubUserId: 3831291,
     discord: '1558123148614828183',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'jeffhandley',
+    githubUserId: 1031940,
     firstName: 'Jeff',
     lastName: 'Handley',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
     github: 'jenn-newton',
+    githubUserId: 153535757,
     memberOf: [ROLE_IDS.SECURITY_MANAGERS, ROLE_IDS.SECURITY_IG],
   },
   {
     github: 'jeongukjae',
+    githubUserId: 8815362,
     email: 'jeongukjae@gmail.com',
     discord: '334348926658412564',
     firstName: 'Ukjae',
@@ -488,15 +549,18 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'joan-anthropic',
+    githubUserId: 222313596,
     discord: '1398403578892128437',
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'jokemanfire',
+    githubUserId: 26783504,
     memberOf: [ROLE_IDS.RUST_SDK],
   },
   {
     github: 'jonathanhefner',
+    githubUserId: 771968,
     discord: '1301960963087663186',
     memberOf: [
       ROLE_IDS.COMMUNITY_MANAGERS,
@@ -511,12 +575,14 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'jozkee',
+    githubUserId: 16040868,
     firstName: 'David',
     lastName: 'Cantu',
     memberOf: [ROLE_IDS.CSHARP_SDK],
   },
   {
     github: 'jspahrsummers',
+    githubUserId: 432536,
     email: 'justin@modelcontextprotocol.io',
     npm: 'jspahrsummers',
     pypi: 'jspahrsummers',
@@ -528,11 +594,13 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'kaxil',
+    githubUserId: 8811558,
     discord: '757355088946921474',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'Kehrlann',
+    githubUserId: 5676779,
     discord: '1112624611901837373',
     memberOf: [ROLE_IDS.JAVA_SDK, ROLE_IDS.SECURITY_TEAM],
     firstName: 'Daniel',
@@ -541,15 +609,18 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'keithagroves',
+    githubUserId: 6021332,
     discord: '321019863260987392',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'kevklam',
+    githubUserId: 16890026,
     memberOf: [ROLE_IDS.FILE_UPLOADS_WG],
   },
   {
     github: 'KKonstantinov',
+    githubUserId: 655541,
     discord: '390932438903422987',
     memberOf: [
       ROLE_IDS.INSPECTOR_MAINTAINERS,
@@ -563,6 +634,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'Kludex',
+    githubUserId: 7353520,
     discord: '247021664624312322',
     pypi: 'Kludex',
     firstName: 'Marcelo',
@@ -577,11 +649,13 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'koic',
+    githubUserId: 13203,
     discord: '880937364208361483',
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.RUBY_SDK, ROLE_IDS.SECURITY_TEAM],
   },
   {
     github: 'kurtisvg',
+    githubUserId: 31518063,
     discord: '1158458388917780590',
     firstName: 'Kurtis',
     lastName: 'Van Gent',
@@ -595,6 +669,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'kziemski',
+    githubUserId: 321453,
     discord: '312056735248416770',
     firstName: 'Kryspin',
     lastName: 'Ziemski',
@@ -608,6 +683,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'liady',
+    githubUserId: 7003853,
     discord: '383565833768665088',
     firstName: 'Liad',
     lastName: 'Yosef',
@@ -616,6 +692,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'linsun',
+    githubUserId: 1588319,
     discord: '1212420366199165032',
     firstName: 'Lin',
     lastName: 'Sun',
@@ -623,6 +700,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'localden',
+    githubUserId: 53200638,
     discord: '1351224014143754260',
     firstName: 'Den',
     lastName: 'Delimarsky',
@@ -654,6 +732,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'LucaButBoring',
+    githubUserId: 131398524,
     discord: '1366470072729866252',
     firstName: 'Luca',
     lastName: 'Chang',
@@ -669,30 +748,36 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'maciej-kisiel',
+    githubUserId: 2988985,
     discord: '936242781733654588',
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'macoughl',
+    githubUserId: 1055078,
     discord: '740279257548193803',
     memberOf: [ROLE_IDS.COMMUNITY_MANAGERS],
   },
   {
     github: 'markdroth',
+    githubUserId: 18664614,
     firstName: 'Mark',
     lastName: 'Roth',
     memberOf: [ROLE_IDS.TRANSPORT_WG],
   },
   {
     github: 'markpollack',
+    githubUserId: 247466,
     memberOf: [ROLE_IDS.JAVA_SDK],
   },
   {
     github: 'marshallofsound',
+    githubUserId: 6634592,
     memberOf: [ROLE_IDS.MCPB_MAINTAINERS],
   },
   {
     github: 'mattzcarey',
+    githubUserId: 77928207,
     discord: '224878268275359744',
     firstName: 'Matt',
     lastName: 'Carey',
@@ -706,6 +791,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'maxisbey',
+    githubUserId: 224885523,
     discord: '1404871241738748058',
     pypi: 'maxisbey',
     firstName: 'Max',
@@ -721,6 +807,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'michaelcheah',
+    githubUserId: 20640150,
     discord: '1547217405837840415',
     firstName: 'Michael',
     lastName: 'Cheah',
@@ -728,6 +815,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'monikaicampbell',
+    githubUserId: 316615459,
     discord: '1545020658730401813',
     firstName: 'Monika',
     lastName: 'Campbell',
@@ -738,31 +826,37 @@ export const MEMBERS: readonly Member[] = [
     // Same person as 'morabijn' below (work account); Discord identity lives
     // on that entry (keyed per person, so only one entry can carry it)
     github: 'Morabbin',
+    githubUserId: 709651,
     memberOf: [ROLE_IDS.SDK_WG],
   },
   {
     github: 'morabijn',
+    githubUserId: 329069361,
     discord: '823210500019453992',
     memberOf: [ROLE_IDS.SDK_WG],
   },
   {
     github: 'movetz',
+    githubUserId: 2523155,
     discord: '1427569183427919906',
     // Emeritus maintainer of the Swift SDK
     memberOf: [],
   },
   {
     github: 'nahapetyan-serob',
+    githubUserId: 124069899,
     discord: '1505852630692401314',
     memberOf: [ROLE_IDS.GO_SDK],
   },
   {
     github: 'nbarbettini',
+    githubUserId: 7525482,
     discord: '784552628930478090',
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'nickcoai',
+    githubUserId: 142361983,
     discord: '1153783469860732968',
     firstName: 'Nick',
     lastName: 'Cooper',
@@ -771,10 +865,12 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'nicolas-grekas',
+    githubUserId: 243674,
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'nitsanh',
+    githubUserId: 93908036,
     firstName: 'Nitsan',
     lastName: 'Hasson',
     googleEmailPrefix: 'nitsan',
@@ -782,11 +878,13 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'Nyholm',
+    githubUserId: 1275206,
     discord: '466593085984342016',
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'ochafik',
+    githubUserId: 273860,
     discord: '1004897332069925024',
     npm: 'ochafik-ant',
     firstName: 'Olivier',
@@ -806,10 +904,12 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'og-ant',
+    githubUserId: 169847224,
     memberOf: [ROLE_IDS.SECURITY_IG],
   },
   {
     github: 'olaservo',
+    githubUserId: 16480113,
     discord: '1079841769946095620',
     firstName: 'Ola',
     lastName: 'Hungerford',
@@ -832,15 +932,18 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'Ololoshechkin',
+    githubUserId: 24360128,
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'panyam',
+    githubUserId: 212784,
     // TODO: add Discord ID once confirmed
     memberOf: [ROLE_IDS.MEMBERS],
   },
   {
     github: 'pcarleton',
+    githubUserId: 704663,
     discord: '1354465170969067852',
     npm: 'pcarleton',
     firstName: 'Paul',
@@ -866,6 +969,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'pederhp',
+    githubUserId: 127606677,
     discord: '166255967665651713',
     firstName: 'Peder Holdgaard',
     lastName: 'Pedersen',
@@ -883,12 +987,14 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'petery-ant',
+    githubUserId: 173851638,
     memberOf: [ROLE_IDS.SECURITY_IG],
   },
   {
     // Same person as 'Poita' below; Discord and Google Workspace identity live
     // on that entry (both are keyed per person, so only one entry can carry them)
     github: 'pja-ant',
+    githubUserId: 227474472,
     memberOf: [
       ROLE_IDS.CORE_MAINTAINERS,
       ROLE_IDS.MAINTAINERS,
@@ -902,6 +1008,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'Poita',
+    githubUserId: 580325,
     discord: '328628782497923072',
     firstName: 'Peter',
     lastName: 'Alexander',
@@ -920,10 +1027,12 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'poteat',
+    githubUserId: 7668446,
     memberOf: [ROLE_IDS.TYPESCRIPT_SDK_COLLABORATORS],
   },
   {
     github: 'pradyut',
+    githubUserId: 253704,
     firstName: 'Pradyut',
     lastName: 'Pokuri',
     googleEmailPrefix: 'pradyut2386',
@@ -931,6 +1040,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'PranavSenthilnathan',
+    githubUserId: 12225508,
     email: 'pranas@microsoft.com',
     firstName: 'Pranav',
     lastName: 'Senthilnathan',
@@ -938,6 +1048,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'pree-dew',
+    githubUserId: 132843509,
     discord: '1379733751315173376',
     firstName: 'Preeti',
     lastName: 'Dewani',
@@ -945,11 +1056,13 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'pwwpche',
+    githubUserId: 5009098,
     discord: '1226238847013228604',
     memberOf: [],
   },
   {
     github: 'rdimitrov',
+    githubUserId: 16540482,
     email: 'radoslav@modelcontextprotocol.io',
     discord: '1088231882979815424',
     firstName: 'Radoslav',
@@ -960,6 +1073,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'rreichel3',
+    githubUserId: 976632,
     discord: '1458485333757788273',
     memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.TOOL_ANNOTATIONS_IG, ROLE_IDS.WG_IG_FACILITATORS],
   },
@@ -984,6 +1098,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'SamMorrowDrums',
+    githubUserId: 4811358,
     email: 'sammorrowdrums@github.com',
     discord: '782948163694493696',
     firstName: 'Sam',
@@ -1000,6 +1115,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'sarahnovotny',
+    githubUserId: 127370,
     discord: '705092472082137109',
     firstName: 'Sarah',
     lastName: 'Novotny',
@@ -1008,6 +1124,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'schlpbch',
+    githubUserId: 18540761,
     discord: '1467977452969267412',
     firstName: 'Andreas',
     lastName: 'Schlapbach',
@@ -1015,28 +1132,33 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'sdubov',
+    githubUserId: 6064345,
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'soyuka',
+    githubUserId: 1321971,
     email: 'soyuka@gmail.com',
     discord: '249323948842418186',
     memberOf: [ROLE_IDS.PHP_SDK],
   },
   {
     github: 'stallent',
+    githubUserId: 310778,
     discord: '1137898074086314136',
     // Emeritus maintainer of the Swift SDK
     memberOf: [],
   },
   {
     github: 'stephentoub',
+    githubUserId: 2642209,
     firstName: 'Stephen',
     lastName: 'Toub',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
     github: 'stevenrchen',
+    githubUserId: 93686042,
     firstName: 'Steven',
     lastName: 'Chen',
     googleEmailPrefix: 'chenruiyang',
@@ -1044,6 +1166,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'sunishsheth2009',
+    githubUserId: 5621432,
     discord: '1414713222224941097',
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
@@ -1053,6 +1176,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'tadasant',
+    githubUserId: 3900899,
     email: 'tadas@modelcontextprotocol.io',
     discord: '400092503677599754',
     firstName: 'Tadas',
@@ -1073,30 +1197,36 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'tarekgh',
+    githubUserId: 10833894,
     firstName: 'Tarek',
     lastName: 'Mahmoud Sayed',
     memberOf: [ROLE_IDS.CSHARP_SDK, ROLE_IDS.CSHARP_SDK_ADMIN],
   },
   {
     github: 'tiginamaria',
+    githubUserId: 31625351,
     memberOf: [ROLE_IDS.KOTLIN_SDK],
   },
   {
     github: 'tnorimat',
+    githubUserId: 25092005,
     memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.CONFORMANCE_AUTH],
   },
   {
     github: 'tobi-oye',
+    githubUserId: 38209697,
     discord: '791307404293177354',
     memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
     github: 'tobinsouth',
+    githubUserId: 32489862,
     discord: '865072069779521556',
     memberOf: [ROLE_IDS.REFERENCE_SERVERS_MAINTAINERS],
   },
   {
     github: 'toby',
+    githubUserId: 83556,
     email: 'toby@modelcontextprotocol.io',
     discord: '560155411777323048',
     firstName: 'Toby',
@@ -1108,31 +1238,37 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'topherbullock',
+    githubUserId: 1895900,
     discord: '1059910719124013168',
     memberOf: [ROLE_IDS.RUBY_SDK],
   },
   {
     github: 'tsarlandie-oai',
+    githubUserId: 291887306,
     discord: '1516121882297106487',
     memberOf: [ROLE_IDS.RUST_SDK, ROLE_IDS.TASKS_EVENTS_WG, ROLE_IDS.FILE_UPLOADS_WG],
   },
   {
     github: 'tzolov',
+    githubUserId: 1351573,
     discord: '1097924660055777290',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS, ROLE_IDS.JAVA_SDK],
   },
   {
     github: 'varun06',
+    githubUserId: 1284070,
     discord: '1327624284499349536',
     memberOf: [ROLE_IDS.SWIFT_SDK, ROLE_IDS.MAINTAINERS],
   },
   {
     github: 'vijaydeepsinha',
+    githubUserId: 13728812,
     // TODO: add Discord ID once confirmed
     memberOf: [ROLE_IDS.MEMBERS],
   },
   {
     github: 'vinoo999',
+    githubUserId: 7979566,
     discord: '759950435640541234',
     firstName: 'Vinay',
     lastName: 'Ramesh',
@@ -1140,6 +1276,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'yarolegovich',
+    githubUserId: 9644546,
     discord: '393296640141950977',
     memberOf: [ROLE_IDS.GO_SDK, ROLE_IDS.SECURITY_TEAM],
   },
