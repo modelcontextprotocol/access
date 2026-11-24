@@ -83,33 +83,6 @@ export function hasProvisionUserRole(
 }
 
 /**
- * GitHub team slugs a member with the given roles belongs to, including
- * parent teams (on GitHub, child team members are members of the parent).
- * Used by access-site/ (OIDC groups claim) and scripts/sync-team-groups.ts.
- */
-export function githubTeamsFor(
-  roleIds: readonly RoleId[],
-  roleLookup: Map<RoleId, Role>
-): string[] {
-  const teams = new Set<string>();
-  const seen = new Set<RoleId>();
-  const toProcess = [...roleIds];
-
-  while (toProcess.length > 0) {
-    const roleId = toProcess.pop()!;
-    if (seen.has(roleId)) continue;
-    seen.add(roleId);
-
-    const role = roleLookup.get(roleId);
-    if (!role?.github) continue;
-    teams.add(role.github.team);
-    if (role.github.parent) toProcess.push(role.github.parent);
-  }
-
-  return [...teams].sort();
-}
-
-/**
  * Sort roles by GitHub parent dependency (topological sort).
  * Ensures parent teams are created before child teams.
  *

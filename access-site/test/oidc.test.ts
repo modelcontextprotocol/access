@@ -3,54 +3,50 @@ import { createLocalJWKSet, jwtVerify } from 'jose';
 import { app } from '../src/index';
 import type { Env } from '../src/env';
 import { sha256 } from '../src/crypto';
+import { workspaceEmailFor } from '../src/eligibility';
 import {
   CLIENT_SECRET,
   CookieJar,
-  type FakeWorld,
   GOOGLE_REDIRECT,
   ISSUER,
   createEnv,
-  installFetchMock,
-  memberWithPrefix,
+  ineligibleMember,
+  memberWithAccount,
+  memberWithoutAccount,
+  mockGitHub,
 } from './helpers';
 
 const VERIFIER = 'v'.repeat(43) + '-verifier-for-tests';
+const DOMAIN = 'modelcontextprotocol.io';
 
 let env: Env;
-let world: FakeWorld;
 
-function worldFor(login: string, id = 4242): FakeWorld {
-  return {
-    githubUser: { id, login, name: 'Test Person' },
-    githubLogins: new Map([[String(id), login]]),
-    directory: new Map(),
-    calls: [],
-  };
-}
-
-async function call(path: string, jar: CookieJar, init: RequestInit = {}) {
-  const res = await app.request(
-    `${ISSUER}${path}`,
-    { ...init, headers: { ...(init.headers as Record<string, string>), Cookie: jar.header() } },
-    env
-  );
+async function call(path: string, jar: CookieJar) {
+  const res = await app.request(`${ISSUER}${path}`, { headers: { Cookie: jar.header() } }, env);
   jar.store(res);
   return res;
 }
 
-/** Runs Google -> /authorize -> GitHub -> back to Google; returns the final redirect. */
-async function signIn(jar: CookieJar, params: Record<string, string> = {}) {
-  const query = new URLSearchParams({
-    client_id: 'google-workspace',
-    redirect_uri: GOOGLE_REDIRECT,
-    response_type: 'code',
-    scope: 'openid email profile',
-    state: 'google-state',
-    nonce: 'google-nonce',
-    code_challenge: await sha256(VERIFIER),
-    code_challenge_method: 'S256',
-    ...params,
-  });
+/** Runs Google -> /authorize -> GitHub -> back; returns the final response. */
+async function signIn(
+  github: { id: number; login: string },
+  params: Record<string, string | undefined> = {}
+) {
+  mockGitHub({ ...github, name: 'Test Person' });
+  const jar = new CookieJar();
+  const query = new URLSearchParams(
+    Object.entries({
+      client_id: 'google-workspace',
+      redirect_uri: GOOGLE_REDIRECT,
+      response_type: 'code',
+      scope: 'openid email profile',
+      state: 'google-state',
+      nonce: 'google-nonce',
+      code_challenge: await sha256(VERIFIER),
+      code_challenge_method: 'S256',
+      ...params,
+    }).filter((e): e is [string, string] => e[1] !== undefined)
+  );
   const authorize = await call(`/authorize?${query}`, jar);
   expect(authorize.status).toBe(302);
   expect(authorize.headers.get('Location')).toBe('/login');
@@ -61,6 +57,10 @@ async function signIn(jar: CookieJar, params: Record<string, string> = {}) {
   expect(githubUrl.origin).toBe('https://github.com');
 
   return call(`/login?code=gh-code&state=${githubUrl.searchParams.get('state')}`, jar);
+}
+
+function codeFrom(res: Response): string {
+  return new URL(res.headers.get('Location')!).searchParams.get('code')!;
 }
 
 async function exchange(code: string, extra: Record<string, string> = {}) {
@@ -86,20 +86,30 @@ async function exchange(code: string, extra: Record<string, string> = {}) {
 
 beforeEach(async () => {
   env = await createEnv();
-  const member = memberWithPrefix();
-  world = worldFor(member.github!);
-  world.directory.set(`${member.googleEmailPrefix}@modelcontextprotocol.io`, {
-    primaryEmail: `${member.googleEmailPrefix}@modelcontextprotocol.io`,
-    orgUnitPath: '/Model Context Protocol',
-    externalIds: [{ type: 'custom', customType: 'github', value: '4242' }],
-  });
-  installFetchMock(world);
+  vi.spyOn(console, 'log').mockImplementation(() => {});
 });
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.unstubAllGlobals();
+  vi.restoreAllMocks();
+});
+
+describe('users.ts mapping', () => {
+  it('maps a configured member to their address, case-insensitively', () => {
+    const m = memberWithAccount();
+    expect(workspaceEmailFor(m.github!.toUpperCase(), DOMAIN)).toBe(
+      `${m.googleEmailPrefix!.toLowerCase()}@${DOMAIN}`
+    );
+  });
+  it('returns null without a prefix, without an eligible role, or when unknown', () => {
+    expect(workspaceEmailFor(memberWithoutAccount().github!, DOMAIN)).toBeNull();
+    expect(workspaceEmailFor(ineligibleMember().github!, DOMAIN)).toBeNull();
+    expect(workspaceEmailFor('definitely-not-a-configured-user', DOMAIN)).toBeNull();
+  });
+});
 
 describe('discovery', () => {
-  it('publishes metadata and a JWKS', async () => {
+  it('publishes metadata and a public-only JWKS', async () => {
     const meta = (await (
       await app.request(`${ISSUER}/.well-known/openid-configuration`, {}, env)
     ).json()) as Record<string, unknown>;
@@ -114,16 +124,16 @@ describe('discovery', () => {
   });
 });
 
-describe('authorization code flow', () => {
-  it('signs in a linked, eligible user with the GitHub ID as subject', async () => {
-    const jar = new CookieJar();
-    const back = await signIn(jar);
+describe('sign-in', () => {
+  it('signs in a configured member with the GitHub ID as subject', async () => {
+    const member = memberWithAccount();
+    const back = await signIn({ id: 4242, login: member.github! });
     expect(back.status).toBe(302);
     const location = new URL(back.headers.get('Location')!);
     expect(`${location.origin}${location.pathname}`).toBe(GOOGLE_REDIRECT);
     expect(location.searchParams.get('state')).toBe('google-state');
 
-    const res = await exchange(location.searchParams.get('code')!);
+    const res = await exchange(codeFrom(back));
     expect(res.status).toBe(200);
     const body = (await res.json()) as { id_token: string; access_token: string };
 
@@ -132,9 +142,8 @@ describe('authorization code flow', () => {
       issuer: ISSUER,
       audience: 'google-workspace',
     });
-    const member = memberWithPrefix();
     expect(payload.sub).toBe('4242');
-    expect(payload.email).toBe(`${member.googleEmailPrefix}@modelcontextprotocol.io`);
+    expect(payload.email).toBe(`${member.googleEmailPrefix!.toLowerCase()}@${DOMAIN}`);
     expect(payload.nonce).toBe('google-nonce');
     expect(payload.preferred_username).toBe(member.github);
 
@@ -146,9 +155,28 @@ describe('authorization code flow', () => {
     expect(((await info.json()) as { sub: string }).sub).toBe('4242');
   });
 
+  it('works when the client sends no PKCE challenge', async () => {
+    const back = await signIn(
+      { id: 1, login: memberWithAccount().github! },
+      { code_challenge: undefined, code_challenge_method: undefined }
+    );
+    expect((await exchange(codeFrom(back), { code_verifier: '' })).status).toBe(200);
+  });
+
+  it('refuses GitHub users without an account in users.ts', async () => {
+    for (const login of [
+      memberWithoutAccount().github!,
+      ineligibleMember().github!,
+      'definitely-not-a-configured-user',
+    ]) {
+      const res = await signIn({ id: 7, login });
+      expect(res.status, login).toBe(403);
+      expect(await res.text()).toContain('googleEmailPrefix');
+    }
+  });
+
   it('rejects code replay', async () => {
-    const back = await signIn(new CookieJar());
-    const code = new URL(back.headers.get('Location')!).searchParams.get('code')!;
+    const code = codeFrom(await signIn({ id: 2, login: memberWithAccount().github! }));
     expect((await exchange(code)).status).toBe(200);
     const replay = await exchange(code);
     expect(replay.status).toBe(400);
@@ -156,12 +184,11 @@ describe('authorization code flow', () => {
   });
 
   it('rejects a wrong PKCE verifier and a wrong client secret', async () => {
-    const back = await signIn(new CookieJar());
-    const code = new URL(back.headers.get('Location')!).searchParams.get('code')!;
+    const login = memberWithAccount().github!;
+    const code = codeFrom(await signIn({ id: 3, login }));
     expect((await exchange(code, { code_verifier: 'x'.repeat(43) })).status).toBe(400);
 
-    const back2 = await signIn(new CookieJar());
-    const code2 = new URL(back2.headers.get('Location')!).searchParams.get('code')!;
+    const code2 = codeFrom(await signIn({ id: 3, login }));
     const res = await app.request(
       `${ISSUER}/token`,
       {
@@ -191,21 +218,9 @@ describe('authorization code flow', () => {
     expect(res.headers.get('Location')).toBeNull();
   });
 
-  it('sends users without an account to the account page instead of Google', async () => {
-    world.directory.clear();
-    const jar = new CookieJar();
-    const back = await signIn(jar);
-    expect(back.headers.get('Location')).toBe('/?signin=blocked');
-    const home = await call('/?signin=blocked', jar);
-    const text = await home.text();
-    expect(text).toContain('You need an active');
-    expect(text).toContain('Set up account');
-  });
-
-  it('refuses suspended accounts', async () => {
-    const [user] = [...world.directory.values()];
-    user!.suspended = true;
-    const back = await signIn(new CookieJar());
-    expect(back.headers.get('Location')).toBe('/?signin=blocked');
+  it('does not start a GitHub sign-in unless Google is waiting', async () => {
+    const res = await app.request(`${ISSUER}/login`, {}, env);
+    expect(res.status).toBe(302);
+    expect(res.headers.get('Location')).toBe('/');
   });
 });

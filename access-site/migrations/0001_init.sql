@@ -19,27 +19,3 @@ CREATE TABLE authorization_codes (
   claims TEXT NOT NULL,
   expires_at INTEGER NOT NULL
 );
-
--- Sessions for the account page (session IDs stored hashed).
-CREATE TABLE sessions (
-  id_hash TEXT PRIMARY KEY,
-  github_id TEXT NOT NULL,
-  github_login TEXT NOT NULL,
-  github_name TEXT,
-  expires_at INTEGER NOT NULL
-);
-
--- Cache of GitHub user ID -> Workspace account. Google (externalIds) is the
--- source of truth; the nightly job rebuilds this table from the Directory.
-CREATE TABLE accounts (
-  github_id TEXT PRIMARY KEY,
-  email TEXT NOT NULL UNIQUE,
-  suspended INTEGER NOT NULL DEFAULT 0,
-  updated_at INTEGER NOT NULL
-);
-
--- One account creation in flight per GitHub user.
-CREATE TABLE creation_locks (
-  github_id TEXT PRIMARY KEY,
-  expires_at INTEGER NOT NULL
-);

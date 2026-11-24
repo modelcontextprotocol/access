@@ -2,7 +2,7 @@
   "name": "@mcp/access-site",
   "version": "0.1.0",
   "private": true,
-  "description": "access.modelcontextprotocol.io: GitHub sign-in (OIDC) and self-service Google Workspace accounts for MCP maintainers",
+  "description": "access.modelcontextprotocol.io: sign in to MCP Google Workspace with GitHub (OIDC provider for Google)",
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
