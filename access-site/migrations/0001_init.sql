@@ -43,14 +43,3 @@ CREATE TABLE creation_locks (
   github_id TEXT PRIMARY KEY,
   expires_at INTEGER NOT NULL
 );
-
-CREATE TABLE audit_log (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  at INTEGER NOT NULL,
-  actor TEXT NOT NULL,
-  action TEXT NOT NULL,
-  subject TEXT,
-  detail TEXT
-);
-
-CREATE INDEX audit_log_at ON audit_log (at);

@@ -59,7 +59,6 @@ One-time, in this order.
    npm run generate-keys                       # OIDC_SIGNING_KEY + OIDC_CLIENT_SECRET (printed once)
    npx wrangler secret put GITHUB_CLIENT_SECRET
    npx wrangler secret put GOOGLE_SA_KEY < key.json
-   npx wrangler secret put DISCORD_WEBHOOK_URL # optional
    npx wrangler secret put GITHUB_API_TOKEN    # optional, read-only token for the nightly job
    ```
 4. **Backfill** existing accounts with GitHub IDs (from the repo root, with the Pulumi service account key):
@@ -79,7 +78,7 @@ One-time, in this order.
 
 - **Turn on offboarding**: after a few clean report-only runs, set `OFFBOARDING_MODE = "enforce"`.
 - **Rotate the signing key**: copy the current key from `/jwks` into the `OIDC_PREVIOUS_JWK` secret, run `node scripts/generate-keys.mjs --rotate`, deploy; remove `OIDC_PREVIOUS_JWK` a day later.
-- **Audit**: `npx wrangler d1 execute access-site --remote --command "SELECT * FROM audit_log ORDER BY id DESC LIMIT 50"`.
+- **Logs**: account creations, links, suspensions and the nightly report are logged as JSON lines in Workers Logs (dashboard, or `npx wrangler tail` live).
 - **Break-glass**: super admins are exempt from the SSO profile, so they can always sign in to fix things.
 
 ## Development
