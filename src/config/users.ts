@@ -706,6 +706,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'max-stytch',
+    discord: '1099364476354035832',
     memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.AUTH_CONTRIBUTORS],
   },
   {
