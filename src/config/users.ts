@@ -892,6 +892,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'PieterKas',
+    discord: '1065355335696658472',
     memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.AUTH_CONTRIBUTORS],
   },
   {
