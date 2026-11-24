@@ -1090,6 +1090,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'sambhav',
     githubUserId: 16130816,
+    githubEmail: 'sambhavs.email@gmail.com',
     email: 'sambhavs.email@gmail.com',
     firstName: 'Sambhav',
     lastName: 'Kothari',
