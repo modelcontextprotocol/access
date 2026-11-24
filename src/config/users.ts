@@ -705,6 +705,10 @@ export const MEMBERS: readonly Member[] = [
     ],
   },
   {
+    github: 'max-stytch',
+    memberOf: [ROLE_IDS.AUTH_CONTRIBUTORS],
+  },
+  {
     github: 'maxisbey',
     discord: '1404871241738748058',
     pypi: 'maxisbey',
@@ -759,7 +763,7 @@ export const MEMBERS: readonly Member[] = [
   {
     github: 'nbarbettini',
     discord: '784552628930478090',
-    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.WG_IG_FACILITATORS],
+    memberOf: [ROLE_IDS.MAINTAINERS, ROLE_IDS.WG_IG_FACILITATORS, ROLE_IDS.AUTH_CONTRIBUTORS],
   },
   {
     github: 'nickcoai',
