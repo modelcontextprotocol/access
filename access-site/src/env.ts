@@ -10,8 +10,8 @@ export interface Env {
   /** Comma-separated list of exact redirect URIs accepted from the OIDC client. */
   OIDC_REDIRECT_URIS: string;
   /**
-   * Optional comma-separated GitHub logins. When set, only these users can
-   * sign in (rollout pilot); remove it to open sign-in to verified Workspace accounts in users.ts.
+   * Comma-separated pilot logins. Empty or unset pauses sign-in.
+   * A standalone '*' allows all verified Workspace accounts.
    */
   PILOT_GITHUB_LOGINS?: string;
 

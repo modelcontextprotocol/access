@@ -64,6 +64,7 @@ export async function createEnv(overrides: Partial<Env> = {}): Promise<Env> {
     DB: createD1(),
     ISSUER,
     WORKSPACE_DOMAIN: 'modelcontextprotocol.io',
+    PILOT_GITHUB_LOGINS: '*',
     GITHUB_CLIENT_ID: 'gh-client',
     GITHUB_CLIENT_SECRET: 'gh-secret',
     OIDC_CLIENT_ID: 'google-workspace',
