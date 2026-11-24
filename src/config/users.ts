@@ -706,7 +706,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'max-stytch',
-    memberOf: [ROLE_IDS.AUTH_CONTRIBUTORS],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.AUTH_CONTRIBUTORS],
   },
   {
     github: 'maxisbey',
@@ -891,7 +891,7 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'PieterKas',
-    memberOf: [ROLE_IDS.AUTH_CONTRIBUTORS],
+    memberOf: [ROLE_IDS.MEMBERS, ROLE_IDS.AUTH_CONTRIBUTORS],
   },
   {
     // Same person as 'Poita' below; Discord and Google Workspace identity live
