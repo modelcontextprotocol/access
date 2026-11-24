@@ -9,8 +9,10 @@ import type { Role } from './roles';
 export interface Member {
   /** GitHub username */
   github?: string;
-  /** Verified, durable GitHub user ID for Workspace SSO. */
+  /** Numeric GitHub user ID, confirmed with the member (required for workspaceSso) */
   githubUserId?: number;
+  /** May sign in to their Workspace account with GitHub (src/config/workspaceSso.ts) */
+  workspaceSso?: boolean;
   /** Email address (for Google Workspace) */
   email?: string;
   /** Discord user ID (snowflake) */
@@ -37,7 +39,7 @@ export interface Member {
   lastName?: string;
   /** Google Workspace email prefix (e.g., 'david' -> david@modelcontextprotocol.io) */
   googleEmailPrefix?: string;
-  /** If true, this user already exists in Google Workspace and is managed outside Pulumi. */
+  /** If true, this user already exists in Google Workspace and should be imported into Pulumi state */
   existingGWSUser?: boolean;
   /** Explicitly skip automatic GWS user provisioning for provisionUser roles */
   skipGoogleUserProvisioning?: boolean;
@@ -82,23 +84,6 @@ export function hasProvisionUserRole(
   }
 
   return false;
-}
-
-/**
- * Whether this config declares an existing Workspace account or one that
- * Pulumi should provision. Existing accounts do not require a provisionUser role.
- */
-export function hasGoogleWorkspaceAccount(
-  member: Member,
-  roleLookup: Map<RoleId, Role>
-): member is Member & Required<Pick<Member, 'googleEmailPrefix' | 'firstName' | 'lastName'>> {
-  return Boolean(
-    member.googleEmailPrefix &&
-    member.firstName &&
-    member.lastName &&
-    !member.skipGoogleUserProvisioning &&
-    (member.existingGWSUser || hasProvisionUserRole(member.memberOf, roleLookup))
-  );
 }
 
 /**

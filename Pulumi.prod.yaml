@@ -11,7 +11,3 @@ config:
   # The dashboard-created policy was adopted by the first deploy of #195 and is now
   # managed from config. Leave this "false" so deploys apply the declared rules.
   cloudflare:importExistingPolicies: "false"
-  # Google Workspace SAML SP values for the Access SaaS app. Defaults are Google's
-  # legacy values; set these if the SSO profile shows profile-specific ones.
-  # cloudflare:googleSamlEntityId: https://accounts.google.com/samlrp/...
-  # cloudflare:googleSamlAcsUrl: https://accounts.google.com/samlrp/acs?rpid=...

@@ -129,24 +129,15 @@ Channels listed in [`src/config/channels.ts`](src/config/channels.ts) are manage
 
 ## GitHub sign-in for Google Workspace
 
-Google stays the identity provider for Workspace and hands only the password step to a third-party SAML SSO profile: **App → Google → Cloudflare Access → GitHub**. [`src/cloudflare.ts`](src/cloudflare.ts) manages a Cloudflare Access SaaS application (`Google Workspace`) and its policy. There is no custom server, database or signing key: Cloudflare signs the SAML assertion.
+Google Workspace hands the password step to a third-party SAML SSO profile whose identity provider is a Cloudflare Access app (`Google Workspace`, managed in [`src/cloudflare.ts`](src/cloudflare.ts)): **App → Google → Cloudflare Access → GitHub**.
 
-Who signs in as whom:
+- **Who:** members with `workspaceSso: true` and a confirmed numeric `githubUserId` in `users.ts`. [`src/config/workspaceSso.ts`](src/config/workspaceSso.ts) turns them into a NameID transform from the identity's `id` (the GitHub user ID) to `<googleEmailPrefix>@modelcontextprotocol.io`. It also requires the GitHub login method (`idp.id`) and `modelcontextprotocol` in `groups`. Everyone else gets `unmapped@access.invalid`, which Google refuses. Removing the flag revokes sign-in on the next deploy.
+- **Policy:** org members only, GitHub login method only (no one-time PIN), 1 hour Access session. Super admins are exempt from third-party SSO and keep password sign-in.
+- **Checking an identity:** the dashboard's login-method test shows only `name`, `email` and `groups`; `cf zero-trust access users last-seen-identity get <user-id>` shows `id` and `idp` too.
 
-- **Allowlist.** Only GitHub logins in `WORKSPACE_SSO_GITHUB_LOGINS` ([`src/config/workspaceSso.ts`](src/config/workspaceSso.ts)) are mapped. An empty list maps nobody; there is no wildcard. Removing a login revokes GitHub sign-in on the next deploy.
-- **Mapping.** Each allowlisted member must have a verified numeric `githubUserId` and a Workspace account in `users.ts`. Pulumi renders a NameID transform (JSONata) from `githubUserId` to `<googleEmailPrefix>@modelcontextprotocol.io`, matched against the identity's `id` (the numeric GitHub user ID). The transform also requires the GitHub login method (`idp.id`) and `modelcontextprotocol` in `groups`. It never trusts the GitHub login or the GitHub account's email. The dashboard's login-method test shows only `name`, `email` and `groups`; `cf zero-trust access users last-seen-identity get <user-id>` shows the full identity.
-- **Fail closed.** An identity from any other login method, a GitHub ID not in the table, or an account outside the org gets the NameID `unmapped@access.invalid`, which matches no Workspace account, so Google refuses the sign-in. `npm test` evaluates the transform against these cases.
-- **Policy.** The Access policy also requires membership of the `modelcontextprotocol` GitHub organization, and the application allows only the GitHub identity provider (no one-time PIN) with a 1 hour Access session.
-- Super admins are exempt from third-party SSO and keep the Google password sign-in as break-glass.
+**Setup (Workspace super admin):** after deploy, copy the app's SSO endpoint, entity ID and public key from Zero Trust → Access → Applications → Google Workspace. Add a SAML profile under Admin console → Security → Authentication → SSO with third-party IdP, with change-password URL `https://github.com/settings/security`, and assign it to an OU. If Google shows a profile-specific SP entity ID or ACS URL, set `cloudflare:googleSamlEntityId` / `cloudflare:googleSamlAcsUrl` in `Pulumi.prod.yaml`.
 
-### Setup (Workspace super admin)
-
-1. Merge; the deploy creates the Access application with the existing `CLOUDFLARE_ROLE_MANAGEMENT_TOKEN` (Access: Apps and Policies → Edit already covers applications). `pulumi stack output workspaceSsoIdp` prints the SSO URL, entity ID and certificate.
-2. In the [Admin console](https://admin.google.com): Security → Authentication → SSO with third party IdP → add a **SAML** profile with those values. Wrap the certificate in `-----BEGIN CERTIFICATE-----` / `-----END CERTIFICATE-----` and save it as a `.crt` file to upload. Set the change-password URL to `https://github.com/settings/security`.
-3. The Access application defaults to Google's legacy SP values (`google.com/a/modelcontextprotocol.io` and `https://www.google.com/a/modelcontextprotocol.io/acs`). If Google shows a profile-specific entity ID and ACS URL, set `cloudflare:googleSamlEntityId` and `cloudflare:googleSamlAcsUrl` in [`Pulumi.prod.yaml`](Pulumi.prod.yaml) to match.
-4. Assign the profile to a pilot sub-OU that contains only the allowlisted accounts.
-
-**Before widening the pilot:** confirm each person's `githubUserId` with them in a reviewed PR, add them to `WORKSPACE_SSO_GITHUB_LOGINS`, and only then move their account into an OU with the profile assigned. People in an assigned OU but not on the allowlist cannot sign in at all.
+**Adding someone:** confirm their GitHub user ID with them, set `githubUserId` and `workspaceSso: true` in a reviewed PR, and only then move their account into an OU with the profile assigned. Anyone in that OU without a mapping cannot sign in at all.
 
 ## npm & PyPI Package Publishing Access
 
