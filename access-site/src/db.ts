@@ -99,29 +99,3 @@ export async function takeCode(db: D1Database, code: string): Promise<Authorizat
   if (!row || row.expires_at < nowSeconds()) return null;
   return { ...row, claims: JSON.parse(row.claims) as Record<string, unknown> };
 }
-
-/**
- * Pins each GitHub login to the first GitHub user ID seen signing in with it
- * (trust on first use). GitHub frees a login when its owner renames, so a
- * different ID for a pinned login means someone else registered that name.
- * Returns false on a mismatch. Clear the row only after confirming the
- * person (e.g. they deleted and recreated their GitHub account).
- */
-export async function pinGithubIdentity(
-  db: D1Database,
-  login: string,
-  githubId: string
-): Promise<boolean> {
-  const key = login.toLowerCase();
-  await db
-    .prepare(
-      `INSERT OR IGNORE INTO github_identities (login, github_id, first_seen) VALUES (?, ?, ?)`
-    )
-    .bind(key, githubId, nowSeconds())
-    .run();
-  const row = await db
-    .prepare(`SELECT github_id FROM github_identities WHERE login = ?`)
-    .bind(key)
-    .first<{ github_id: string }>();
-  return row?.github_id === githubId;
-}

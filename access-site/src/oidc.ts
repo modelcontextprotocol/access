@@ -11,17 +11,11 @@ import { setCookie } from 'hono/cookie';
 import { SignJWT, createLocalJWKSet, jwtVerify, type JWK } from 'jose';
 import type { AppEnv, Env } from './env';
 import { loadSigningKey, randomToken, timingSafeEqual, verifyPkce } from './crypto';
-import {
-  pinGithubIdentity,
-  saveCode,
-  savePending,
-  takeCode,
-  type PendingAuthorization,
-} from './db';
-import { workspaceEmailFor } from './eligibility';
+import { saveCode, savePending, takeCode, type PendingAuthorization } from './db';
+import { workspaceAccountFor } from './eligibility';
 
 export interface GitHubIdentity {
-  id: string;
+  id: number;
   login: string;
   name: string | null;
 }
@@ -64,27 +58,36 @@ export function discovery(c: Ctx) {
 }
 
 async function publicKeys(env: Env): Promise<JWK[]> {
-  const keys: JWK[] = [(await loadSigningKey(env.OIDC_SIGNING_KEY)).publicJwk];
-  // During rotation, also publish the previous public key. "{}" (or anything
-  // that isn't an RSA JWK) means there is none.
-  if (env.OIDC_PREVIOUS_JWK) {
+  const { publicJwk } = await loadSigningKey(env.OIDC_SIGNING_KEY);
+  const keys = new Map<string, JWK>([[publicJwk.kid, publicJwk]]);
+  for (const configured of [env.OIDC_PREVIOUS_JWK, env.OIDC_NEXT_JWK]) {
+    if (!configured) continue;
     try {
-      const previous = JSON.parse(env.OIDC_PREVIOUS_JWK) as JWK;
-      if (previous.kty === 'RSA' && previous.n && previous.e && previous.kid) {
-        keys.push({
+      const key = JSON.parse(configured) as JWK;
+      if (
+        key.kty === 'RSA' &&
+        typeof key.n === 'string' &&
+        typeof key.e === 'string' &&
+        typeof key.kid === 'string' &&
+        key.n &&
+        key.e &&
+        key.kid &&
+        !keys.has(key.kid)
+      ) {
+        keys.set(key.kid, {
           kty: 'RSA',
-          n: previous.n,
-          e: previous.e,
-          kid: previous.kid,
+          n: key.n,
+          e: key.e,
+          kid: key.kid,
           alg: 'RS256',
           use: 'sig',
         });
       }
     } catch {
-      // ignore a malformed value rather than breaking sign-in
+      // Ignore a malformed optional key rather than breaking sign-in.
     }
   }
-  return keys;
+  return [...keys.values()];
 }
 
 export async function jwks(c: Ctx) {
@@ -92,10 +95,25 @@ export async function jwks(c: Ctx) {
   return c.json({ keys: await publicKeys(c.env) });
 }
 
-/** GET /authorize: validate Google's request, park it, and send the user to GitHub. */
+/** Validate and store Google's GET or form-encoded POST authorization request. */
 export async function authorize(c: Ctx) {
-  const q = c.req.query();
+  const isPost = c.req.method === 'POST';
+  if (
+    isPost &&
+    c.req.header('Content-Type')?.split(';')[0]?.trim().toLowerCase() !==
+      'application/x-www-form-urlencoded'
+  ) {
+    return c.text('Expected a form-encoded authorization request', 400);
+  }
+  const parameters = isPost
+    ? new URLSearchParams(await c.req.text())
+    : new URL(c.req.url).searchParams;
+  const q = Object.fromEntries(parameters);
+  if (parameters.size !== Object.keys(q).length) {
+    return c.text('Duplicate authorization parameter', 400);
+  }
   const env = c.env;
+  const redirectStatus = isPost ? 303 : 302;
 
   // Never redirect to an unknown client or URI; show an error instead.
   if (q.client_id !== env.OIDC_CLIENT_ID) return c.text('Unknown client_id', 400);
@@ -106,7 +124,7 @@ export async function authorize(c: Ctx) {
     const url = new URL(redirectUri);
     url.searchParams.set('error', error);
     if (q.state) url.searchParams.set('state', q.state);
-    return c.redirect(url.toString());
+    return c.redirect(url.toString(), redirectStatus);
   };
   if (q.response_type !== 'code') return fail('unsupported_response_type');
   if (!(q.scope ?? '').split(' ').includes('openid')) return fail('invalid_scope');
@@ -137,7 +155,7 @@ export async function authorize(c: Ctx) {
     sameSite: 'Lax',
     maxAge: PENDING_TTL,
   });
-  return c.redirect('/login');
+  return c.redirect('/login', redirectStatus);
 }
 
 /** During the rollout pilot, only the listed GitHub logins may sign in. */
@@ -151,29 +169,26 @@ function inPilot(env: Env, login: string): boolean {
 
 export type AuthorizationResult =
   | { ok: true; location: string }
-  | { ok: false; reason: 'no_account' | 'not_in_pilot' | 'identity_mismatch' };
+  | {
+      ok: false;
+      reason: 'no_account' | 'not_in_pilot' | 'identity_unverified' | 'identity_mismatch';
+    };
 
-/**
- * Called after GitHub sign-in when a Google request is pending. Returns the
- * redirect back to Google with a code, or why this GitHub user can't sign in:
- * no Workspace account in users.ts, or a login that is pinned to a different
- * GitHub user ID (a freed and re-registered login).
- */
+/** Complete Google's request only for a pre-verified GitHub account. */
 export async function completeAuthorization(
   env: Env,
   identity: GitHubIdentity,
   pending: PendingAuthorization
 ): Promise<AuthorizationResult> {
-  const email = workspaceEmailFor(identity.login, env.WORKSPACE_DOMAIN);
-  if (!email) return { ok: false, reason: 'no_account' };
   if (!inPilot(env, identity.login)) return { ok: false, reason: 'not_in_pilot' };
-  if (!(await pinGithubIdentity(env.DB, identity.login, identity.id))) {
-    return { ok: false, reason: 'identity_mismatch' };
-  }
+  const account = workspaceAccountFor(identity.login);
+  if (!account) return { ok: false, reason: 'no_account' };
+  if (account.githubUserId === undefined) return { ok: false, reason: 'identity_unverified' };
+  if (account.githubUserId !== identity.id) return { ok: false, reason: 'identity_mismatch' };
 
   const claims = {
-    sub: identity.id,
-    email,
+    sub: String(identity.id),
+    email: `${account.prefix}@${env.WORKSPACE_DOMAIN}`,
     email_verified: true,
     name: identity.name || identity.login,
     preferred_username: identity.login,
