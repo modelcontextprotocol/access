@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { deleteCookie, getCookie } from 'hono/cookie';
+import { createMiddleware } from 'hono/factory';
 import { HTTPException } from 'hono/http-exception';
 import { secureHeaders } from 'hono/secure-headers';
 import { githubAuth } from '@hono/oauth-providers/github';
@@ -32,18 +33,53 @@ app.use(
   })
 );
 
+/**
+ * Per-IP rate limit for the unauthenticated, browser-facing endpoints, which
+ * write to D1 or call GitHub. The binding is optional so tests and local dev
+ * work without it; production config always sets it.
+ */
+const rateLimited = createMiddleware<AppEnv>(async (c, next) => {
+  if (c.env.RATE_LIMITER) {
+    const ip = c.req.header('CF-Connecting-IP') ?? 'unknown';
+    const { success } = await c.env.RATE_LIMITER.limit({ key: ip });
+    if (!success) {
+      return c.html(pages.errorPage('Too many sign-in attempts. Please wait a minute.'), 429);
+    }
+  }
+  await next();
+});
+
 // --- OIDC provider (used by Google) -----------------------------------------
 
 app.get('/.well-known/openid-configuration', discovery);
 app.get('/jwks', jwks);
-app.get('/authorize', authorize);
+app.get('/authorize', rateLimited, authorize);
 app.post('/token', token);
 app.on(['GET', 'POST'], '/userinfo', userinfo);
 
 // --- GitHub sign-in, then back to Google -------------------------------------
 
+/** The GitHub token is only needed to read the user once; revoke it right away. */
+async function revokeGitHubToken(env: Env, accessToken: string): Promise<void> {
+  try {
+    await fetch(`https://api.github.com/applications/${env.GITHUB_CLIENT_ID}/token`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/vnd.github+json',
+        Authorization: `Basic ${btoa(`${env.GITHUB_CLIENT_ID}:${env.GITHUB_CLIENT_SECRET}`)}`,
+        'Content-Type': 'application/json',
+        'User-Agent': 'access.modelcontextprotocol.io',
+      },
+      body: JSON.stringify({ access_token: accessToken }),
+    });
+  } catch {
+    // best effort; the token expires on its own
+  }
+}
+
 app.get(
   '/login',
+  rateLimited,
   async (c, next) => {
     // Only start a GitHub sign-in when Google is waiting for one.
     if (!getCookie(c, PENDING_COOKIE)) return c.redirect('/');
@@ -54,6 +90,18 @@ app.get(
     })(c, next);
   },
   async (c) => {
+    // The sign-in library's OAuth state cookie is single-use; drop it.
+    deleteCookie(c, 'state', { path: '/', secure: true });
+    const githubToken = c.get('token')?.token;
+    if (githubToken) {
+      const revoke = revokeGitHubToken(c.env, githubToken);
+      try {
+        c.executionCtx.waitUntil(revoke);
+      } catch {
+        await revoke; // no execution context (tests)
+      }
+    }
+
     const user = c.get('user-github');
     if (typeof user?.id !== 'number' || typeof user.login !== 'string') {
       throw new HTTPException(502, { message: 'GitHub did not return a user.' });
@@ -71,21 +119,19 @@ app.get(
       return c.html(pages.errorPage('Sign-in expired. Please start again from Google.'), 400);
     }
 
-    const location = await completeAuthorization(c.env, identity, pending);
-    if (!location) {
-      console.log(
-        JSON.stringify({
-          event: 'signin.denied',
-          github_id: identity.id,
-          github_login: identity.login,
-        })
+    const result = await completeAuthorization(c.env, identity, pending);
+    const log = { github_id: identity.id, github_login: identity.login };
+    if (!result.ok) {
+      console.log(JSON.stringify({ event: 'signin.denied', reason: result.reason, ...log }));
+      return c.html(
+        result.reason === 'identity_mismatch'
+          ? pages.identityMismatchPage(identity.login)
+          : pages.noAccountPage(identity.login, c.env.WORKSPACE_DOMAIN),
+        403
       );
-      return c.html(pages.noAccountPage(identity.login, c.env.WORKSPACE_DOMAIN), 403);
     }
-    console.log(
-      JSON.stringify({ event: 'signin', github_id: identity.id, github_login: identity.login })
-    );
-    return c.redirect(location);
+    console.log(JSON.stringify({ event: 'signin', ...log }));
+    return c.redirect(result.location);
   }
 );
 

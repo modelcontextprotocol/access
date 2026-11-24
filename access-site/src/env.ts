@@ -1,5 +1,7 @@
 export interface Env {
   DB: D1Database;
+  /** Per-IP limit for /authorize and /login (optional so tests run without it). */
+  RATE_LIMITER?: RateLimit;
 
   ISSUER: string;
   WORKSPACE_DOMAIN: string;

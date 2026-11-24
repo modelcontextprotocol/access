@@ -28,10 +28,12 @@ jobs:
       run:
         working-directory: access-site
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
         with:
-          node-version: '22'
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '24'
           cache: 'npm'
           cache-dependency-path: access-site/package-lock.json
       - run: npm ci
@@ -50,32 +52,41 @@ jobs:
     defaults:
       run:
         working-directory: access-site
-    env:
-      # Token scoped to: Workers Scripts edit, D1 edit, and Workers Routes /
-      # DNS edit on the modelcontextprotocol.io zone (for the custom domain).
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_ACCESS_SITE_TOKEN }}
-      OIDC_SIGNING_KEY: ${{ secrets.ACCESS_SITE_OIDC_SIGNING_KEY }}
-      OIDC_CLIENT_SECRET: ${{ secrets.ACCESS_SITE_OIDC_CLIENT_SECRET }}
-      GITHUB_CLIENT_SECRET: ${{ secrets.ACCESS_SITE_GITHUB_CLIENT_SECRET }}
-      OIDC_PREVIOUS_JWK: ${{ secrets.ACCESS_SITE_OIDC_PREVIOUS_JWK }}
+    # Secrets are exposed only to the steps that need them, never to `npm ci`
+    # (package install scripts run there).
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
       - name: Check setup
         id: setup
+        env:
+          HAS_TOKEN: ${{ secrets.CLOUDFLARE_ACCESS_SITE_TOKEN != '' }}
+          HAS_SIGNING_KEY: ${{ secrets.ACCESS_SITE_OIDC_SIGNING_KEY != '' }}
+          HAS_CLIENT_SECRET: ${{ secrets.ACCESS_SITE_OIDC_CLIENT_SECRET != '' }}
         run: |
-          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$OIDC_SIGNING_KEY" ] || [ -z "$OIDC_CLIENT_SECRET" ]; then
+          if [ "$HAS_TOKEN" = true ] && [ "$HAS_SIGNING_KEY" = true ] && [ "$HAS_CLIENT_SECRET" = true ]; then
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          else
             echo "::notice::access-site is not set up yet (see access-site/README.md); skipping deploy."
             echo "ready=false" >> "$GITHUB_OUTPUT"
-          else
-            echo "ready=true" >> "$GITHUB_OUTPUT"
           fi
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         if: steps.setup.outputs.ready == 'true'
         with:
-          node-version: '22'
+          node-version: '24'
           cache: 'npm'
           cache-dependency-path: access-site/package-lock.json
       - if: steps.setup.outputs.ready == 'true'
         run: npm ci
-      - if: steps.setup.outputs.ready == 'true'
+      - name: Provision and deploy
+        if: steps.setup.outputs.ready == 'true'
+        env:
+          # Token scoped to: Workers Scripts edit, D1 edit, and Workers Routes /
+          # DNS edit on the modelcontextprotocol.io zone (for the custom domain).
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_ACCESS_SITE_TOKEN }}
+          OIDC_SIGNING_KEY: ${{ secrets.ACCESS_SITE_OIDC_SIGNING_KEY }}
+          OIDC_CLIENT_SECRET: ${{ secrets.ACCESS_SITE_OIDC_CLIENT_SECRET }}
+          GITHUB_CLIENT_SECRET: ${{ secrets.ACCESS_SITE_GITHUB_CLIENT_SECRET }}
+          OIDC_PREVIOUS_JWK: ${{ secrets.ACCESS_SITE_OIDC_PREVIOUS_JWK }}
         run: ./scripts/deploy.sh

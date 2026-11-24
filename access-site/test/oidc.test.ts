@@ -4,6 +4,7 @@ import { app } from '../src/index';
 import type { Env } from '../src/env';
 import { sha256 } from '../src/crypto';
 import { workspaceEmailFor } from '../src/eligibility';
+import { MEMBERS } from '../../src/config/users';
 import {
   CLIENT_SECRET,
   CookieJar,
@@ -20,6 +21,8 @@ const VERIFIER = 'v'.repeat(43) + '-verifier-for-tests';
 const DOMAIN = 'modelcontextprotocol.io';
 
 let env: Env;
+let lastJar: CookieJar;
+let lastGitHub: ReturnType<typeof mockGitHub>;
 
 async function call(path: string, jar: CookieJar) {
   const res = await app.request(`${ISSUER}${path}`, { headers: { Cookie: jar.header() } }, env);
@@ -32,8 +35,9 @@ async function signIn(
   github: { id: number; login: string },
   params: Record<string, string | undefined> = {}
 ) {
-  mockGitHub({ ...github, name: 'Test Person' });
+  lastGitHub = mockGitHub({ ...github, name: 'Test Person' });
   const jar = new CookieJar();
+  lastJar = jar;
   const query = new URLSearchParams(
     Object.entries({
       client_id: 'google-workspace',
@@ -241,5 +245,94 @@ describe('sign-in', () => {
     const res = await app.request(`${ISSUER}/login`, {}, env);
     expect(res.status).toBe(302);
     expect(res.headers.get('Location')).toBe('/');
+  });
+});
+
+describe('security hardening', () => {
+  it('refuses a login that is pinned to a different GitHub account', async () => {
+    const login = memberWithAccount().github!;
+    expect((await signIn({ id: 100, login })).status).toBe(302);
+    // Same login, different GitHub user ID: a freed and re-registered name.
+    const res = await signIn({ id: 200, login });
+    expect(res.status).toBe(403);
+    expect(await res.text()).toContain('previously used by a different GitHub account');
+    // The original owner still signs in.
+    expect((await signIn({ id: 100, login: login.toUpperCase() })).status).toBe(302);
+  });
+
+  it('rate-limits /authorize per IP when the limiter is bound', async () => {
+    const limit = vi.fn(async () => ({ success: false }));
+    env = await createEnv({ RATE_LIMITER: { limit } as unknown as RateLimit });
+    const res = await app.request(
+      `${ISSUER}/authorize?client_id=google-workspace&redirect_uri=${encodeURIComponent(GOOGLE_REDIRECT)}&response_type=code&scope=openid`,
+      { headers: { 'CF-Connecting-IP': '203.0.113.7' } },
+      env
+    );
+    expect(res.status).toBe(429);
+    expect(limit).toHaveBeenCalledWith({ key: '203.0.113.7' });
+  });
+
+  it('decodes form-encoded Basic client credentials (RFC 6749 2.3.1)', async () => {
+    env = await createEnv({ OIDC_CLIENT_SECRET: 'a b:c+d' });
+    const code = codeFrom(await signIn({ id: 5, login: memberWithAccount().github! }));
+    const encoded = `google-workspace:${encodeURIComponent('a b:c+d').replace(/%20/g, '+')}`;
+    const res = await app.request(
+      `${ISSUER}/token`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: `Basic ${btoa(encoded)}`,
+        },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code,
+          redirect_uri: GOOGLE_REDIRECT,
+          code_verifier: VERIFIER,
+        }),
+      },
+      env
+    );
+    expect(res.status).toBe(200);
+  });
+
+  it('rejects a code_verifier when no challenge was sent (PKCE downgrade)', async () => {
+    const back = await signIn(
+      { id: 6, login: memberWithAccount().github! },
+      { code_challenge: undefined, code_challenge_method: undefined }
+    );
+    const res = await exchange(codeFrom(back));
+    expect(res.status).toBe(400);
+    expect(((await res.json()) as { error: string }).error).toBe('invalid_grant');
+  });
+
+  it('stamps auth_time at GitHub sign-in, revokes the GitHub token and clears the state cookie', async () => {
+    const before = Math.floor(Date.now() / 1000);
+    const back = await signIn({ id: 8, login: memberWithAccount().github! });
+    expect(lastGitHub).toHaveBeenCalledWith(
+      'https://api.github.com/applications/gh-client/token',
+      expect.objectContaining({ method: 'DELETE' })
+    );
+    expect(lastJar.header()).not.toMatch(/(^|; )state=/);
+
+    const body = (await (await exchange(codeFrom(back))).json()) as { id_token: string };
+    const jwks = (await (await app.request(`${ISSUER}/jwks`, {}, env)).json()) as { keys: never[] };
+    const { payload } = await jwtVerify(body.id_token, createLocalJWKSet(jwks), {
+      issuer: ISSUER,
+      audience: 'google-workspace',
+    });
+    expect(payload.auth_time).toBeGreaterThanOrEqual(before);
+    expect(payload.auth_time).toBeLessThanOrEqual(payload.iat!);
+  });
+});
+
+describe('users.ts invariants the sign-in mapping relies on', () => {
+  it('has no two members with the same GitHub login or email prefix, ignoring case', () => {
+    const logins = MEMBERS.flatMap((m) => (m.github ? [m.github.toLowerCase()] : []));
+    expect(new Set(logins).size).toBe(logins.length);
+    const prefixes = MEMBERS.flatMap((m) =>
+      m.googleEmailPrefix ? [m.googleEmailPrefix.toLowerCase()] : []
+    );
+    expect(new Set(prefixes).size).toBe(prefixes.length);
   });
 });

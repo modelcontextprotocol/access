@@ -4,6 +4,7 @@
  * real members from src/config so tests follow the live rules.
  */
 import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { DatabaseSync } from 'node:sqlite';
 import { exportPKCS8, generateKeyPair } from 'jose';
 import { vi } from 'vitest';
@@ -37,7 +38,7 @@ class Statement {
 
 export function createD1(): D1Database {
   const db = new DatabaseSync(':memory:');
-  db.exec(readFileSync(new URL('../migrations/0001_init.sql', import.meta.url), 'utf8'));
+  db.exec(readFileSync(join(import.meta.dirname, '../migrations/0001_init.sql'), 'utf8'));
   return {
     prepare: (sql: string) => new Statement(db, sql),
     batch: async (stmts: Statement[]) => {
@@ -127,6 +128,9 @@ export function mockGitHub(user: { id: number; login: string; name: string | nul
     if (url === 'https://api.github.com/user') return json({ ...user, email: null });
     if (url === 'https://api.github.com/user/emails') {
       return json([{ email: 'person@example.com', primary: true, verified: true }]);
+    }
+    if (url === 'https://api.github.com/applications/gh-client/token') {
+      return new Response(null, { status: 204 });
     }
     throw new Error(`Unexpected fetch: ${url}`);
   });
