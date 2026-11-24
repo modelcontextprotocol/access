@@ -120,6 +120,10 @@ MEMBERS.forEach((member) => {
       },
       {
         dependsOn: [mcpOrgUnit],
+        // Never delete Workspace accounts from Pulumi. Removing a member from
+        // users.ts only drops the resource from state; offboarding is a
+        // suspend, done by access.modelcontextprotocol.io (access-site/).
+        retainOnDelete: true,
         ignoreChanges: [
           'recoveryEmail',
           'recoveryPhone',

@@ -1,0 +1,44 @@
+name: Sync team Google groups
+
+# Mirrors GitHub teams as Google groups (scripts/sync-team-groups.ts).
+# Runs in dry-run mode until the repository variable TEAM_GROUP_SYNC is set to
+# "apply".
+on:
+  schedule:
+    - cron: '41 5 * * *'
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/config/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    # A separate environment without required reviewers, holding only
+    # GCP_PROD_SERVICE_ACCOUNT_KEY, so the nightly run never waits for approval.
+    environment: workspace-sync
+    concurrency:
+      group: sync-team-groups
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+      # The script only needs ts-node and the config files.
+      - run: npm ci --ignore-scripts
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_PROD_SERVICE_ACCOUNT_KEY }}
+      - name: Sync
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          MODE: ${{ vars.TEAM_GROUP_SYNC == 'apply' && '--apply' || '' }}
+        run: npx ts-node scripts/sync-team-groups.ts $MODE
