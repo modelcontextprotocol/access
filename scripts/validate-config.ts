@@ -23,6 +23,7 @@ import {
   resolveGoogleMemberEmail,
 } from '../src/config/utils';
 import type { RoleId } from '../src/config/roleIds';
+import { GOOGLE_EMAIL_PREFIX_PATTERN, getWorkspaceSsoMappings } from '../src/config/workspaceSso';
 
 const roleLookup = buildRoleLookup();
 
@@ -193,6 +194,12 @@ console.log('Validating Google Workspace user provisioning fields...');
 
     // Members with googleEmailPrefix must also have firstName and lastName
     if (member.googleEmailPrefix) {
+      if (!GOOGLE_EMAIL_PREFIX_PATTERN.test(member.googleEmailPrefix)) {
+        console.error(
+          `ERROR: Member "${memberId}" has googleEmailPrefix "${member.googleEmailPrefix}"; use lowercase letters, digits, ".", "_" or "-"`
+        );
+        hasErrors = true;
+      }
       if (!member.firstName) {
         console.error(`ERROR: Member "${memberId}" has googleEmailPrefix but is missing firstName`);
         hasErrors = true;
@@ -472,6 +479,15 @@ for (const role of ROLES) {
     );
     hasErrors = true;
   }
+}
+
+// Validate the Workspace SSO allowlist (workspaceSso.ts)
+console.log('Validating Workspace SSO allowlist...');
+try {
+  getWorkspaceSsoMappings();
+} catch (e) {
+  console.error(`ERROR: ${(e as Error).message}`);
+  hasErrors = true;
 }
 
 if (hasErrors) {

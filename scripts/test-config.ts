@@ -18,6 +18,13 @@ import {
   NPM_DEFAULT_POLICY,
 } from '../src/config/packageAccess';
 import { ACCESS_POLICIES, getAccessPolicyTeams } from '../src/config/accessPolicies';
+import jsonata from 'jsonata';
+import {
+  UNMAPPED_NAME_ID,
+  WORKSPACE_SSO_GITHUB_LOGINS,
+  buildNameIdTransform,
+  getWorkspaceSsoMappings,
+} from '../src/config/workspaceSso';
 import { REPOSITORY_ACCESS, REPOSITORY_DEFAULTS } from '../src/config/repoAccess';
 import {
   DISCORD_CHANNELS,
@@ -714,6 +721,102 @@ test('Configured Discord role permissions are all valid', () =>
       getDiscordRolePermissionErrors(r.discord.role, r.discord.permissions).length === 0
   ));
 
-// Summary
-console.log(`\n${passed} passed, ${failed} failed`);
-process.exit(failed > 0 ? 1 : 0);
+// Test Workspace SSO (workspaceSso.ts): NameID mapping evaluated as Cloudflare would
+const asyncTests: Array<[string, () => Promise<boolean>]> = [];
+const SSO_IDP = 'github-idp-id';
+const SSO_MAPPINGS = [
+  { githubLogin: 'octo', githubUserId: 42, email: 'octo@modelcontextprotocol.io' },
+];
+const nameIdFor = (identity: object, mappings = SSO_MAPPINGS) =>
+  jsonata(buildNameIdTransform(mappings, SSO_IDP)).evaluate(identity);
+asyncTests.push([
+  'Workspace SSO maps a listed GitHub ID to its Workspace email',
+  async () =>
+    (await nameIdFor({
+      id: '42',
+      email: 'octo@gmail.com',
+      idp: { id: SSO_IDP, type: 'github' },
+    })) === 'octo@modelcontextprotocol.io',
+]);
+asyncTests.push([
+  'Workspace SSO accepts a numeric id as well as a string',
+  async () =>
+    (await nameIdFor({ id: 42, idp: { id: SSO_IDP } })) === 'octo@modelcontextprotocol.io',
+]);
+asyncTests.push([
+  'Workspace SSO fails closed for an unlisted GitHub ID',
+  async () =>
+    (await nameIdFor({ id: '43', email: 'octo@modelcontextprotocol.io', idp: { id: SSO_IDP } })) ===
+    UNMAPPED_NAME_ID,
+]);
+asyncTests.push([
+  'Workspace SSO fails closed for another identity provider',
+  async () => (await nameIdFor({ id: '42', idp: { id: 'one-time-pin' } })) === UNMAPPED_NAME_ID,
+]);
+asyncTests.push([
+  'Workspace SSO fails closed when id or idp is missing',
+  async () =>
+    (await nameIdFor({ email: 'octo@modelcontextprotocol.io' })) === UNMAPPED_NAME_ID &&
+    (await nameIdFor({ id: '42' })) === UNMAPPED_NAME_ID,
+]);
+asyncTests.push([
+  'Workspace SSO fails closed for prototype-like keys',
+  async () =>
+    (await nameIdFor({ id: '__proto__', idp: { id: SSO_IDP } })) === UNMAPPED_NAME_ID &&
+    (await nameIdFor({ id: 'constructor', idp: { id: SSO_IDP } })) === UNMAPPED_NAME_ID,
+]);
+asyncTests.push([
+  'Workspace SSO with an empty allowlist maps nobody',
+  async () => (await nameIdFor({ id: '42', idp: { id: SSO_IDP } }, [])) === UNMAPPED_NAME_ID,
+]);
+test('Workspace SSO allowlist resolves for the live config', () =>
+  getWorkspaceSsoMappings().length === WORKSPACE_SSO_GITHUB_LOGINS.length);
+const ssoThrows = (logins: string[], members: Parameters<typeof getWorkspaceSsoMappings>[1]) => {
+  try {
+    getWorkspaceSsoMappings(logins, members);
+    return false;
+  } catch {
+    return true;
+  }
+};
+const ssoMember = {
+  github: 'octo',
+  githubUserId: 42,
+  firstName: 'Octo',
+  lastName: 'Cat',
+  googleEmailPrefix: 'octo',
+  existingGWSUser: true,
+  memberOf: [],
+};
+test('Workspace SSO accepts a verified member with an account', () =>
+  getWorkspaceSsoMappings(['OCTO'], [ssoMember])[0]?.email === 'octo@modelcontextprotocol.io');
+test('Workspace SSO rejects unknown logins and members without a GitHub ID', () =>
+  ssoThrows(['nobody'], [ssoMember]) &&
+  ssoThrows(['octo'], [{ ...ssoMember, githubUserId: undefined }]));
+test('Workspace SSO rejects members without a Workspace account', () =>
+  ssoThrows(['octo'], [{ ...ssoMember, existingGWSUser: false }]));
+test('Workspace SSO rejects unsafe email prefixes and duplicates', () =>
+  ssoThrows(['octo'], [{ ...ssoMember, googleEmailPrefix: 'a"b' }]) &&
+  ssoThrows(['octo'], [{ ...ssoMember, googleEmailPrefix: 'x@evil.com' }]) &&
+  ssoThrows(['octo', 'octo'], [ssoMember]));
+
+void (async () => {
+  for (const [name, fn] of asyncTests) {
+    try {
+      if (await fn()) {
+        console.log(`✓ ${name}`);
+        passed++;
+      } else {
+        console.log(`✗ ${name}`);
+        failed++;
+      }
+    } catch (e) {
+      console.log(`✗ ${name}: ${e}`);
+      failed++;
+    }
+  }
+
+  // Summary
+  console.log(`\n${passed} passed, ${failed} failed`);
+  process.exit(failed > 0 ? 1 : 0);
+})();
