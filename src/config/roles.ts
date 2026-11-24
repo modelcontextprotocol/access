@@ -344,6 +344,16 @@ export const ROLES: readonly Role[] = [
     // See AUTH_IG for Discord role
   },
   {
+    id: ROLE_IDS.AUTH_CONTRIBUTORS,
+    description: 'Auth extension contributors with write access to ext-auth',
+    // No parent team: a child team inherits its parent's repository access.
+    // Nesting under auth-maintainers would grant admin on ext-auth, and nesting
+    // under members would grant push on modelcontextprotocol. This role grants
+    // push on ext-auth only (repoAccess.ts).
+    github: { team: 'auth-contributors' },
+    // GitHub only
+  },
+  {
     id: ROLE_IDS.AUTH_TOOL_SCOPES_WG,
     description: 'Auth Tool Scopes Working Group',
     github: { team: 'auth-wg-tool-scopes', parent: ROLE_IDS.WORKING_GROUPS },

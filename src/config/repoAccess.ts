@@ -395,7 +395,10 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'ext-auth',
-    teams: [{ team: 'auth-maintainers', permission: 'admin' }],
+    teams: [
+      { team: 'auth-maintainers', permission: 'admin' },
+      { team: 'auth-contributors', permission: 'push' },
+    ],
   },
   {
     repository: 'ext-apps',

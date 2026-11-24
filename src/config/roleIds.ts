@@ -55,6 +55,7 @@ export const ROLE_IDS = {
   // ===================
   WORKING_GROUPS: 'working-groups',
   AUTH_MAINTAINERS: 'auth-maintainers',
+  AUTH_CONTRIBUTORS: 'auth-contributors', // GitHub only (write on ext-auth)
   AUTH_TOOL_SCOPES_WG: 'auth-wg-tool-scopes',
   AUTH_FINE_GRAINED_AUTHZ_WG: 'auth-wg-fine-grained-authz',
   TRANSPORT_WG: 'transport-wg',

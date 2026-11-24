@@ -886,6 +886,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SECURITY_IG],
   },
   {
+    github: 'PieterKas',
+    memberOf: [ROLE_IDS.AUTH_CONTRIBUTORS],
+  },
+  {
     // Same person as 'Poita' below; Discord and Google Workspace identity live
     // on that entry (both are keyed per person, so only one entry can carry them)
     github: 'pja-ant',
