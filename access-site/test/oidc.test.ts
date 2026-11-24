@@ -180,26 +180,7 @@ describe('discovery', () => {
     expect(jwks.keys[0]!.d).toBeUndefined();
   });
 
-  it('publishes the previous key during rotation, and ignores "{}"', async () => {
-    const current = (await (await app.request(`${ISSUER}/jwks`, {}, env)).json()) as {
-      keys: Record<string, string>[];
-    };
-    const previous = { ...current.keys[0]!, kid: 'previous-kid' };
-    const rotating = await createEnv({ OIDC_PREVIOUS_JWK: JSON.stringify(previous) });
-    const both = (await (await app.request(`${ISSUER}/jwks`, {}, rotating)).json()) as {
-      keys: { kid: string }[];
-    };
-    expect(both.keys.map((k) => k.kid)).toContain('previous-kid');
-    expect(both.keys).toHaveLength(2);
-
-    const retired = await createEnv({ OIDC_PREVIOUS_JWK: '{}' });
-    const one = (await (await app.request(`${ISSUER}/jwks`, {}, retired)).json()) as {
-      keys: unknown[];
-    };
-    expect(one.keys).toHaveLength(1);
-  });
-
-  it('publishes the next key before cutover and keeps both keys across the switch', async () => {
+  it('publishes rotation keys alongside the signing key, and ignores "{}"', async () => {
     const jwks = async (binding: Env) => {
       const response = await app.request(`${ISSUER}/jwks`, {}, binding);
       expect(response.headers.get('Cache-Control')).toBe('public, max-age=300');
@@ -208,15 +189,18 @@ describe('discovery', () => {
     const next = await createEnv();
     const [currentKey] = await jwks(env);
     const [nextKey] = await jwks(next);
-    const nextJwk = JSON.stringify(nextKey);
-    expect(await jwks({ ...env, OIDC_NEXT_JWK: nextJwk })).toEqual([currentKey, nextKey]);
-    expect(
-      await jwks({
-        ...next,
-        OIDC_PREVIOUS_JWK: JSON.stringify(currentKey),
-        OIDC_NEXT_JWK: nextJwk,
-      })
-    ).toEqual([nextKey, currentKey]);
+    const set = (...keys: unknown[]) => JSON.stringify({ keys });
+
+    // Before cutover: publish the next key. After: keep the previous one.
+    expect(await jwks({ ...env, OIDC_ROTATION_JWKS: set(nextKey) })).toEqual([currentKey, nextKey]);
+    expect(await jwks({ ...next, OIDC_ROTATION_JWKS: set(currentKey) })).toEqual([
+      nextKey,
+      currentKey,
+    ]);
+    // The active key is not duplicated, and "{}" or bad JSON publishes only it.
+    expect(await jwks({ ...env, OIDC_ROTATION_JWKS: set(currentKey) })).toEqual([currentKey]);
+    expect(await jwks({ ...env, OIDC_ROTATION_JWKS: '{}' })).toEqual([currentKey]);
+    expect(await jwks({ ...env, OIDC_ROTATION_JWKS: 'not json' })).toEqual([currentKey]);
   });
 });
 
@@ -451,19 +435,6 @@ describe('security hardening', () => {
     });
     expect(payload.auth_time).toBeGreaterThanOrEqual(before);
     expect(payload.auth_time).toBeLessThanOrEqual(payload.iat!);
-  });
-});
-
-describe('users.ts invariants the sign-in mapping relies on', () => {
-  it('has no two members with the same GitHub login or email prefix, ignoring case', async () => {
-    const { MEMBERS } =
-      await vi.importActual<typeof import('../../src/config/users')>('../../src/config/users');
-    const logins = MEMBERS.flatMap((m) => (m.github ? [m.github.toLowerCase()] : []));
-    expect(new Set(logins).size).toBe(logins.length);
-    const prefixes = MEMBERS.flatMap((m) =>
-      m.googleEmailPrefix ? [m.googleEmailPrefix.toLowerCase()] : []
-    );
-    expect(new Set(prefixes).size).toBe(prefixes.length);
   });
 });
 

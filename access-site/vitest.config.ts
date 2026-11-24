@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitest/config';
 
-// Tests run in plain Node (22+), which provides WebCrypto, fetch, Request and
-// Response. Cloudflare bindings (KV) are replaced with in-memory fakes.
+// Tests run in plain Node (24+), which provides WebCrypto, fetch, Request and
+// Response. D1 is replaced with node:sqlite (see test/helpers.ts).
 export default defineConfig({
   test: {
     environment: 'node',

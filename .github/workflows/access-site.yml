@@ -89,6 +89,5 @@ jobs:
           OIDC_SIGNING_KEY: ${{ secrets.ACCESS_SITE_OIDC_SIGNING_KEY }}
           OIDC_CLIENT_SECRET: ${{ secrets.ACCESS_SITE_OIDC_CLIENT_SECRET }}
           GITHUB_CLIENT_SECRET: ${{ secrets.ACCESS_SITE_GITHUB_CLIENT_SECRET }}
-          OIDC_PREVIOUS_JWK: ${{ secrets.ACCESS_SITE_OIDC_PREVIOUS_JWK }}
-          OIDC_NEXT_JWK: ${{ secrets.ACCESS_SITE_OIDC_NEXT_JWK }}
+          OIDC_ROTATION_JWKS: ${{ secrets.ACCESS_SITE_OIDC_ROTATION_JWKS }}
         run: ./scripts/deploy.sh
