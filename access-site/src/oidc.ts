@@ -140,9 +140,18 @@ export async function authorize(c: Ctx) {
   return c.redirect('/login');
 }
 
+/** During the rollout pilot, only the listed GitHub logins may sign in. */
+function inPilot(env: Env, login: string): boolean {
+  const pilot = (env.PILOT_GITHUB_LOGINS ?? '')
+    .split(',')
+    .map((l) => l.trim().toLowerCase())
+    .filter(Boolean);
+  return pilot.length === 0 || pilot.includes(login.toLowerCase());
+}
+
 export type AuthorizationResult =
   | { ok: true; location: string }
-  | { ok: false; reason: 'no_account' | 'identity_mismatch' };
+  | { ok: false; reason: 'no_account' | 'not_in_pilot' | 'identity_mismatch' };
 
 /**
  * Called after GitHub sign-in when a Google request is pending. Returns the
@@ -157,6 +166,7 @@ export async function completeAuthorization(
 ): Promise<AuthorizationResult> {
   const email = workspaceEmailFor(identity.login, env.WORKSPACE_DOMAIN);
   if (!email) return { ok: false, reason: 'no_account' };
+  if (!inPilot(env, identity.login)) return { ok: false, reason: 'not_in_pilot' };
   if (!(await pinGithubIdentity(env.DB, identity.login, identity.id))) {
     return { ok: false, reason: 'identity_mismatch' };
   }

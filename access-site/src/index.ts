@@ -126,7 +126,9 @@ app.get(
       return c.html(
         result.reason === 'identity_mismatch'
           ? pages.identityMismatchPage(identity.login)
-          : pages.noAccountPage(identity.login, c.env.WORKSPACE_DOMAIN),
+          : result.reason === 'not_in_pilot'
+            ? pages.pilotPage(identity.login)
+            : pages.noAccountPage(identity.login, c.env.WORKSPACE_DOMAIN),
         403
       );
     }
