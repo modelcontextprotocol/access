@@ -134,8 +134,8 @@ Google stays the identity provider for Workspace and hands only the password ste
 Who signs in as whom:
 
 - **Allowlist.** Only GitHub logins in `WORKSPACE_SSO_GITHUB_LOGINS` ([`src/config/workspaceSso.ts`](src/config/workspaceSso.ts)) are mapped. An empty list maps nobody; there is no wildcard. Removing a login revokes GitHub sign-in on the next deploy.
-- **Mapping.** Cloudflare's identity for a GitHub sign-in has no GitHub user ID, only `name`, `email` (the account's primary verified email) and `groups` (orgs and teams). Each allowlisted member therefore needs a confirmed `githubEmail` and a Workspace account in `users.ts`. Pulumi renders a NameID transform (JSONata) from `githubEmail` to `<googleEmailPrefix>@modelcontextprotocol.io`, and the transform also requires `modelcontextprotocol` in `groups`. GitHub lets only one account verify a given address, so taking over a mapping needs the member's mailbox as well as org membership.
-- **Fail closed.** An email not in the table, a non-member of the org, or a member who changed their GitHub primary email gets the NameID `unmapped@access.invalid`, which matches no Workspace account, so Google refuses the sign-in. `npm test` evaluates the transform against these cases.
+- **Mapping.** Each allowlisted member must have a verified numeric `githubUserId` and a Workspace account in `users.ts`. Pulumi renders a NameID transform (JSONata) from `githubUserId` to `<googleEmailPrefix>@modelcontextprotocol.io`, matched against the identity's `id` (the numeric GitHub user ID). The transform also requires the GitHub login method (`idp.id`) and `modelcontextprotocol` in `groups`. It never trusts the GitHub login or the GitHub account's email. The dashboard's login-method test shows only `name`, `email` and `groups`; `cf zero-trust access users last-seen-identity get <user-id>` shows the full identity.
+- **Fail closed.** An identity from any other login method, a GitHub ID not in the table, or an account outside the org gets the NameID `unmapped@access.invalid`, which matches no Workspace account, so Google refuses the sign-in. `npm test` evaluates the transform against these cases.
 - **Policy.** The Access policy also requires membership of the `modelcontextprotocol` GitHub organization, and the application allows only the GitHub identity provider (no one-time PIN) with a 1 hour Access session.
 - Super admins are exempt from third-party SSO and keep the Google password sign-in as break-glass.
 
@@ -146,7 +146,7 @@ Who signs in as whom:
 3. The Access application defaults to Google's legacy SP values (`google.com/a/modelcontextprotocol.io` and `https://www.google.com/a/modelcontextprotocol.io/acs`). If Google shows a profile-specific entity ID and ACS URL, set `cloudflare:googleSamlEntityId` and `cloudflare:googleSamlAcsUrl` in [`Pulumi.prod.yaml`](Pulumi.prod.yaml) to match.
 4. Assign the profile to a pilot sub-OU that contains only the allowlisted accounts.
 
-**Before widening the pilot:** confirm each person's GitHub primary email with them (Cloudflare uses the primary one) and add it as `githubEmail` in a reviewed PR, add them to `WORKSPACE_SSO_GITHUB_LOGINS`, and only then move their account into an OU with the profile assigned. People in an assigned OU but not on the allowlist cannot sign in at all.
+**Before widening the pilot:** confirm each person's `githubUserId` with them in a reviewed PR, add them to `WORKSPACE_SSO_GITHUB_LOGINS`, and only then move their account into an OU with the profile assigned. People in an assigned OU but not on the allowlist cannot sign in at all.
 
 ## npm & PyPI Package Publishing Access
 

@@ -9,14 +9,8 @@ import type { Role } from './roles';
 export interface Member {
   /** GitHub username */
   github?: string;
-  /** Verified, durable GitHub user ID. */
+  /** Verified, durable GitHub user ID for Workspace SSO. */
   githubUserId?: number;
-  /**
-   * Primary verified email on the member's GitHub account, as Cloudflare Access
-   * receives it from GitHub. Keys GitHub sign-in for Google Workspace
-   * (workspaceSso.ts); confirm it with the member before adding.
-   */
-  githubEmail?: string;
   /** Email address (for Google Workspace) */
   email?: string;
   /** Discord user ID (snowflake) */

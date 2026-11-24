@@ -110,7 +110,10 @@ if (CLOUDFLARE_ENABLED) {
         consumerServiceUrl:
           config.get('googleSamlAcsUrl') ?? `https://www.google.com/a/${WORKSPACE_DOMAIN}/acs`,
         nameIdFormat: 'email',
-        nameIdTransformJsonata: buildNameIdTransform(getWorkspaceSsoMappings()),
+        nameIdTransformJsonata: buildNameIdTransform(
+          getWorkspaceSsoMappings(),
+          githubIdentityProviderId
+        ),
       },
     },
     { provider }
