@@ -19,6 +19,7 @@ import { DISCORD_CHANNELS, validateDiscordChannels } from '../src/config/channel
 import { getDiscordRolePermissionErrors } from '../src/config/discordPermissions';
 import { hasProvisionUserRole, resolveGoogleMemberEmail } from '../src/config/utils';
 import type { RoleId } from '../src/config/roleIds';
+import { getWorkspaceSsoTable } from '../src/config/workspaceSso';
 
 const roleLookup = buildRoleLookup();
 
@@ -443,6 +444,14 @@ for (const role of ROLES) {
     );
     hasErrors = true;
   }
+}
+
+console.log('Validating Workspace SSO members...');
+try {
+  getWorkspaceSsoTable();
+} catch (e) {
+  console.error(`ERROR: ${(e as Error).message}`);
+  hasErrors = true;
 }
 
 if (hasErrors) {

@@ -975,6 +975,8 @@ export const MEMBERS: readonly Member[] = [
   },
   {
     github: 'sambhav',
+    githubUserId: 16130816,
+    workspaceSso: true,
     email: 'sambhavs.email@gmail.com',
     firstName: 'Sambhav',
     lastName: 'Kothari',

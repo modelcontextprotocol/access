@@ -9,6 +9,10 @@ import type { Role } from './roles';
 export interface Member {
   /** GitHub username */
   github?: string;
+  /** Numeric GitHub user ID, confirmed with the member (required for workspaceSso) */
+  githubUserId?: number;
+  /** May sign in to their Workspace account with GitHub (src/config/workspaceSso.ts) */
+  workspaceSso?: boolean;
   /** Email address (for Google Workspace) */
   email?: string;
   /** Discord user ID (snowflake) */

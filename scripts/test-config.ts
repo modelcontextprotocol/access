@@ -8,7 +8,7 @@
 import { ROLES, buildRoleLookup, getRolesForPlatform } from '../src/config/roles';
 import { ROLE_IDS, isValidRoleId } from '../src/config/roleIds';
 import { MEMBERS } from '../src/config/users';
-import { hasProvisionUserRole } from '../src/config/utils';
+import { hasProvisionUserRole, type Member } from '../src/config/utils';
 import {
   NPM_ORG,
   NPM_PACKAGES,
@@ -18,6 +18,12 @@ import {
   NPM_DEFAULT_POLICY,
 } from '../src/config/packageAccess';
 import { ACCESS_POLICIES, getAccessPolicyTeams } from '../src/config/accessPolicies';
+import jsonata from 'jsonata';
+import {
+  UNMAPPED_NAME_ID,
+  buildNameIdTransform,
+  getWorkspaceSsoTable,
+} from '../src/config/workspaceSso';
 import { REPOSITORY_ACCESS, REPOSITORY_DEFAULTS } from '../src/config/repoAccess';
 import {
   DISCORD_CHANNELS,
@@ -45,18 +51,38 @@ import {
 let passed = 0;
 let failed = 0;
 
-function test(name: string, fn: () => boolean) {
+const pending: Promise<void>[] = [];
+
+function report(name: string, ok: boolean, error?: unknown) {
+  console.log(error === undefined ? `${ok ? '✓' : '✗'} ${name}` : `✗ ${name}: ${error}`);
+  if (ok) passed++;
+  else failed++;
+}
+
+/** Run a test. Async tests are awaited (and reported) before the summary. */
+function test(name: string, fn: () => boolean | Promise<boolean>) {
   try {
-    if (fn()) {
-      console.log(`✓ ${name}`);
-      passed++;
-    } else {
-      console.log(`✗ ${name}`);
-      failed++;
-    }
+    const result = fn();
+    if (typeof result === 'boolean') report(name, result);
+    else
+      pending.push(
+        result.then(
+          (ok) => report(name, ok),
+          (e) => report(name, false, e)
+        )
+      );
   } catch (e) {
-    console.log(`✗ ${name}: ${e}`);
-    failed++;
+    report(name, false, e);
+  }
+}
+
+/** True if fn throws. */
+function throws(fn: () => unknown): boolean {
+  try {
+    fn();
+    return false;
+  } catch {
+    return true;
   }
 }
 
@@ -241,19 +267,15 @@ test('security-room policy renders the expected include-rule teams in order', ()
 });
 test('security-team team has members', () =>
   MEMBERS.some((m) => m.github && m.memberOf.includes(ROLE_IDS.SECURITY_TEAM)));
-test('getAccessPolicyTeams throws for a role without a GitHub team', () => {
-  try {
+test('getAccessPolicyTeams throws for a role without a GitHub team', () =>
+  throws(() =>
     getAccessPolicyTeams({
       id: 'bogus',
       description: '',
       cloudflarePolicyName: 'x',
       roles: [ROLE_IDS.ADMINISTRATORS],
-    });
-    return false;
-  } catch {
-    return true;
-  }
-});
+    })
+  ));
 
 // Test Discord channel config (channels.ts) and its pure Discord API mapping
 const SNOWFLAKE = '123456789012345678';
@@ -714,6 +736,49 @@ test('Configured Discord role permissions are all valid', () =>
       getDiscordRolePermissionErrors(r.discord.role, r.discord.permissions).length === 0
   ));
 
-// Summary
-console.log(`\n${passed} passed, ${failed} failed`);
-process.exit(failed > 0 ? 1 : 0);
+// Test Workspace SSO (workspaceSso.ts) against the Access identity shape for GitHub
+const OCTO = 'octo@modelcontextprotocol.io';
+const ok = { id: 42, idp: { id: 'gh' }, groups: [{ id: 1, name: 'modelcontextprotocol' }] };
+const ssoCases: Array<[string, object, string]> = [
+  ['listed GitHub ID', ok, OCTO],
+  ['string id', { ...ok, id: '42' }, OCTO],
+  ['unlisted GitHub ID', { ...ok, id: 43 }, UNMAPPED_NAME_ID],
+  ['another login method', { ...ok, idp: { id: 'otp' } }, UNMAPPED_NAME_ID],
+  ['outside the org', { ...ok, groups: [{ name: 'evil-org' }] }, UNMAPPED_NAME_ID],
+  ['no groups', { ...ok, groups: undefined }, UNMAPPED_NAME_ID],
+  ['no idp', { ...ok, idp: undefined }, UNMAPPED_NAME_ID],
+  ['no id', { ...ok, id: undefined }, UNMAPPED_NAME_ID],
+  ['non-scalar id', { ...ok, id: [42] }, UNMAPPED_NAME_ID],
+  ['prototype key', { ...ok, id: '__proto__' }, UNMAPPED_NAME_ID],
+];
+for (const [name, identity, expected] of ssoCases) {
+  test(`Workspace SSO NameID: ${name}`, async () =>
+    (await jsonata(buildNameIdTransform({ '42': OCTO }, 'gh')).evaluate(identity)) === expected);
+}
+test('Workspace SSO NameID: empty table maps nobody', async () =>
+  (await jsonata(buildNameIdTransform({}, 'gh')).evaluate(ok)) === UNMAPPED_NAME_ID);
+const sso: Member = {
+  github: 'octo',
+  githubUserId: 42,
+  workspaceSso: true,
+  googleEmailPrefix: 'octo',
+  memberOf: [],
+};
+test('Workspace SSO table maps only workspaceSso members', () => {
+  const table = getWorkspaceSsoTable([sso, { ...sso, githubUserId: 7, workspaceSso: false }]);
+  return JSON.stringify(table) === JSON.stringify({ '42': OCTO });
+});
+test('Workspace SSO table rejects bad IDs, unsafe prefixes and duplicates', () =>
+  [
+    [{ ...sso, githubUserId: undefined }],
+    [{ ...sso, githubUserId: -1 }],
+    [{ ...sso, googleEmailPrefix: 'x@evil.com' }],
+    [{ ...sso, googleEmailPrefix: undefined }],
+    [sso, { ...sso, googleEmailPrefix: 'cat' }],
+  ].every((members) => throws(() => getWorkspaceSsoTable(members))));
+
+void Promise.all(pending).then(() => {
+  // Summary
+  console.log(`\n${passed} passed, ${failed} failed`);
+  process.exit(failed > 0 ? 1 : 0);
+});

@@ -13,6 +13,7 @@ Infrastructure as Code for managing access to MCP community resources using Pulu
 - **Google Workspace Groups**: Automatically syncs group memberships for @modelcontextprotocol.io email accounts
   - **Email Groups**: Groups with `isEmailGroup: true` accept emails from anyone (including external users) and notify all members. External posts are moderated for security.
 - **Google Workspace User Accounts**: Provisions @modelcontextprotocol.io accounts for members of roles with `provisionUser: true` (directly, or via a role nested under one through `github.parent` — e.g. SDK teams under `sdk-maintainers`, working groups under `working-groups`)
+- **GitHub sign-in for Google Workspace**: Cloudflare Access is the SAML identity provider for Google Workspace, so allowlisted maintainers sign in to their `@modelcontextprotocol.io` account with GitHub. The allowlist and account mapping come from [`src/config/workspaceSso.ts`](src/config/workspaceSso.ts) and `users.ts`. See [GitHub sign-in for Google Workspace](#github-sign-in-for-google-workspace) below.
 - **Discord**: Syncs the Discord roles declared in [`src/config/roles.ts`](src/config/roles.ts) to the members' Discord IDs in `users.ts`, and manages the settings of the channels declared in [`src/config/channels.ts`](src/config/channels.ts), including thread-only forum/media channels. See [Discord channels](#discord-channels) below.
 - **Cloudflare Access (security-room)**: Syncs the Cloudflare Zero Trust Access policy that decides who can sign in to `securityroom.modelcontextprotocol.io` from the roles declared in [`src/config/accessPolicies.ts`](src/config/accessPolicies.ts). See [Cloudflare Access (security-room)](#cloudflare-access-security-room) below.
 - **npm & PyPI Package Publishing Access** (declared, not applied): Expected registry access is declared in [`src/config/packageAccess.ts`](src/config/packageAccess.ts) and drift against the live npm registry is detected by CI — but changes are applied manually by a maintainer. See [npm & PyPI Package Publishing Access](#npm--pypi-package-publishing-access) below for why and how.
@@ -126,6 +127,18 @@ Channels listed in [`src/config/channels.ts`](src/config/channels.ts) are manage
    - With `cloudflare:importExistingPolicies: "true"` in `Pulumi.prod.yaml`, the first deploy imports the existing `Maintainers` policy (by its `cloudflarePolicyId`) as-is, ignoring its rule lists.
    - Then set the flag to `"false"` in a follow-up PR; its preview shows exactly the include-rule changes that the next deploy applies. Leave the flag off from then on.
 
+## GitHub sign-in for Google Workspace
+
+Google Workspace hands the password step to a third-party SAML SSO profile whose identity provider is a Cloudflare Access app (`Google Workspace`, managed in [`src/cloudflare.ts`](src/cloudflare.ts)): **App → Google → Cloudflare Access → GitHub**.
+
+- **Who:** members with `workspaceSso: true` and a confirmed numeric `githubUserId` in `users.ts`. [`src/config/workspaceSso.ts`](src/config/workspaceSso.ts) turns them into a NameID transform from the identity's `id` (the GitHub user ID) to `<googleEmailPrefix>@modelcontextprotocol.io`. It also requires the GitHub login method (`idp.id`) and `modelcontextprotocol` in `groups`. Everyone else gets `unmapped@access.invalid`, which Google refuses. Removing the flag revokes sign-in on the next deploy.
+- **Policy:** org members only, GitHub login method only (no one-time PIN), 1 hour Access session. Super admins are exempt from third-party SSO and keep password sign-in.
+- **Checking an identity:** the dashboard's login-method test shows only `name`, `email` and `groups`; `cf zero-trust access users last-seen-identity get <user-id>` shows `id` and `idp` too.
+
+**Setup (Workspace super admin):** after deploy, copy the app's SSO endpoint, entity ID and public key from Zero Trust → Access → Applications → Google Workspace. Add a SAML profile under Admin console → Security → Authentication → SSO with third-party IdP, with change-password URL `https://github.com/settings/security`, and assign it to an OU. If Google shows a profile-specific SP entity ID or ACS URL, set `cloudflare:googleSamlEntityId` / `cloudflare:googleSamlAcsUrl` in `Pulumi.prod.yaml`.
+
+**Adding someone:** confirm their GitHub user ID with them, set `githubUserId` and `workspaceSso: true` in a reviewed PR, and only then move their account into an OU with the profile assigned. Anyone in that OU without a mapping cannot sign in at all.
+
 ## npm & PyPI Package Publishing Access
 
 Publishing access to the `modelcontextprotocol` npm organization and to the MCP PyPI projects is **config-as-code with human-applied changes** — deliberately outside the Pulumi resource graph:
@@ -232,7 +245,7 @@ The following secrets must be configured in GitHub Actions for automated deploym
   - Keep this secure - if lost, you cannot decrypt your Pulumi state
 
 - **`CLOUDFLARE_ROLE_MANAGEMENT_TOKEN`** (optional, `production` and `preview` environments): Cloudflare token dedicated to Access policy role management, scoped only to **Account → Access: Apps and Policies → Edit** on the MCP Domain Account (not a general-purpose API token)
-  - Used to manage the Cloudflare Access policy for `securityroom.modelcontextprotocol.io` (see [Cloudflare Access (security-room)](#cloudflare-access-security-room))
+  - Used to manage the Cloudflare Access policy for `securityroom.modelcontextprotocol.io` (see [Cloudflare Access (security-room)](#cloudflare-access-security-room)) and the Google Workspace sign-in application (see [GitHub sign-in for Google Workspace](#github-sign-in-for-google-workspace))
 
 ## Initial Setup
 

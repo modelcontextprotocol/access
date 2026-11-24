@@ -1,6 +1,7 @@
 import * as pulumi from '@pulumi/pulumi';
 import * as cloudflare from '@pulumi/cloudflare';
 import { ACCESS_POLICIES, GITHUB_ORG, getAccessPolicyTeams } from './config/accessPolicies';
+import { buildNameIdTransform, getWorkspaceSsoTable } from './config/workspaceSso';
 
 const config = new pulumi.Config('cloudflare');
 // Cloudflare integration is optional - only enabled if roleManagementToken is configured,
@@ -65,6 +66,46 @@ if (CLOUDFLARE_ENABLED) {
       }
     );
   });
+
+  // GitHub sign-in for Google Workspace: Access is the SAML IdP for Google's SSO
+  // profile. Org members only, GitHub only; the NameID transform picks the account.
+  const workspaceSsoPolicy = new cloudflare.ZeroTrustAccessPolicy(
+    'access-policy-workspace-sso',
+    {
+      accountId,
+      name: 'Google Workspace sign-in',
+      decision: 'allow',
+      includes: [
+        { githubOrganization: { identityProviderId: githubIdentityProviderId, name: GITHUB_ORG } },
+      ],
+    },
+    { provider, ignoreChanges: ['connectionRules', 'sessionDuration'] }
+  );
+  new cloudflare.ZeroTrustAccessApplication(
+    'access-app-workspace-sso',
+    {
+      accountId,
+      name: 'Google Workspace',
+      type: 'saas',
+      allowedIdps: [githubIdentityProviderId],
+      autoRedirectToIdentity: true,
+      appLauncherVisible: false,
+      sessionDuration: '1h',
+      policies: [{ id: workspaceSsoPolicy.id, precedence: 1 }],
+      saasApp: {
+        authType: 'saml',
+        spEntityId: config.get('googleSamlEntityId') ?? 'google.com/a/modelcontextprotocol.io',
+        consumerServiceUrl:
+          config.get('googleSamlAcsUrl') ?? 'https://www.google.com/a/modelcontextprotocol.io/acs',
+        nameIdFormat: 'email',
+        nameIdTransformJsonata: buildNameIdTransform(
+          getWorkspaceSsoTable(),
+          githubIdentityProviderId
+        ),
+      },
+    },
+    { provider }
+  );
 }
 
 export const cloudflareAccessPolicyIds = Object.fromEntries(
