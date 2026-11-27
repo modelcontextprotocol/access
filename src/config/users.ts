@@ -1057,6 +1057,10 @@ export const MEMBERS: readonly Member[] = [
     memberOf: [ROLE_IDS.SKILLS_OVER_MCP_WG],
   },
   {
+    github: 'symfony-splitter',
+    memberOf: [ROLE_IDS.PHP_SDK],
+  },
+  {
     github: 't3dotgg',
     memberOf: [ROLE_IDS.DOCS_MAINTAINERS],
   },
