@@ -5,6 +5,8 @@ import type { RoleId } from './config/roleIds';
 import {
   DISCORD_CHANNELS,
   DISCORD_CHANNEL_TYPE_IDS,
+  DISCORD_EVERYONE_ROLE,
+  DISCORD_OVERWRITE_TYPE_ROLE,
   discordChannelCreatePayloadFromConfig,
   discordChannelPayloadFromConfig,
   discordChannelRequireTagError,
@@ -12,9 +14,13 @@ import {
   discordChannelStateFromApi,
   discordChannelTypeName,
   getDiscordChannelDrift,
+  getDiscordPermissionOverwriteDrift,
+  planDiscordPermissionOverwrites,
+  resolveDiscordPermissionOverwrite,
   type DiscordChannelApiResponse,
   type DiscordChannelConfig,
   type DiscordChannelState,
+  type DiscordResolvedPermissionOverwrite,
 } from './config/channels';
 import {
   discordPermissionBitfield,
@@ -519,6 +525,11 @@ interface DiscordChannelInputs {
   guildId: string;
   channel: DiscordChannelConfig;
   token: string;
+  /**
+   * The channel's declared permission overwrites with roles resolved to Discord role
+   * IDs. Absent for channels that declare none: their permissions are never written.
+   */
+  permissionOverwrites?: DiscordResolvedPermissionOverwrite[];
 }
 
 interface DiscordChannelOutputs extends DiscordChannelInputs {
@@ -576,33 +587,64 @@ function assertDiscordChannelMatches(
 }
 
 /**
- * Apply the declared settings to a live channel if they differ, and return the
- * resulting state. Tag IDs and unmanaged flag bits come from `live`.
+ * Apply the declared settings and permission overwrites to a live channel where they
+ * differ, and return the resulting state. Tag IDs and unmanaged flag bits come from
+ * `live`. `previousOverwrites` are the overwrites declared on the last deploy, so
+ * permissions dropped from the config since then are cleared.
  */
 async function reconcileDiscordChannel(
   token: string,
   guildId: string,
   config: DiscordChannelConfig,
-  live: DiscordChannelApiResponse
+  live: DiscordChannelApiResponse,
+  overwrites?: DiscordResolvedPermissionOverwrite[],
+  previousOverwrites?: DiscordResolvedPermissionOverwrite[]
 ): Promise<DiscordChannelState> {
   assertDiscordChannelMatches(guildId, config, live);
 
-  const current = discordChannelStateFromApi(live);
-  const drift = getDiscordChannelDrift(config, current);
-  if (drift.length === 0) return current;
+  let state = discordChannelStateFromApi(live);
+  if (getDiscordChannelDrift(config, state).length > 0) {
+    // Turning on REQUIRE_TAG with no tags to pick from would make Discord reject every post
+    const requireTagError = discordChannelRequireTagError(config, state);
+    if (requireTagError !== undefined) {
+      throw new Error(`${discordChannelLabel(live.id, config)}: ${requireTagError}`);
+    }
 
-  // Turning on REQUIRE_TAG with no tags to pick from would make Discord reject every post
-  const requireTagError = discordChannelRequireTagError(config, current);
-  if (requireTagError !== undefined) {
-    throw new Error(`${discordChannelLabel(live.id, config)}: ${requireTagError}`);
+    const updated = await discordFetch<DiscordChannelApiResponse>(token, `/channels/${live.id}`, {
+      method: 'PATCH',
+      headers: DISCORD_CHANNEL_AUDIT_LOG_HEADERS,
+      body: JSON.stringify(discordChannelPayloadFromConfig(config, state)),
+    });
+    state = discordChannelStateFromApi(updated);
   }
 
-  const updated = await discordFetch<DiscordChannelApiResponse>(token, `/channels/${live.id}`, {
-    method: 'PATCH',
-    headers: DISCORD_CHANNEL_AUDIT_LOG_HEADERS,
-    body: JSON.stringify(discordChannelPayloadFromConfig(config, current)),
-  });
-  return discordChannelStateFromApi(updated);
+  // One PUT per overwrite that differs, so overwrites Pulumi does not declare (other
+  // roles, members) are never rewritten
+  const changes = planDiscordPermissionOverwrites(
+    state.permissionOverwrites,
+    previousOverwrites,
+    overwrites
+  );
+  for (const change of changes) {
+    await discordFetch<void>(token, `/channels/${live.id}/permissions/${change.id}`, {
+      method: 'PUT',
+      headers: DISCORD_CHANNEL_AUDIT_LOG_HEADERS,
+      body: JSON.stringify({
+        type: DISCORD_OVERWRITE_TYPE_ROLE,
+        allow: change.allow,
+        deny: change.deny,
+      }),
+    });
+  }
+  if (changes.length === 0) return state;
+
+  return {
+    ...state,
+    permissionOverwrites: [
+      ...state.permissionOverwrites.filter((o) => !changes.some((change) => change.id === o.id)),
+      ...changes.map((change) => ({ ...change, type: DISCORD_OVERWRITE_TYPE_ROLE })),
+    ],
+  };
 }
 
 /** Deep equality for the JSON-like values Pulumi hands to the provider (key order ignored) */
@@ -638,10 +680,13 @@ const discordChannelProvider: pulumi.dynamic.ResourceProvider = {
     const inputsChanged =
       olds.guildId !== news.guildId ||
       olds.token !== news.token ||
-      !jsonEqual(olds.channel, news.channel);
+      !jsonEqual(olds.channel, news.channel) ||
+      !jsonEqual(olds.permissionOverwrites, news.permissionOverwrites);
     // `state` is the live state from the last create/update/refresh
     const drifted =
-      olds.state === undefined || getDiscordChannelDrift(news.channel, olds.state).length > 0;
+      olds.state === undefined ||
+      getDiscordChannelDrift(news.channel, olds.state).length > 0 ||
+      getDiscordPermissionOverwriteDrift(news.permissionOverwrites, olds.state).length > 0;
 
     return {
       changes: inputsChanged || drifted,
@@ -667,7 +712,13 @@ const discordChannelProvider: pulumi.dynamic.ResourceProvider = {
       });
     }
 
-    const state = await reconcileDiscordChannel(token, guildId, channel, live);
+    const state = await reconcileDiscordChannel(
+      token,
+      guildId,
+      channel,
+      live,
+      inputs.permissionOverwrites
+    );
 
     return {
       id: live.id,
@@ -713,13 +764,20 @@ const discordChannelProvider: pulumi.dynamic.ResourceProvider = {
 
   async update(
     id: string,
-    _olds: DiscordChannelOutputs,
+    olds: DiscordChannelOutputs,
     news: DiscordChannelInputs
   ): Promise<pulumi.dynamic.UpdateResult<DiscordChannelOutputs>> {
     // Re-read before patching so tag IDs and unmanaged flag bits are current even
     // when the last refresh is stale
     const live = await discordFetch<DiscordChannelApiResponse>(news.token, `/channels/${id}`);
-    const state = await reconcileDiscordChannel(news.token, news.guildId, news.channel, live);
+    const state = await reconcileDiscordChannel(
+      news.token,
+      news.guildId,
+      news.channel,
+      live,
+      news.permissionOverwrites,
+      olds.permissionOverwrites
+    );
 
     return {
       outs: {
@@ -750,6 +808,7 @@ class DiscordChannel extends pulumi.dynamic.Resource {
       guildId: pulumi.Input<string>;
       channel: pulumi.Input<DiscordChannelConfig>;
       token: pulumi.Input<string>;
+      permissionOverwrites?: pulumi.Input<pulumi.Input<DiscordResolvedPermissionOverwrite>[]>;
     },
     opts?: pulumi.CustomResourceOptions
   ) {
@@ -863,10 +922,29 @@ if (DISCORD_ENABLED) {
 
   // Manage the channels declared in channels.ts (adopted by id, or created)
   DISCORD_CHANNELS.forEach((channel) => {
+    // Resolve each overwrite's role to its Discord role ID; @everyone has the guild's ID
+    const permissionOverwrites = channel.permissionOverwrites?.map((overwrite) => {
+      if (overwrite.role === DISCORD_EVERYONE_ROLE) {
+        return pulumi.output(resolveDiscordPermissionOverwrite(overwrite, guildId));
+      }
+      const discordRole = roleLookup.get(overwrite.role)?.discord?.role;
+      if (discordRole === undefined) {
+        throw new Error(
+          `Discord channel "${channel.id ?? channel.name}" has a permission overwrite for ` +
+            `"${overwrite.role}", which has no Discord role`
+        );
+      }
+      return roles[discordRole].roleId.apply((roleId) =>
+        resolveDiscordPermissionOverwrite(overwrite, roleId)
+      );
+    });
+
     channels[channel.id ?? channel.name] = new DiscordChannel(discordChannelResourceName(channel), {
       guildId,
       channel,
       token: botToken,
+      // Omitted entirely for channels without overwrites, as for role permissions above
+      ...(permissionOverwrites && { permissionOverwrites }),
     });
   });
 }
