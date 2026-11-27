@@ -101,6 +101,13 @@ export const ROLES: readonly Role[] = [
     // Discord only - no GitHub equivalent
   },
   {
+    id: ROLE_IDS.SECURITY_AUDIT_2026,
+    description: 'External auditors from OSTIF and X41 D-Sec for the 2026 security audit',
+    discord: { role: 'security audit 2026 (synced)' },
+    // Discord only - external auditors get no GitHub team, Google group or repo access,
+    // and this role must not imply any other role
+  },
+  {
     id: ROLE_IDS.LEAD_MAINTAINERS,
     description: 'Lead core maintainers',
     github: { team: 'lead-maintainers', parent: ROLE_IDS.STEERING_COMMITTEE },
