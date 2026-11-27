@@ -1013,7 +1013,7 @@ export const MEMBERS: readonly Member[] = [
     firstName: 'Sarah',
     lastName: 'Novotny',
     googleEmailPrefix: 'sarah',
-    memberOf: [ROLE_IDS.GOVERNANCE_WG, ROLE_IDS.MAINTAINERS],
+    memberOf: [ROLE_IDS.GOVERNANCE_WG, ROLE_IDS.MAINTAINERS, ROLE_IDS.WG_IG_FACILITATORS],
   },
   {
     github: 'schlpbch',
