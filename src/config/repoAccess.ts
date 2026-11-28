@@ -238,6 +238,8 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
   },
   {
     repository: 'servers',
+    // No steering-committee grant: through child teams it would give push to every
+    // WG and IG member. Teams that need push here get their own grant.
     teams: [
       { team: 'reference-servers-maintainers', permission: 'admin' },
       { team: 'auth-maintainers', permission: 'push' },
@@ -257,7 +259,6 @@ export const REPOSITORY_ACCESS: RepositoryAccess[] = [
       { team: 'rust-sdk', permission: 'push' },
       { team: 'sdk-maintainers', permission: 'push' },
       { team: 'security-ig', permission: 'admin' },
-      { team: 'steering-committee', permission: 'push' },
       { team: 'swift-sdk', permission: 'push' },
       { team: 'transport-wg', permission: 'push' },
       { team: 'typescript-sdk', permission: 'push' },
